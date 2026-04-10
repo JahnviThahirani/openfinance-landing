@@ -12,15 +12,6 @@
     height: 130vh;
     width: 100%;
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-    background: #0d0f14;
-  }
-
-  /* Dark sentinel below curtain — hides any iOS rubber-band white gap */
-  .cf-sentinel {
-    width: 100%;
-    height: 200px;
-    background: #0d0f14;
-    margin-top: -1px; /* flush, no seam */
   }
 
   .cf-footer {
@@ -34,7 +25,7 @@
     justify-content: space-between;
     background: #0d0f14;
     overflow: hidden;
-    z-index: 0;
+    z-index: 0; /* below page content, revealed only through curtain clip */
   }
 
   /* ── Aurora ── */
@@ -138,7 +129,7 @@
 
   .cf-marquee-dot { color: var(--accent); opacity: 0.7; }
 
-  /* ── Center — flex:1, mt-20 like original ── */
+  /* ── Center ── */
   .cf-center {
     position: relative;
     z-index: 10;
@@ -238,7 +229,7 @@
     transform: translateY(-2px);
   }
 
-  /* ── Bottom bar — slim, clean ── */
+  /* ── Bottom bar ── */
   .cf-bottom {
     position: relative;
     z-index: 20;
@@ -416,7 +407,6 @@
 
   </footer>
 </div>
-<div class="cf-sentinel" aria-hidden="true"></div>
 
 <script>
 (function() {
@@ -460,16 +450,10 @@
     update();
   }
 
-  // Set html+body bg to footer color — the only reliable fix for rubber-band
-  // overscroll revealing a gap on iOS Safari and mobile Chrome.
-  document.documentElement.style.backgroundColor = '#0d0f14';
-  document.body.style.backgroundColor = '#0d0f14';
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initFooter);
   } else {
     initFooter();
   }
-
 })();
 </script>
