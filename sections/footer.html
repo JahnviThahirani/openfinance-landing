@@ -9,10 +9,18 @@
 
   .cf-curtain {
     position: relative;
-    height: 130vh;
+    height: 110vh;
     width: 100%;
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     background: #0d0f14;
+  }
+
+  /* Dark sentinel below curtain — hides any iOS rubber-band white gap */
+  .cf-sentinel {
+    width: 100%;
+    height: 200px;
+    background: #0d0f14;
+    margin-top: -1px; /* flush, no seam */
   }
 
   .cf-footer {
@@ -309,7 +317,7 @@
   .cf-top-btn svg { width: 14px; height: 14px; }
 
   @media (max-width: 768px) {
-    .cf-curtain { height: 130vh; }
+    .cf-curtain { height: 110vh; }
     .cf-headline { font-size: clamp(36px, 7vw, 72px); letter-spacing: -2px; margin-bottom: 32px; }
     .cf-bg-text { font-size: 38vw; }
     .cf-marquee-wrap { margin-top: 120px; }
@@ -318,7 +326,7 @@
   }
 
   @media (max-width: 640px) {
-    .cf-curtain { height: 140vh; }
+    .cf-curtain { height: 110vh; }
     .cf-headline { font-size: clamp(30px, 8vw, 52px); letter-spacing: -1.5px; }
     .cf-actions { flex-direction: column; align-items: center; width: 100%; }
     .cf-btn-primary, .cf-btn-secondary { width: 80%; justify-content: center; }
@@ -408,6 +416,8 @@
 
   </footer>
 </div>
+<div class="cf-sentinel" aria-hidden="true"></div>
+
 <script>
 (function() {
   function initFooter() {
@@ -450,24 +460,12 @@
     update();
   }
 
-  // Set html+body background to footer color.
-  // This is the only reliable cross-browser fix for rubber-band/overscroll
-  // revealing a gap — the bounce shows the element behind body, which is html.
-  // Both must be dark so any elastic scroll gap is invisible.
-  function setPageBg() {
-    document.documentElement.style.backgroundColor = '#0d0f14';
-    document.body.style.backgroundColor = '#0d0f14';
-  }
-  // Run immediately and after DOM ready in case body isn't painted yet
-  setPageBg();
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      setPageBg();
-      initFooter();
-    });
+    document.addEventListener('DOMContentLoaded', initFooter);
   } else {
     initFooter();
   }
+
 
 })();
 </script>
