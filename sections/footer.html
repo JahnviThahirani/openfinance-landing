@@ -9,7 +9,7 @@
 
   .cf-curtain {
     position: relative;
-    height: 110vh;
+    height: 130vh;
     width: 100%;
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     background: #0d0f14;
@@ -317,7 +317,7 @@
   .cf-top-btn svg { width: 14px; height: 14px; }
 
   @media (max-width: 768px) {
-    .cf-curtain { height: 110vh; }
+    .cf-curtain { height: 130vh; }
     .cf-headline { font-size: clamp(36px, 7vw, 72px); letter-spacing: -2px; margin-bottom: 32px; }
     .cf-bg-text { font-size: 38vw; }
     .cf-marquee-wrap { margin-top: 120px; }
@@ -326,7 +326,7 @@
   }
 
   @media (max-width: 640px) {
-    .cf-curtain { height: 110vh; }
+    .cf-curtain { height: 140vh; }
     .cf-headline { font-size: clamp(30px, 8vw, 52px); letter-spacing: -1.5px; }
     .cf-actions { flex-direction: column; align-items: center; width: 100%; }
     .cf-btn-primary, .cf-btn-secondary { width: 80%; justify-content: center; }
@@ -460,12 +460,16 @@
     update();
   }
 
+  // Set html+body bg to footer color — the only reliable fix for rubber-band
+  // overscroll revealing a gap on iOS Safari and mobile Chrome.
+  document.documentElement.style.backgroundColor = '#0d0f14';
+  document.body.style.backgroundColor = '#0d0f14';
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initFooter);
   } else {
     initFooter();
   }
-
 
 })();
 </script>
