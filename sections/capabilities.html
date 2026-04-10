@@ -1034,13 +1034,16 @@
 
     nextBtn.addEventListener('click', () => {
       if (isSweeping) return;
-      const { lastIndex } = getMetrics();
-      // Use actual scroll position to determine if we're at the end
       const { step } = getMetrics();
       const maxScroll = track.scrollWidth - track.offsetWidth;
-      const atEnd = currentIndex >= lastIndex || track.scrollLeft >= maxScroll - step * 0.5;
-      if (atEnd) {
-        sweepBackToStart();
+
+      // After scrolling one more step, would we be at or past the end?
+      const nextScroll = track.scrollLeft + step;
+      if (nextScroll >= maxScroll - 4) {
+        // First scroll to last card, then sweep back
+        track.scrollTo({ left: maxScroll, behavior: 'smooth' });
+        currentIndex++;
+        setTimeout(sweepBackToStart, 500);
       } else {
         goTo(currentIndex + 1);
       }
