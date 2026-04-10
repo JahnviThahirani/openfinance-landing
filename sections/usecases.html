@@ -372,49 +372,81 @@
 
   /* Responsive */
   @media (max-width: 1100px) {
-    .feature-component { grid-template-columns: 1fr; }
-    .feature-right { display: none; }
-    .feature-left { align-items: center; }
-    .media-outer-frame { width: 100%; max-width: 640px; margin: 0 auto; }
+    .feature-component {
+      grid-template-columns: 1fr;
+    }
+    /* Show right panel stacked below left on tablet/mobile */
+    .feature-right {
+      display: flex;
+      margin-top: 24px;
+    }
+    .feature-left { align-items: stretch; }
+    .media-outer-frame { width: 100%; max-width: 100%; margin: 0; }
   }
+
   @media (max-width: 960px) {
     .markets-inner { padding: 0 20px; }
     .markets-wrap { padding: 80px 0 100px; }
-    .feature-tabs { justify-content: flex-start; }
-    .feature-caption { text-align: center; }
+    /* Stable horizontal scrolling tabs — NO grid, no jumping */
+    .feature-tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 4px;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .feature-tab {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    /* Remove the full-width active hack entirely */
+    .feature-tab.active { grid-column: unset; }
+    .feature-caption { text-align: left; }
   }
 
   @media (max-width: 768px) {
     .markets-wrap { padding: 60px 0 80px; }
     .markets-inner { padding: 0 16px; }
-    .feature-tabs { gap: 4px; }
     .feature-tab { font-size: 12px; padding: 7px 10px; gap: 5px; }
     .feature-tab svg { width: 13px; height: 13px; }
     .section-title { font-size: clamp(26px, 5vw, 36px); }
     .section-desc { font-size: 16px; margin-bottom: 40px; }
-    .media-outer-frame { max-width: 100%; }
+    /* SDK right panel — simpler on mobile */
+    .sdk-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .sdk-tab { flex-shrink: 0; }
   }
 
   @media (max-width: 640px) {
-    .feature-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .feature-tab { justify-content: flex-start; width: 100%; }
-    .feature-tab.active { grid-column: 1 / -1; }
+    /* Tabs: scrollable pills — never grid, never jumping */
+    .feature-tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 4px;
+    }
+    .feature-tab { flex-shrink: 0; justify-content: flex-start; }
     .feature-left { padding: 0; }
     .media-inner-frame { border-radius: 8px; }
+    .media-pane { padding: 28px 20px 20px; min-height: 260px; }
+    .feature-right { margin-top: 16px; }
+    .sdk-outer-frame { border-radius: 12px; }
   }
 
   @media (max-width: 480px) {
     .markets-wrap { padding: 48px 0 64px; }
     .markets-inner { padding: 0 14px; }
-    .feature-tabs { grid-template-columns: 1fr 1fr; gap: 4px; }
-    .feature-tab { font-size: 11px; padding: 6px 8px; }
+    .feature-tab { font-size: 11px; padding: 6px 10px; }
     .section-desc { font-size: 14px; }
-    .feature-component { margin-top: 32px; }
+    .feature-component { margin-top: 28px; }
+    .media-pane { padding: 20px 16px 16px; min-height: 220px; }
+    .sdk-steps { padding: 6px; gap: 4px; }
+    .sdk-line { font-size: 10px; }
   }
 
   @media (max-width: 375px) {
     .markets-inner { padding: 0 12px; }
-    .feature-tab { font-size: 10px; padding: 5px 6px; }
+    .feature-tab { font-size: 10px; padding: 5px 8px; }
   }
 </style>
 
