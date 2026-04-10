@@ -525,11 +525,11 @@ function initHowItWorks() {
   const progLine  = document.getElementById('howProgressLine');
   const titleEl   = document.getElementById('howTerminalTitle');
   const titles    = ['install.sh', 'auth.py', 'trade.py'];
-  let current     = 0;
+  let current     = -1;
   let progBarDone = false;
 
   function activate(idx) {
-    if (idx === current && steps[idx].classList.contains('active')) return;
+    if (idx === current) return;
     current = idx;
 
     steps.forEach((s, i) => s.classList.toggle('active', i === idx));
@@ -563,45 +563,29 @@ function initHowItWorks() {
     pip.addEventListener('click', () => activate(i));
   });
 
-  // Scroll-driven activation — works on both desktop (sticky visual) and mobile (stacked)
-  const isMobile = () => window.innerWidth <= 1100;
+  // Unified scroll-driven activation for both desktop and mobile.
+  // On desktop the terminal is sticky, so we track which step's centre
+  // is closest to 40% down the viewport (a natural "reading zone").
+  // On mobile (stacked layout) we use 55% so the step has scrolled
+  // well into view before switching.
+  function onScroll() {
+    const stepEls   = Array.from(steps);
+    const isMobile  = window.innerWidth <= 1100;
+    const trigger   = window.innerHeight * (isMobile ? 0.55 : 0.40);
 
-  // Desktop: IntersectionObserver on steps (steps stay visible alongside terminal)
-  const observer = new IntersectionObserver((entries) => {
-    if (isMobile()) return; // mobile uses scroll listener instead
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const idx = parseInt(entry.target.dataset.step);
-        activate(idx);
-      }
-    });
-  }, {
-    threshold: 0.5,
-    rootMargin: '0px 0px -20% 0px'
-  });
-
-  steps.forEach(step => observer.observe(step));
-
-  // Mobile: scroll listener — activate step based on which step has been scrolled past
-  function onScrollMobile() {
-    if (!isMobile()) return;
-    const stepEls = Array.from(steps);
-    const viewportMid = window.innerHeight * 0.55;
-
+    // Find the last step whose top edge has passed the trigger line
     let activeIdx = 0;
     stepEls.forEach((step, i) => {
       const rect = step.getBoundingClientRect();
-      // Step is above the viewport midpoint — it's been scrolled past
-      if (rect.top < viewportMid) {
-        activeIdx = i;
-      }
+      if (rect.top < trigger) activeIdx = i;
     });
-    if (activeIdx !== current) activate(activeIdx);
+
+    activate(activeIdx);
   }
 
-  window.addEventListener('scroll', onScrollMobile, { passive: true });
-  // Also run once on load in case already scrolled
-  onScrollMobile();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  // Run once immediately so step 1 is active on load without needing a scroll
+  onScroll();
 
   // Copy buttons
   document.querySelectorAll('.how-step-code').forEach(el => {
