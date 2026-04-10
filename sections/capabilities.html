@@ -1037,13 +1037,17 @@
       const { step } = getMetrics();
       const maxScroll = track.scrollWidth - track.offsetWidth;
 
-      // After scrolling one more step, would we be at or past the end?
+      // Already at the end — sweep back
+      if (track.scrollLeft >= maxScroll - 4) {
+        sweepBackToStart();
+        return;
+      }
+
+      // Next step would reach or pass the end — scroll to exact end first
       const nextScroll = track.scrollLeft + step;
       if (nextScroll >= maxScroll - 4) {
-        // First scroll to last card, then sweep back
         track.scrollTo({ left: maxScroll, behavior: 'smooth' });
         currentIndex++;
-        setTimeout(sweepBackToStart, 500);
       } else {
         goTo(currentIndex + 1);
       }
