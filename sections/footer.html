@@ -456,17 +456,23 @@
     initFooter();
   }
 
-  // Block overscroll bounce on Mac Chrome (wheel) and iOS (touchmove).
-  // Buffer of 80px means blocking starts just before the absolute bottom
-  // so trackpad momentum bursts can't sneak past.
-  var BUFFER = 80;
-
+  // Hard-stop overscroll on Mac Chrome + iOS.
+  // Block any downward wheel event that would push scrollY past the bottom,
+  // accounting for the full deltaY of the incoming burst.
   window.addEventListener('wheel', function(e) {
-    if (e.deltaY <= 0) return;
+    if (e.deltaY <= 0) return; // scrolling up — always allow
     var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    if (window.scrollY >= maxScroll - BUFFER) e.preventDefault();
+    // Block if current position + this event's delta would exceed max
+    if (window.scrollY + e.deltaY >= maxScroll) {
+      e.preventDefault();
+      // Snap exactly to bottom in case we're close but not there yet
+      if (window.scrollY < maxScroll) {
+        window.scrollTo({ top: maxScroll, behavior: 'instant' });
+      }
+    }
   }, { passive: false });
 
+  // iOS / iPad touchmove block
   (function() {
     var lastTouchY = 0;
     window.addEventListener('touchstart', function(e) {
@@ -477,7 +483,7 @@
       lastTouchY = e.touches[0].clientY;
       if (dy <= 0) return;
       var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (window.scrollY >= maxScroll - BUFFER) e.preventDefault();
+      if (window.scrollY >= maxScroll - 2) e.preventDefault();
     }, { passive: false });
   })();
 
