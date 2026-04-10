@@ -974,18 +974,21 @@
     alignTrack();
     window.addEventListener('resize', alignTrack);
 
-    const CARD_WIDTH = 422;
     const GAP = 16;
-    const STEP = CARD_WIDTH + GAP;
     const TOTAL_CARDS = track.querySelectorAll('.cap-card').length;
-
-    // How many whole cards fit in the visible track width
-    const visibleCards = Math.floor(track.offsetWidth / STEP);
-    // Last index where scrolling further would show card 9 as rightmost
-    const LAST_INDEX = TOTAL_CARDS - visibleCards - 1;
 
     let currentIndex = 0;
     let isSweeping = false;
+
+    // Recalculate on resize since card width and visible count change on mobile
+    function getMetrics() {
+      const firstCard = track.querySelector('.cap-card');
+      const cardWidth = firstCard ? firstCard.offsetWidth : 422;
+      const step = cardWidth + GAP;
+      const visibleCards = Math.max(1, Math.floor(track.offsetWidth / step));
+      const lastIndex = TOTAL_CARDS - visibleCards - 1;
+      return { cardWidth, step, visibleCards, lastIndex };
+    }
 
     // Always keep currentIndex in sync with actual scroll position
     let scrollSyncTimer;
@@ -993,13 +996,15 @@
       if (isSweeping) return;
       clearTimeout(scrollSyncTimer);
       scrollSyncTimer = setTimeout(() => {
-        currentIndex = Math.min(Math.max(Math.round(track.scrollLeft / STEP), 0), LAST_INDEX);
+        const { step, lastIndex } = getMetrics();
+        currentIndex = Math.min(Math.max(Math.round(track.scrollLeft / step), 0), lastIndex);
       }, 100);
     }, { passive: true });
 
     function goTo(index) {
-      currentIndex = Math.min(Math.max(index, 0), LAST_INDEX);
-      track.scrollTo({ left: currentIndex * STEP, behavior: 'smooth' });
+      const { step, lastIndex } = getMetrics();
+      currentIndex = Math.min(Math.max(index, 0), lastIndex);
+      track.scrollTo({ left: currentIndex * step, behavior: 'smooth' });
     }
 
     function sweepBackToStart() {
@@ -1007,10 +1012,10 @@
       nextBtn.disabled = true;
       prevBtn.disabled = true;
 
-      // Use actual scroll position, not currentIndex, so trackpad scroll is handled correctly
+      const { step } = getMetrics();
       let px = track.scrollLeft;
 
-      function step() {
+      function doStep() {
         if (px <= 0) {
           track.scrollTo({ left: 0, behavior: 'instant' });
           currentIndex = 0;
@@ -1019,17 +1024,22 @@
           prevBtn.disabled = false;
           return;
         }
-        px = Math.max(px - STEP, 0);
+        px = Math.max(px - step, 0);
         track.scrollTo({ left: px, behavior: 'instant' });
-        setTimeout(step, 67); // ~10% slower than 61ms
+        setTimeout(doStep, 67);
       }
 
-      setTimeout(step, 80);
+      setTimeout(doStep, 80);
     }
 
     nextBtn.addEventListener('click', () => {
       if (isSweeping) return;
-      if (currentIndex >= LAST_INDEX) {
+      const { lastIndex } = getMetrics();
+      // Use actual scroll position to determine if we're at the end
+      const { step } = getMetrics();
+      const maxScroll = track.scrollWidth - track.offsetWidth;
+      const atEnd = currentIndex >= lastIndex || track.scrollLeft >= maxScroll - step * 0.5;
+      if (atEnd) {
         sweepBackToStart();
       } else {
         goTo(currentIndex + 1);
