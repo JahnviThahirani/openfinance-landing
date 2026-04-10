@@ -641,6 +641,36 @@ function initHowItWorks() {
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  // ── Touch swipe on terminal (mobile/tablet only) ─────────────────────────
+  const terminalBody = document.querySelector('.how-terminal-body');
+  if (terminalBody) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    terminalBody.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    terminalBody.addEventListener('touchend', (e) => {
+      if (window.innerWidth > 1100) return; // desktop: scroll drives activation
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+
+      // Only treat as swipe if horizontal movement dominates and is significant
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+
+      const total = screens.length; // 3
+      if (dx < 0) {
+        // Swipe left → next screen (wrap: 2 → 0)
+        activate((current + 1) % total);
+      } else {
+        // Swipe right → previous screen (wrap: 0 → 2)
+        activate((current - 1 + total) % total);
+      }
+    }, { passive: true });
+  }
+
   // Copy buttons
   document.querySelectorAll('.how-step-code').forEach(el => {
     el.addEventListener('click', () => {
