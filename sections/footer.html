@@ -456,23 +456,34 @@
     initFooter();
   }
 
-  // Hard-stop overscroll on Mac Chrome + iOS.
-  // Block any downward wheel event that would push scrollY past the bottom,
-  // accounting for the full deltaY of the incoming burst.
+  // Once the user hits the bottom, lock out ALL downward wheel input for
+  // 600ms — this kills the entire Mac trackpad momentum tail before it can
+  // trigger Chrome's native overscroll bounce.
+  var bottomLocked = false;
+  var lockTimer = null;
+
   window.addEventListener('wheel', function(e) {
-    if (e.deltaY <= 0) return; // scrolling up — always allow
+    if (e.deltaY <= 0) {
+      // Scrolling up — always unlock immediately
+      bottomLocked = false;
+      clearTimeout(lockTimer);
+      return;
+    }
     var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    // Block if current position + this event's delta would exceed max
-    if (window.scrollY + e.deltaY >= maxScroll) {
+    var atBottom = window.scrollY >= maxScroll - 2;
+
+    if (atBottom || bottomLocked) {
       e.preventDefault();
-      // Snap exactly to bottom in case we're close but not there yet
-      if (window.scrollY < maxScroll) {
-        window.scrollTo({ top: maxScroll, behavior: 'instant' });
-      }
+      bottomLocked = true;
+      // Snap to exact bottom
+      window.scrollTo({ top: maxScroll, behavior: 'instant' });
+      // Reset lock after momentum dies out
+      clearTimeout(lockTimer);
+      lockTimer = setTimeout(function() { bottomLocked = false; }, 600);
     }
   }, { passive: false });
 
-  // iOS / iPad touchmove block
+  // iOS / iPad
   (function() {
     var lastTouchY = 0;
     window.addEventListener('touchstart', function(e) {
