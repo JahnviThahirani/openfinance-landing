@@ -171,11 +171,30 @@
 
   .how-step-code .copy-icon:hover { opacity: 1; }
 
-  /* ── RIGHT: sticky terminal ── */
+  /* ── RIGHT: pinned terminal ── */
+  /* Placeholder keeps grid column; inner terminal is fixed via JS on desktop */
   .how-visual {
-    position: sticky;
-    top: 100px;
-    height: fit-content;
+    position: relative;
+  }
+
+  @media (min-width: 1101px) {
+    .how-visual {
+      visibility: hidden; /* placeholder only — inner is visible + fixed */
+    }
+    .how-visual-inner {
+      visibility: visible;
+      position: fixed;
+      /* left / top / width injected by JS */
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .how-visual-inner {
+      position: static !important;
+      width: auto !important;
+      top: auto !important;
+      left: auto !important;
+    }
   }
 
   .how-terminal {
@@ -432,8 +451,9 @@
 
       </div>
 
-      <!-- RIGHT: Sticky terminal -->
-      <div class="how-visual">
+      <!-- RIGHT: Pinned terminal -->
+      <div class="how-visual" id="howVisual">
+        <div class="how-visual-inner" id="howVisualInner">
         <div class="how-terminal">
 
           <!-- Bar -->
@@ -511,7 +531,8 @@
           <div style="height:16px;"></div>
 
         </div>
-      </div>
+        </div><!-- /.how-visual-inner -->
+      </div><!-- /.how-visual -->
 
     </div>
   </div>
@@ -524,10 +545,61 @@ function initHowItWorks() {
   const pips      = document.querySelectorAll('.how-step-pip');
   const progLine  = document.getElementById('howProgressLine');
   const titleEl   = document.getElementById('howTerminalTitle');
+  const placeholder = document.getElementById('howVisual');
+  const inner       = document.getElementById('howVisualInner');
   const titles    = ['install.sh', 'auth.py', 'trade.py'];
   let current     = -1;
   let progBarDone = false;
 
+  // ── Pin terminal to viewport on desktop ──────────────────────────────────
+  const NAV_H = 72; // matches your nav height
+  const PIN_TOP = NAV_H + 28; // 28px breathing room below nav
+
+  function pinTerminal() {
+    if (!placeholder || !inner) return;
+    if (window.innerWidth <= 1100) return; // mobile: static layout
+
+    const rect   = placeholder.getBoundingClientRect();
+    const section = document.getElementById('how');
+    const sectionRect = section ? section.getBoundingClientRect() : null;
+
+    // While section is in view, keep terminal fixed at its column position
+    inner.style.width = rect.width + 'px';
+    inner.style.left  = rect.left + 'px';
+
+    if (!sectionRect) {
+      inner.style.top = PIN_TOP + 'px';
+      return;
+    }
+
+    // Clamp: don't start before section top, don't go past section bottom
+    const termH = inner.offsetHeight;
+    const sectionBottom = sectionRect.bottom;
+
+    if (sectionRect.top > PIN_TOP) {
+      // Section hasn't reached the pin point yet — follow normally
+      inner.style.top = (sectionRect.top + window.scrollY - window.scrollY) + 'px';
+      inner.style.position = 'absolute'; // not yet fixed
+      // Actually easier: just fix it and let it sit at its natural scroll pos
+      inner.style.position = 'fixed';
+      inner.style.top = Math.max(PIN_TOP, sectionRect.top) + 'px';
+    } else if (sectionBottom < PIN_TOP + termH) {
+      // Section is scrolling out — anchor to section bottom
+      inner.style.position = 'fixed';
+      inner.style.top = (sectionBottom - termH) + 'px';
+    } else {
+      // Normal pin
+      inner.style.position = 'fixed';
+      inner.style.top = PIN_TOP + 'px';
+    }
+  }
+
+  window.addEventListener('scroll', pinTerminal, { passive: true });
+  window.addEventListener('resize', pinTerminal);
+  // Run after a tick so layout is settled
+  setTimeout(pinTerminal, 50);
+
+  // ── Step activation ───────────────────────────────────────────────────────
   function activate(idx) {
     if (idx === current) return;
     current = idx;
@@ -537,13 +609,11 @@ function initHowItWorks() {
     pips.forEach((p, i) => p.classList.toggle('active', i === idx));
     if (titleEl) titleEl.textContent = titles[idx];
 
-    // Progress line height
     if (progLine) {
       const pct = idx === 0 ? 0 : idx === 1 ? 50 : 100;
       progLine.style.height = pct + '%';
     }
 
-    // Trigger progress bar on step 3
     if (idx === 2 && !progBarDone) {
       progBarDone = true;
       setTimeout(() => {
@@ -553,38 +623,22 @@ function initHowItWorks() {
     }
   }
 
-  // Click on steps
-  steps.forEach((step, i) => {
-    step.addEventListener('click', () => activate(i));
-  });
+  // Click on steps / pips
+  steps.forEach((step, i) => step.addEventListener('click', () => activate(i)));
+  pips.forEach((pip, i)   => pip.addEventListener('click',  () => activate(i)));
 
-  // Click on pips
-  pips.forEach((pip, i) => {
-    pip.addEventListener('click', () => activate(i));
-  });
-
-  // Unified scroll-driven activation for both desktop and mobile.
-  // On desktop the terminal is sticky, so we track which step's centre
-  // is closest to 40% down the viewport (a natural "reading zone").
-  // On mobile (stacked layout) we use 55% so the step has scrolled
-  // well into view before switching.
+  // Scroll-driven activation (desktop + mobile unified)
   function onScroll() {
-    const stepEls   = Array.from(steps);
-    const isMobile  = window.innerWidth <= 1100;
-    const trigger   = window.innerHeight * (isMobile ? 0.55 : 0.40);
-
-    // Find the last step whose top edge has passed the trigger line
-    let activeIdx = 0;
-    stepEls.forEach((step, i) => {
-      const rect = step.getBoundingClientRect();
-      if (rect.top < trigger) activeIdx = i;
+    const isMobile = window.innerWidth <= 1100;
+    const trigger  = window.innerHeight * (isMobile ? 0.55 : 0.40);
+    let activeIdx  = 0;
+    steps.forEach((step, i) => {
+      if (step.getBoundingClientRect().top < trigger) activeIdx = i;
     });
-
     activate(activeIdx);
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  // Run once immediately so step 1 is active on load without needing a scroll
   onScroll();
 
   // Copy buttons
@@ -607,3 +661,4 @@ if (document.readyState === 'loading') {
   initHowItWorks();
 }
 </script>
+
