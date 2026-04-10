@@ -985,9 +985,9 @@
       const firstCard = track.querySelector('.cap-card');
       const cardWidth = firstCard ? firstCard.offsetWidth : 422;
       const step = cardWidth + GAP;
-      const visibleCards = Math.max(1, Math.floor(track.offsetWidth / step));
-      const lastIndex = TOTAL_CARDS - visibleCards - 1;
-      return { cardWidth, step, visibleCards, lastIndex };
+      const maxScroll = track.scrollWidth - track.offsetWidth;
+      const lastIndex = Math.max(0, Math.ceil(maxScroll / step));
+      return { cardWidth, step, lastIndex, maxScroll };
     }
 
     // Always keep currentIndex in sync with actual scroll position
@@ -1002,9 +1002,10 @@
     }, { passive: true });
 
     function goTo(index) {
-      const { step, lastIndex } = getMetrics();
+      const { step, lastIndex, maxScroll } = getMetrics();
       currentIndex = Math.min(Math.max(index, 0), lastIndex);
-      track.scrollTo({ left: currentIndex * step, behavior: 'smooth' });
+      const target = currentIndex >= lastIndex ? maxScroll : currentIndex * step;
+      track.scrollTo({ left: target, behavior: 'smooth' });
     }
 
     function sweepBackToStart() {
@@ -1073,9 +1074,11 @@
       if (!isDown) return;
       isDown = false;
       track.classList.remove('grabbing');
-      const nearest = Math.min(Math.max(Math.round(track.scrollLeft / STEP), 0), LAST_INDEX);
+      const { step, lastIndex, maxScroll } = getMetrics();
+      const nearest = Math.min(Math.max(Math.round(track.scrollLeft / step), 0), lastIndex);
       currentIndex = nearest;
-      track.scrollTo({ left: nearest * STEP, behavior: 'smooth' });
+      const target = nearest >= lastIndex ? maxScroll : nearest * step;
+      track.scrollTo({ left: target, behavior: 'smooth' });
     };
 
     track.addEventListener('mouseleave', endDrag);
