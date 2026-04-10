@@ -456,14 +456,15 @@
     initFooter();
   }
 
-  // Block overscroll bounce at the bottom on Mac Chrome (wheel events)
-  // and iOS Safari (touchmove events). preventDefault() must be called
-  // before the browser applies momentum — scroll events are too late.
+  // Block overscroll bounce on Mac Chrome (wheel) and iOS (touchmove).
+  // Buffer of 80px means blocking starts just before the absolute bottom
+  // so trackpad momentum bursts can't sneak past.
+  var BUFFER = 80;
+
   window.addEventListener('wheel', function(e) {
-    if (e.deltaY <= 0) return; // scrolling up — never block
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    const atBottom  = window.scrollY >= maxScroll - 1;
-    if (atBottom) e.preventDefault();
+    if (e.deltaY <= 0) return;
+    var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    if (window.scrollY >= maxScroll - BUFFER) e.preventDefault();
   }, { passive: false });
 
   (function() {
@@ -472,11 +473,11 @@
       lastTouchY = e.touches[0].clientY;
     }, { passive: true });
     window.addEventListener('touchmove', function(e) {
-      var dy = lastTouchY - e.touches[0].clientY; // positive = scrolling down
+      var dy = lastTouchY - e.touches[0].clientY;
       lastTouchY = e.touches[0].clientY;
-      if (dy <= 0) return; // scrolling up — never block
+      if (dy <= 0) return;
       var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (window.scrollY >= maxScroll - 1) e.preventDefault();
+      if (window.scrollY >= maxScroll - BUFFER) e.preventDefault();
     }, { passive: false });
   })();
 
