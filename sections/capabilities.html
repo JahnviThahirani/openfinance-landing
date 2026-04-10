@@ -1035,20 +1035,19 @@
 
     nextBtn.addEventListener('click', () => {
       if (isSweeping) return;
-      const { step } = getMetrics();
-      const maxScroll = track.scrollWidth - track.offsetWidth;
+      const { step, lastIndex, maxScroll } = getMetrics();
 
-      // Already at the end — sweep back
-      if (track.scrollLeft >= maxScroll - 4) {
+      // At or within half a step of the end — sweep back
+      if (track.scrollLeft >= maxScroll - step * 0.5) {
         sweepBackToStart();
         return;
       }
 
-      // Next step would reach or pass the end — scroll to exact end first
+      // Next step would reach or pass the end — snap to exact end
       const nextScroll = track.scrollLeft + step;
-      if (nextScroll >= maxScroll - 4) {
+      if (nextScroll >= maxScroll - step * 0.5) {
         track.scrollTo({ left: maxScroll, behavior: 'smooth' });
-        currentIndex++;
+        currentIndex = lastIndex;
       } else {
         goTo(currentIndex + 1);
       }
