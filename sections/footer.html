@@ -12,6 +12,21 @@
     height: 130vh;
     width: 100%;
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    /* Background matches footer so any overscroll gap is invisible */
+    background: #0d0f14;
+  }
+
+  /* Covers the very bottom of the document with footer color so
+     rubber-band / elastic scroll never reveals white behind the footer */
+  body::after {
+    content: '';
+    display: block;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 40px;
+    background: #0d0f14;
+    z-index: -1;
+    pointer-events: none;
   }
 
   .cf-footer {
@@ -19,15 +34,12 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    /* Extend 120px beyond viewport — rubber-band bounce never reveals a gap */
-    height: calc(100vh + 120px);
-    padding-bottom: 120px; /* push visible content back up so layout looks identical */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     background: #0d0f14;
     overflow: hidden;
-    overscroll-behavior: none; /* block elastic scroll on the footer itself */
     z-index: 0;
   }
 
@@ -459,9 +471,6 @@
     initFooter();
   }
 
-  // Block rubber-band / elastic overscroll so dragging up at page bottom
-  // never reveals white space behind the fixed footer.
-  document.documentElement.style.overscrollBehavior = 'none';
-  document.body.style.overscrollBehavior = 'none';
+
 })();
 </script>
