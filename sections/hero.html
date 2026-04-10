@@ -1,0 +1,332 @@
+<style>
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 97.85vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 48px 80px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  /* Canvas — full hero background */
+  #heroCanvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* ── Heading ── */
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.2vw, 58px);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 28px;
+    color: var(--text-primary);
+  }
+
+  .hero-line {
+    display: block;
+    overflow: hidden;
+    line-height: 1.18;
+  }
+
+  .hero-line-inner {
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+    animation: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .hero-line:nth-child(1) .hero-line-inner { animation-delay: 0.05s; }
+  .hero-line:nth-child(2) .hero-line-inner { animation-delay: 0.2s; }
+
+  @keyframes slideUp {
+    from { transform: translateY(110%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  /* ── Sub text ── */
+  .hero-sub {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    max-width: 460px;
+    line-height: 1.65;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: appear 0.6s ease-out 0.35s forwards;
+  }
+
+  .hero-sub.body {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+  }
+
+  /* ── Actions ── */
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0;
+    animation: appear 0.6s ease-out 0.5s forwards;
+  }
+
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 960px) {
+    .hero { padding: 100px 24px 60px; }
+    .hero h1 { font-size: clamp(32px, 7vw, 48px); letter-spacing: -1.5px; }
+    .hero-actions { flex-direction: column; align-items: center; }
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 90px 20px 60px; min-height: auto; }
+    .hero h1 { font-size: clamp(28px, 8vw, 40px); letter-spacing: -1px; }
+    .hero-sub { font-size: 15px; }
+    .hero-sub.body { font-size: 13px; }
+    .hero-actions a { width: 100%; text-align: center; justify-content: center; }
+  }
+
+  @media (max-width: 375px) {
+    .hero { padding: 80px 16px 48px; }
+    .hero h1 { font-size: 26px; }
+  }
+</style>
+
+<section class="hero">
+  <canvas id="heroCanvas"></canvas>
+
+  <div class="hero-inner">
+    <h1>
+      <span class="hero-line"><span class="hero-line-inner">One API key.</span></span>
+      <span class="hero-line"><span class="hero-line-inner">Every market opportunity <em>on earth.</em></span></span>
+    </h1>
+
+    <p class="hero-sub">
+      Trade BTC. Short Google. Buy oil on weekends. Bet on elections. Earn 5% on idle capital. Run strategies 24/7.
+    </p>
+    <p class="hero-sub body">
+      All through one API. Authenticate once &amp; let us handle the rest.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#" class="btn-primary" style="font-size:14px;padding:13px 28px;border-radius:10px;">Request Beta Access →</a>
+      <a href="https://docs.openfinance.tech" class="btn-secondary" style="font-size:14px;padding:13px 24px;border-radius:10px;">Read the Docs</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  const DOT_COLOR   = '0,230,160';   // accent green
+  const GRID_COLOR  = '180,185,180'; // very light grey grid
+  const DOT_COUNT   = 120;
+  const GRID_COLS   = 28;
+  const GRID_ROWS   = 18;
+  const MOUSE_RADIUS = 120;
+  const MOUSE_FORCE  = 60;
+
+  let W, H, mouse = { x: -9999, y: -9999 };
+  let particles = [];
+  let raf;
+
+  function resize() {
+    const section = canvas.parentElement;
+    W = canvas.width  = section.offsetWidth;
+    H = canvas.height = section.offsetHeight;
+  }
+
+  class Particle {
+    constructor() { this.reset(true); }
+
+    reset(init) {
+      this.x  = Math.random() * W;
+      this.y  = init ? Math.random() * H : H + 10;
+      this.ox = this.x;
+      this.oy = this.y;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = -Math.random() * 0.48 - 0.12;
+      this.r  = Math.random() * 2 + 1.2;
+      this.alpha = Math.random() * 0.5 + 0.5;
+      this.life  = 0;
+      this.maxLife = Math.random() * 300 + 200;
+    }
+
+    update() {
+      // Mouse repulsion
+      const dx = this.x - mouse.x;
+      const dy = this.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < MOUSE_RADIUS && dist > 0) {
+        const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+        this.x += (dx / dist) * force * MOUSE_FORCE * 0.04;
+        this.y += (dy / dist) * force * MOUSE_FORCE * 0.04;
+      }
+
+      // Drift back to origin gently
+      this.x += (this.ox - this.x) * 0.012;
+      this.y += (this.oy - this.y) * 0.012;
+
+      // Slow drift
+      this.ox += this.vx;
+      this.oy += this.vy;
+
+      this.life++;
+
+      // Fade in/out
+      if (this.life < 40) this.alpha = (this.life / 40) * 0.95;
+      else if (this.life > this.maxLife - 40)
+        this.alpha = ((this.maxLife - this.life) / 40) * 0.95;
+
+      if (this.life >= this.maxLife || this.oy < -20) this.reset(false);
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${DOT_COLOR},${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  function drawGrid() {
+    const cw = W / GRID_COLS;
+    const ch = H / GRID_ROWS;
+
+    ctx.strokeStyle = `rgba(${GRID_COLOR},0.28)`;
+    ctx.lineWidth = 0.5;
+
+    // Vertical lines
+    for (let c = 0; c <= GRID_COLS; c++) {
+      const x = c * cw;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+
+    // Horizontal lines
+    for (let r = 0; r <= GRID_ROWS; r++) {
+      const y = r * ch;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+
+    // Grid intersection dots
+    ctx.fillStyle = `rgba(${GRID_COLOR},0.56)`;
+    for (let c = 0; c <= GRID_COLS; c++) {
+      for (let r = 0; r <= GRID_ROWS; r++) {
+        ctx.beginPath();
+        ctx.arc(c * cw, r * ch, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function drawConnections() {
+    // Connect nearby particles with faint lines
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < 90) {
+          const a = (1 - d / 90) * 0.18;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(${DOT_COLOR},${a})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function drawTopFade() {
+    const navH = 72;
+    const fadeHeight = 220;
+    const grad = ctx.createLinearGradient(0, navH, 0, navH + fadeHeight);
+    grad.addColorStop(0,    '#ffffff');
+    grad.addColorStop(0.35, '#ffffff');
+    grad.addColorStop(1,    'rgba(255,255,255,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, navH + fadeHeight);
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    drawGrid();
+    drawConnections();
+    particles.forEach(p => { p.update(); p.draw(); });
+    drawTopFade();
+    raf = requestAnimationFrame(loop);
+  }
+
+  function init() {
+    resize();
+    particles = Array.from({ length: DOT_COUNT }, () => new Particle());
+    loop();
+  }
+
+  // Mouse tracking
+  const section = canvas.parentElement;
+  section.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  section.addEventListener('mouseleave', () => {
+    mouse.x = -9999;
+    mouse.y = -9999;
+  });
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(raf);
+    resize();
+    particles.forEach(p => p.reset(true));
+    loop();
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    // Wait one frame so section has layout
+    requestAnimationFrame(init);
+  }
+})();
+</script>

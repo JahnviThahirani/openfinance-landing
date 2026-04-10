@@ -1,0 +1,218 @@
+<style>
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    height: 72px;
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    align-items: center;
+    padding: 0 40px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* No border by default — outline expands in from pill on scroll */
+    border-bottom: 1px solid transparent;
+    transition: border-color 1.2s ease;
+  }
+
+  nav.scrolled {
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── LEFT: logo ── */
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+  }
+
+  .nav-logo-mark {
+    width: 30px;
+    height: 30px;
+    background: var(--accent);
+    border-radius: 8px;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-logo-mark::before {
+    content: '';
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+  }
+
+  .nav-logo-mark::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    animation: pulse-dot 2s ease infinite;
+  }
+
+  .nav-logo-text {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.4px;
+    color: var(--text-primary);
+  }
+
+  /* ── CENTER: pill nav ── */
+  .nav-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    list-style: none;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px;
+    background: var(--bg-elevated);
+    transition: border-radius 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 1.2s ease,
+                background 1.2s ease,
+                padding 1.2s ease;
+  }
+
+  /* When scrolled — pill expands to full-width nav bar feel */
+  nav.scrolled .nav-links {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .nav-links li a {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 7px 18px;
+    border-radius: 100px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    letter-spacing: -0.1px;
+    line-height: 1;
+  }
+
+  .nav-links li a:hover {
+    color: var(--text-primary);
+    background: #fff;
+  }
+
+  /* ── RIGHT: actions ── */
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+
+  .nav-signin {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: color 0.15s;
+    white-space: nowrap;
+    letter-spacing: -0.1px;
+  }
+
+  .nav-signin:hover { color: var(--text-primary); }
+
+  .nav-cta {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--text-primary);
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    letter-spacing: -0.2px;
+  }
+
+  .nav-cta:hover {
+    background: #1a1d26;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 960px) {
+    nav {
+      grid-template-columns: 1fr auto;
+      padding: 0 20px;
+      height: 64px;
+    }
+    .nav-center { display: none; }
+    .nav-signin { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    nav { padding: 0 16px; height: 56px; }
+    .nav-logo-text { font-size: 13px; }
+    .nav-cta { padding: 7px 14px; font-size: 13px; }
+  }
+</style>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark"></div>
+    <span class="nav-logo-text">openfinance</span>
+  </a>
+
+  <div class="nav-center">
+    <ul class="nav-links">
+      <li><a href="#markets">Markets</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#strategies">Strategies</a></li>
+      <li><a href="https://docs.openfinance.tech">Docs</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </div>
+
+  <div class="nav-actions">
+    <a href="#" class="nav-signin">Sign in</a>
+    <a href="#" class="nav-cta">Get API Key</a>
+  </div>
+</nav>
+
+<script>
+  (function () {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+
+    function onScroll() {
+      if (window.scrollY > 10) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // run on load in case page is already scrolled
+  })();
+</script>

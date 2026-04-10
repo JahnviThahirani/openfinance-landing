@@ -1,0 +1,908 @@
+<style>
+  /* ── Section wrapper — full bleed with gradient bg ── */
+  .markets-wrap {
+    position: relative;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 50%, rgba(0,184,122,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 20%, rgba(0,100,255,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 70% at 50% 100%, rgba(0,184,122,0.06) 0%, transparent 50%),
+      #f5f7f6;
+    padding: var(--section-gap) 48px;
+  }
+
+  .markets-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ── Two-panel layout ── */
+  .feature-component {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 20px;
+    align-items: start;
+    margin-top: 52px;
+  }
+
+  /* ════════════════════════════
+     LEFT PANEL
+  ════════════════════════════ */
+  .feature-left { display: flex; flex-direction: column; }
+
+  /* Tab bar — outside the card, modern clean pills */
+  .feature-tabs {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .feature-tabs::-webkit-scrollbar { display: none; }
+
+  .feature-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border: none;
+    background: none;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 8px;
+    transition: all 0.15s;
+    letter-spacing: -0.1px;
+  }
+
+  .feature-tab:hover { color: var(--text-secondary); background: rgba(255,255,255,0.7); }
+
+  .feature-tab.active {
+    color: var(--text-primary);
+    background: #fff;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06);
+  }
+
+  /* Icon inside tab — SVG, no retro badge */
+  .feature-tab svg {
+    width: 15px; height: 15px;
+    flex-shrink: 0;
+    opacity: 0.45;
+    transition: opacity 0.15s;
+  }
+  .feature-tab.active svg { opacity: 1; }
+
+  /* Outer frame — the big border */
+  .media-outer-frame {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  /* Inner frame — the terminal/laptop screen look */
+  .media-inner-frame {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-elevated);
+  }
+
+  /* Browser chrome bar */
+  .media-frame-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 12px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mfd { width: 10px; height: 10px; border-radius: 50%; }
+  .mfd:nth-child(1) { background: #ff5f57; }
+  .mfd:nth-child(2) { background: #febc2e; }
+  .mfd:nth-child(3) { background: #28c840; }
+
+  .media-frame-url {
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 3px 10px;
+    flex: 1;
+    max-width: 300px;
+  }
+
+  /* Media panes */
+  .media-pane {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 44px 40px 28px;
+    min-height: 320px;
+    gap: 18px;
+    background: var(--bg-elevated);
+  }
+  .media-pane.active { display: flex; }
+
+  .media-pane video,
+  .media-pane img {
+    width: 100%;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+
+  .ph-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 800;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-glow);
+    color: var(--accent);
+  }
+
+  .mock-chart { width: 100%; max-width: 420px; }
+
+  .ph-endpoint {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: 7px 14px;
+    border-radius: 6px;
+  }
+  .ph-endpoint .method { color: var(--accent); font-weight: 700; margin-right: 6px; }
+
+  /* Caption — inside outer frame, below inner frame */
+  .feature-caption {
+    display: none;
+    padding: 12px 14px 4px;
+  }
+  .feature-caption.active { display: block; }
+  .feature-caption p {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ════════════════════════════
+     RIGHT PANEL
+  ════════════════════════════ */
+  .feature-right { display: flex; flex-direction: column; }
+
+  /* SDK tabs — icon only when inactive, icon + name when active, all one line */
+  .sdk-tabs {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 10px;
+    overflow: hidden; /* never wraps */
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .sdk-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 10px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .sdk-tab:hover { color: var(--text-secondary); background: rgba(255,255,255,0.7); }
+
+  .sdk-tab.active {
+    color: var(--text-primary);
+    background: #fff;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06);
+  }
+
+  /* Tab label — hidden when inactive, shown when active */
+  .sdk-tab .sdk-label {
+    display: none;
+  }
+  .sdk-tab.active .sdk-label {
+    display: inline;
+  }
+
+  .sdk-tab svg {
+    width: 15px; height: 15px;
+    flex-shrink: 0;
+  }
+
+  /* SDK card — same double-frame treatment */
+  .sdk-outer-frame {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .sdk-inner-frame {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-elevated);
+  }
+
+  .sdk-pane { display: none; }
+  .sdk-pane.active { display: block; }
+
+  /* SDK header */
+  .sdk-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sdk-lang-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 800;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+
+  .sdk-header-name {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .sdk-header-sub {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  /* Step groups */
+  .sdk-steps { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+
+  .sdk-step-group {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .sdk-step-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: #fff;
+  }
+
+  .sdk-chevron {
+    width: 10px; height: 10px;
+    border-right: 1.5px solid var(--text-muted);
+    border-bottom: 1.5px solid var(--text-muted);
+    transform: rotate(45deg) translateY(-2px);
+    flex-shrink: 0;
+  }
+
+  .sdk-check {
+    width: 17px; height: 17px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sdk-check::after {
+    content: '';
+    width: 6px; height: 3.5px;
+    border-left: 1.5px solid var(--accent);
+    border-bottom: 1.5px solid var(--accent);
+    transform: rotate(-45deg) translateY(-1px);
+  }
+
+  .sdk-step-lines {
+    padding: 6px 12px 10px 37px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-elevated);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .sdk-line {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.7;
+    display: flex; gap: 8px; align-items: baseline;
+  }
+
+  .sdk-line .lbl    { color: var(--text-muted); flex-shrink: 0; }
+  .sdk-line .val    { color: var(--accent); }
+  .sdk-line .neutral{ color: var(--text-secondary); }
+  .sdk-line .ok     { color: var(--accent); }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .cursor {
+    display: inline-block;
+    width: 5px; height: 11px;
+    background: var(--accent);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+    margin-left: 1px;
+    border-radius: 1px;
+  }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .feature-component { grid-template-columns: 1fr; }
+    .feature-right { display: none; }
+  }
+  @media (max-width: 960px) {
+    .markets-inner { padding: 0 20px; }
+    .markets-wrap { padding: 80px 0 100px; }
+  }
+
+  @media (max-width: 768px) {
+    .markets-wrap { padding: 60px 0 80px; }
+    .markets-inner { padding: 0 16px; }
+    .feature-tabs { gap: 4px; }
+    .feature-tab { font-size: 12px; padding: 7px 10px; gap: 5px; }
+    .feature-tab svg { width: 13px; height: 13px; }
+    .section-title { font-size: clamp(26px, 5vw, 36px); }
+    .section-desc { font-size: 16px; margin-bottom: 40px; }
+  }
+
+  @media (max-width: 640px) {
+    .feature-tabs { flex-wrap: wrap; }
+    .feature-tab { flex: 1 1 calc(50% - 4px); justify-content: flex-start; }
+    .feature-left { padding: 16px; }
+    .media-window { min-height: 220px; }
+  }
+
+  @media (max-width: 480px) {
+    .markets-wrap { padding: 48px 0 64px; }
+    .feature-tab { flex: 1 1 calc(50% - 4px); font-size: 11px; padding: 6px 8px; }
+    .section-desc { font-size: 14px; }
+  }
+</style>
+
+<div class="markets-wrap" id="markets">
+  <div class="markets-inner">
+
+    <div class="section-label reveal">Use Cases</div>
+    <h2 class="section-title reveal">One API. Infinite edge.</h2>
+    <p class="section-desc reveal">
+      Bots. Scanners. Terminals. Hedge funds. All running on OpenFinance.
+    </p>
+
+    <div class="feature-component reveal">
+
+      <!-- ══ LEFT PANEL ══ -->
+      <div class="feature-left">
+
+        <!-- Tabs with SVG icons — 7 use cases -->
+        <div class="feature-tabs" role="tablist">
+
+          <button class="feature-tab active" data-tab="ai-trading">
+            <!-- Robot/AI brain icon -->
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="7" r="4" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7h5M8 4.5v5M6.5 5.5l3 3M9.5 5.5l-3 3" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".5"/><path d="M8 11v2M5.5 12.5h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="7" r="1.5" fill="currentColor" opacity=".2"/></svg>
+            AI Trading
+          </button>
+
+          <button class="feature-tab" data-tab="custom-ui">
+            <!-- Layout/dashboard icon -->
+            <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="8.5" y="2" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="8.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
+            Custom UI
+          </button>
+
+          <button class="feature-tab" data-tab="arb-bot">
+            <!-- Lightning/arb icon -->
+            <svg viewBox="0 0 16 16" fill="none"><path d="M9.5 2L4 9h4.5L6.5 14l7-8H9L9.5 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/></svg>
+            Arb Bot
+          </button>
+
+          <button class="feature-tab" data-tab="yield">
+            <!-- Percent/yield icon -->
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="5" cy="5.5" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="11" cy="10.5" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M13 3L3 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Yield
+          </button>
+
+          <button class="feature-tab" data-tab="alt-data">
+            <!-- Satellite/signal icon -->
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" fill="currentColor" opacity=".3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 5a4.2 4.2 0 000 6M11 5a4.2 4.2 0 010 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M3 3a7 7 0 000 10M13 3a7 7 0 010 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/></svg>
+            Alt Data
+          </button>
+
+          <button class="feature-tab" data-tab="portfolio">
+            <!-- Pie/portfolio icon -->
+            <svg viewBox="0 0 16 16" fill="none"><path d="M8 2a6 6 0 106 6H8V2z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 2v6h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/></svg>
+            Portfolio
+          </button>
+
+          <button class="feature-tab" data-tab="smart-money">
+            <!-- Eye/tracking icon -->
+            <svg viewBox="0 0 16 16" fill="none"><path d="M1.5 8C3 4.5 5.3 3 8 3s5 1.5 6.5 5c-1.5 3.5-3.8 5-6.5 5S3 11.5 1.5 8z" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r=".8" fill="currentColor"/></svg>
+            Smart Money
+          </button>
+
+        </div>
+
+        <!-- Double frame: outer border → inner border → content -->
+        <div class="media-outer-frame">
+          <div class="media-inner-frame">
+
+            <!-- Browser chrome -->
+            <div class="media-frame-bar">
+              <div class="mfd"></div>
+              <div class="mfd"></div>
+              <div class="mfd"></div>
+              <div class="media-frame-url" id="mediaUrl">api.openfinance.tech/v1/markets/equities</div>
+            </div>
+
+            <!-- Media panes — replace content with real image/video when ready -->
+            <div class="media-pane active" data-media="ai-trading">
+              <div class="ph-icon">AI</div>
+              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
+                <polyline points="0,68 25,62 50,55 75,50 100,44 125,35 150,30 175,22 200,24 225,16 250,18 275,12 300,14 325,9 350,11 375,7 420,5" stroke="#00b87a" stroke-width="2" fill="none"/>
+                <polyline points="0,78 40,74 80,72 120,68 160,65 200,60 240,58 280,54 320,50 380,46 420,44" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
+              </svg>
+              <div class="ph-endpoint"><span class="method">MCP</span>openfinance/trade</div>
+            </div>
+
+            <div class="media-pane" data-media="custom-ui">
+              <div class="ph-icon">UI</div>
+              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
+                <rect x="10" y="10" width="180" height="70" rx="6" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
+                <rect x="20" y="20" width="60" height="8" rx="2" fill="#e2e4e9"/>
+                <rect x="20" y="34" width="160" height="6" rx="2" fill="#e2e4e9" opacity=".6"/>
+                <rect x="20" y="46" width="120" height="6" rx="2" fill="#e2e4e9" opacity=".4"/>
+                <rect x="20" y="62" width="50" height="10" rx="3" fill="#00b87a" opacity=".8"/>
+                <rect x="210" y="10" width="200" height="33" rx="6" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
+                <polyline points="220,35 240,25 260,28 280,18 300,22 320,14 330,18 350,12 400,16" stroke="#00b87a" stroke-width="1.5" fill="none"/>
+                <rect x="210" y="50" width="95" height="30" rx="6" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
+                <rect x="315" y="50" width="95" height="30" rx="6" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
+              </svg>
+              <div class="ph-endpoint"><span class="method">WS</span>/v1/stream/quotes</div>
+            </div>
+
+            <div class="media-pane" data-media="arb-bot">
+              <div class="ph-icon">⚡</div>
+              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
+                <polyline points="0,50 30,48 60,30 90,52 120,28 150,50 180,25 210,48 240,22 270,46 300,20 330,44 360,18 420,42" stroke="#00b87a" stroke-width="2" fill="none"/>
+                <polyline points="0,55 30,54 60,38 90,56 120,36 150,55 180,33 210,53 240,30 270,52 300,28 330,50 360,26 420,48" stroke="#e2e4e9" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+              </svg>
+              <div class="ph-endpoint"><span class="method">GET</span>/v1/markets/mids</div>
+            </div>
+
+            <div class="media-pane" data-media="yield">
+              <div class="ph-icon">%</div>
+              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
+                <polyline points="0,72 60,65 120,55 180,50 240,42 300,38 360,32 420,28" stroke="#00b87a" stroke-width="2" fill="none"/>
+                <polyline points="0,80 60,76 120,72 180,70 240,68 300,65 360,62 420,60" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
+                <circle cx="120" cy="55" r="3.5" fill="#00b87a"/>
+                <circle cx="240" cy="42" r="3.5" fill="#00b87a"/>
+                <circle cx="360" cy="32" r="3.5" fill="#00b87a"/>
+              </svg>
+              <div class="ph-endpoint"><span class="method">GET</span>/v1/yield/positions</div>
+            </div>
+
+            <div class="media-pane" data-media="alt-data">
+              <div class="ph-icon">📡</div>
+              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
+                <polyline points="0,60 20,55 40,58 60,40 80,45 100,35 120,42 140,28 160,38 180,30 200,35 220,20 240,28 260,22 280,30 300,18 320,25 340,15 360,20 420,12" stroke="#00b87a" stroke-width="1.8" fill="none"/>
+                <polyline points="0,70 60,68 120,65 180,62 240,58 300,55 360,52 420,50" stroke="#e2e4e9" stroke-width="1.5" fill="none" opacity=".6"/>
+                <rect x="90" y="25" width="40" height="14" rx="3" fill="#00b87a" opacity=".15"/>
+                <text x="110" y="35" font-family="monospace" font-size="7" fill="#00b87a" text-anchor="middle">signal</text>
+              </svg>
+              <div class="ph-endpoint"><span class="method">WS</span>/v1/alt-data/feed</div>
+            </div>
+
+            <div class="media-pane" data-media="portfolio">
+              <div class="ph-icon">◕</div>
+              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
+                <polyline points="0,75 42,60 84,52 126,58 168,35 210,40 252,22 294,28 336,14 420,10" stroke="#00b87a" stroke-width="2" fill="none"/>
+                <polyline points="0,82 42,78 84,75 126,77 168,70 210,72 252,65 294,68 336,62 420,58" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
+                <rect x="0" y="76" width="420" height="14" fill="url(#portfolioFade)" opacity=".3"/>
+                <defs><linearGradient id="portfolioFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00b87a" stop-opacity=".3"/><stop offset="100%" stop-color="#00b87a" stop-opacity="0"/></linearGradient></defs>
+              </svg>
+              <div class="ph-endpoint"><span class="method">GET</span>/v1/portfolio/summary</div>
+            </div>
+
+            <div class="media-pane" data-media="smart-money">
+              <div class="ph-icon">👁</div>
+              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
+                <polyline points="0,55 40,52 80,45 120,50 160,30 200,35 240,20 280,25 320,12 380,8 420,10" stroke="#00b87a" stroke-width="2" fill="none"/>
+                <polyline points="0,65 40,62 80,58 120,62 160,50 200,54 240,44 280,48 320,38 380,34 420,36" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
+                <circle cx="160" cy="30" r="4" fill="none" stroke="#00b87a" stroke-width="1.5"/>
+                <circle cx="240" cy="20" r="4" fill="none" stroke="#00b87a" stroke-width="1.5"/>
+                <circle cx="320" cy="12" r="4" fill="none" stroke="#00b87a" stroke-width="1.5"/>
+              </svg>
+              <div class="ph-endpoint"><span class="method">GET</span>/v1/flow/institutional</div>
+            </div>
+
+          </div><!-- /inner frame -->
+
+          <!-- Captions sit between inner and outer frame bottom padding -->
+          <div class="feature-caption active" data-caption="ai-trading">
+            <p>Deploy autonomous agents that reason about markets and execute trades with guardrails you define. Native MCP server — no glue code.</p>
+          </div>
+          <div class="feature-caption" data-caption="custom-ui">
+            <p>Build your own trading terminal, dashboard or analytics tool on top of OpenFinance's unified data layer. WebSocket + REST.</p>
+          </div>
+          <div class="feature-caption" data-caption="arb-bot">
+            <p>Detect and execute cross-exchange spreads in milliseconds. Sub-12ms latency, unified order books, atomic execution.</p>
+          </div>
+          <div class="feature-caption" data-caption="yield">
+            <p>Monitor and rebalance yield-bearing positions across DeFi, money markets and fixed income from one normalised interface.</p>
+          </div>
+          <div class="feature-caption" data-caption="alt-data">
+            <p>Pipe in on-chain flows, sentiment signals, options flow and dark pool prints alongside price data — same schema, one connection.</p>
+          </div>
+          <div class="feature-caption" data-caption="portfolio">
+            <p>Aggregate positions across every exchange and asset class into a single portfolio view. Real-time P&amp;L, risk and exposure.</p>
+          </div>
+          <div class="feature-caption" data-caption="smart-money">
+            <p>Track institutional order flow, large block trades and whale movements across equities, crypto and derivatives in real time.</p>
+          </div>
+
+        </div><!-- /outer frame -->
+      </div><!-- /feature-left -->
+
+      <!-- ══ RIGHT PANEL ══ -->
+      <div class="feature-right">
+
+        <!-- SDK tabs — icon only when inactive, icon + name when active, one line always -->
+        <div class="sdk-tabs">
+
+          <button class="sdk-tab active" data-sdk="python">
+            <svg viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5C5.3 1.5 4.5 2.4 4.5 4V5.5h3V6H2.8C1.4 6 1.2 7 1.2 7.5S1.4 9 2.8 9H3.3V7.5c0-1.7.9-2.5 2.5-2.5H9C10.4 5 11.5 4 11.5 2.5v-1C11.5 1 9.8.5 7.5.5m-1 1.7a.65.65 0 110 1.3.65.65 0 010-1.3z" fill="#3572A5"/><path d="M7.5 13.5c2.2 0 3-.9 3-2.5V9.5h-3V9h4.7c1.4 0 1.6-1 1.6-1.5S13.6 6 12.2 6h-.5V7.5c0 1.7-.9 2.5-2.5 2.5H6C4.6 10 3.5 11 3.5 12.5v1C3.5 14 5.2 14.5 7.5 14.5m1-1.7a.65.65 0 110-1.3.65.65 0 010 1.3z" fill="#3572A5" opacity=".7"/></svg>
+            <span class="sdk-label">Python</span>
+          </button>
+
+          <button class="sdk-tab" data-sdk="typescript">
+            <svg viewBox="0 0 15 15" fill="none"><rect width="15" height="15" rx="2.5" fill="#3178c6"/><path d="M3 8h3v2.5M8.5 5.5H12M10.25 5.5v5.5" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span class="sdk-label">TypeScript</span>
+          </button>
+
+          <button class="sdk-tab" data-sdk="go">
+            <svg viewBox="0 0 15 15" fill="none"><path d="M1.5 7.5c0-1 .5-1.5 1.5-1.5h9c1 0 1.5.5 1.5 1.5S13 9 12 9H3C2 9 1.5 8.5 1.5 7.5z" stroke="#00ADD8" stroke-width="1.3"/><circle cx="5" cy="7.5" r="1" fill="#00ADD8"/><circle cx="10" cy="7.5" r="1" fill="#00ADD8"/></svg>
+            <span class="sdk-label">Go</span>
+          </button>
+
+          <button class="sdk-tab" data-sdk="rust">
+            <svg viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5l1.8 3h3.2l-2.7 2.5 1 3.3L7.5 8.7l-3.3 1.6 1-3.3L2.5 4.5h3.2z" stroke="#CE422B" stroke-width="1.2" fill="none" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="2" fill="#CE422B" opacity=".3"/></svg>
+            <span class="sdk-label">Rust</span>
+          </button>
+
+          <button class="sdk-tab" data-sdk="curl">
+            <svg viewBox="0 0 15 15" fill="none"><rect x="1.5" y="2.5" width="12" height="10" rx="2" stroke="#888" stroke-width="1.3"/><path d="M4.5 6.5l2 1.5-2 1.5M8.5 9.5h2" stroke="#888" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sdk-label">cURL</span>
+          </button>
+
+          <button class="sdk-tab" data-sdk="mcp">
+            <svg viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="2.5" fill="#00b87a"/><path d="M7.5 1v1.5M7.5 12.5V14M1 7.5h1.5M12.5 7.5H14M3 3l1 1M11 11l1 1M11 3l-1 1M4 11l-1 1" stroke="#00b87a" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span class="sdk-label">MCP</span>
+          </button>
+
+        </div>
+
+        <!-- Double-frame SDK card -->
+        <div class="sdk-outer-frame">
+          <div class="sdk-inner-frame">
+
+            <!-- Python -->
+            <div class="sdk-pane active" data-pane="python">
+              <div class="sdk-header">
+                <div class="sdk-lang-icon" style="background:#3572A510; color:#3572A5;">PY</div>
+                <div>
+                  <div class="sdk-header-name">Python SDK</div>
+                  <div class="sdk-header-sub">Finished in 1.2s</div>
+                </div>
+              </div>
+              <div class="sdk-steps">
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Install</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Installed</span><span class="val">openfinance==2.4.1</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Authenticate</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Validated</span><span class="val">api_key (live)</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Fetch market data</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Connected</span><span class="val">equities · crypto · forex</span></div>
+                    <div class="sdk-line"><span class="lbl">Feed</span><span class="neutral">ws://feed.openfinance.tech</span></div>
+                    <div class="sdk-line"><span class="lbl">Latency</span><span class="neutral">~12ms</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Execute trade</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Placed</span><span class="val">AAPL buy 100 @ market</span></div>
+                    <div class="sdk-line"><span class="lbl">Status</span><span class="ok">filled · avg $247.31</span></div>
+                    <div class="sdk-line"><span class="lbl">Order</span><span class="neutral">ord_8x2k9f<span class="cursor"></span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TypeScript -->
+            <div class="sdk-pane" data-pane="typescript">
+              <div class="sdk-header">
+                <div class="sdk-lang-icon" style="background:#3178c610; color:#3178c6;">TS</div>
+                <div>
+                  <div class="sdk-header-name">TypeScript SDK</div>
+                  <div class="sdk-header-sub">Finished in 0.9s</div>
+                </div>
+              </div>
+              <div class="sdk-steps">
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Install</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Installed</span><span class="val">@openfinance/<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="85f6e1eec5b7abb1abb4">[email&#160;protected]</a></span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Authenticate</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Validated</span><span class="val">Bearer token (live)</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Subscribe to feed</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Subscribed</span><span class="val">BTC-USD · ETH-USD</span></div>
+                    <div class="sdk-line"><span class="lbl">Events</span><span class="neutral">onTick · onFill · onError</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Execute trade</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Placed</span><span class="val">BTC buy 0.5 @ market</span></div>
+                    <div class="sdk-line"><span class="lbl">Status</span><span class="ok">filled · avg $97,241</span></div>
+                    <div class="sdk-line"><span class="lbl">Order</span><span class="neutral">ord_ts7m2n<span class="cursor"></span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Go -->
+            <div class="sdk-pane" data-pane="go">
+              <div class="sdk-header">
+                <div class="sdk-lang-icon" style="background:#00ADD810; color:#00ADD8;">GO</div>
+                <div>
+                  <div class="sdk-header-name">Go SDK</div>
+                  <div class="sdk-header-sub">Finished in 0.7s</div>
+                </div>
+              </div>
+              <div class="sdk-steps">
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Install</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Fetched</span><span class="val">github.com/openfinance/go-sdk</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Authenticate</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Validated</span><span class="val">OPENFINANCE_API_KEY</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Stream quotes</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Connected</span><span class="val">forex · commodities</span></div>
+                    <div class="sdk-line"><span class="lbl">Workers</span><span class="neutral">4 goroutines spawned</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Execute trade</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Placed</span><span class="val">EUR/USD buy 100k @ limit</span></div>
+                    <div class="sdk-line"><span class="lbl">Status</span><span class="ok">filled · avg 1.0842</span></div>
+                    <div class="sdk-line"><span class="lbl">Order</span><span class="neutral">ord_go4r1p<span class="cursor"></span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rust -->
+            <div class="sdk-pane" data-pane="rust">
+              <div class="sdk-header">
+                <div class="sdk-lang-icon" style="background:#CE422B10; color:#CE422B;">RS</div>
+                <div>
+                  <div class="sdk-header-name">Rust SDK</div>
+                  <div class="sdk-header-sub">Finished in 0.4s</div>
+                </div>
+              </div>
+              <div class="sdk-steps">
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Install</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Added</span><span class="val">openfinance = "2.4"</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Build</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Compiled</span><span class="val">release (opt-level 3)</span></div>
+                    <div class="sdk-line"><span class="lbl">Binary</span><span class="neutral">2.1MB · zero unsafe</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Execute trade</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Placed</span><span class="val">XAUUSD buy 10oz @ market</span></div>
+                    <div class="sdk-line"><span class="lbl">Status</span><span class="ok">filled · avg $3,241.50</span></div>
+                    <div class="sdk-line"><span class="lbl">Order</span><span class="neutral">ord_rs9k3m<span class="cursor"></span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- cURL -->
+            <div class="sdk-pane" data-pane="curl">
+              <div class="sdk-header">
+                <div class="sdk-lang-icon" style="background:#88888810; color:#888; font-size:8px;">curl</div>
+                <div>
+                  <div class="sdk-header-name">REST API</div>
+                  <div class="sdk-header-sub">Finished in 12ms</div>
+                </div>
+              </div>
+              <div class="sdk-steps">
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Authenticate</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Header</span><span class="val">X-API-Key: of_live_***</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>GET /v1/markets/mids</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Response</span><span class="val">200 OK · 12ms</span></div>
+                    <div class="sdk-line"><span class="lbl">BTC</span><span class="neutral">97,241</span></div>
+                    <div class="sdk-line"><span class="lbl">ETH</span><span class="neutral">3,891</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>POST /v1/orders</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Status</span><span class="ok">201 · filled</span></div>
+                    <div class="sdk-line"><span class="lbl">Order</span><span class="neutral">ord_8x2k<span class="cursor"></span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MCP -->
+            <div class="sdk-pane" data-pane="mcp">
+              <div class="sdk-header">
+                <div class="sdk-lang-icon" style="background:#00b87a10; color:#00b87a; font-size:8px;">MCP</div>
+                <div>
+                  <div class="sdk-header-name">MCP Server</div>
+                  <div class="sdk-header-sub">Agent connected</div>
+                </div>
+              </div>
+              <div class="sdk-steps">
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Connect agent</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Server</span><span class="val">mcp.openfinance.tech</span></div>
+                    <div class="sdk-line"><span class="lbl">Agent</span><span class="neutral">Claude claude-opus-4-6</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Tools registered</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Tool</span><span class="val">openfinance/quote</span></div>
+                    <div class="sdk-line"><span class="lbl">Tool</span><span class="val">openfinance/trade</span></div>
+                    <div class="sdk-line"><span class="lbl">Tool</span><span class="val">openfinance/strategy</span></div>
+                  </div>
+                </div>
+                <div class="sdk-step-group">
+                  <div class="sdk-step-title"><span class="sdk-chevron"></span><span class="sdk-check"></span>Agent execution</div>
+                  <div class="sdk-step-lines">
+                    <div class="sdk-line"><span class="lbl">Reasoning</span><span class="neutral">spread detected +0.34%</span></div>
+                    <div class="sdk-line"><span class="lbl">Action</span><span class="val">arb trade executed</span></div>
+                    <div class="sdk-line"><span class="lbl">P&amp;L</span><span class="ok">+$847 · 0 guardrails hit<span class="cursor"></span></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /sdk-inner-frame -->
+        </div><!-- /sdk-outer-frame -->
+      </div><!-- /feature-right -->
+    </div><!-- /feature-component -->
+  </div><!-- /markets-inner -->
+</div><!-- /markets-wrap -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  function initMarkets() {
+    const urlBar = document.getElementById('mediaUrl');
+    const urlMap = {
+      'ai-trading':  'mcp.openfinance.tech/trade',
+      'custom-ui':   'api.openfinance.tech/v1/stream/quotes',
+      'arb-bot':     'api.openfinance.tech/v1/markets/mids',
+      'yield':       'api.openfinance.tech/v1/yield/positions',
+      'alt-data':    'api.openfinance.tech/v1/alt-data/feed',
+      'portfolio':   'api.openfinance.tech/v1/portfolio/summary',
+      'smart-money': 'api.openfinance.tech/v1/flow/institutional'
+    };
+
+    document.querySelectorAll('.feature-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const key = tab.dataset.tab;
+        document.querySelectorAll('.feature-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.media-pane').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.feature-caption').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        const pane = document.querySelector(`.media-pane[data-media="${key}"]`);
+        const cap  = document.querySelector(`.feature-caption[data-caption="${key}"]`);
+        if (pane) pane.classList.add('active');
+        if (cap)  cap.classList.add('active');
+        if (urlBar && urlMap[key]) urlBar.textContent = urlMap[key];
+      });
+    });
+
+    document.querySelectorAll('.sdk-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const key = tab.dataset.sdk;
+        document.querySelectorAll('.sdk-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.sdk-pane').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        const pane = document.querySelector(`.sdk-pane[data-pane="${key}"]`);
+          if (pane) pane.classList.add('active');
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMarkets);
+  } else {
+    initMarkets();
+  }
+</script>

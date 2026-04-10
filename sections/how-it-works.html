@@ -1,0 +1,600 @@
+<style>
+  /* ── Section wrapper — matches usecases padding exactly ── */
+  .how-section {
+    position: relative;
+    z-index: 1;
+    padding: var(--section-gap) 48px;
+    background: var(--bg);
+  }
+
+  .how-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ── Header ── */
+  .how-header {
+    margin-bottom: 72px;
+  }
+
+  .how-header .section-desc {
+    margin-bottom: 0;
+  }
+
+  /* ── Body: 70/30 split ── */
+  .how-body {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 64px;
+    align-items: start;
+  }
+
+  /* ── LEFT: steps ── */
+  .how-steps {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Vertical progress line */
+  .how-steps::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .how-progress-line {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    width: 1px;
+    height: 0%;
+    background: var(--accent);
+    z-index: 1;
+    transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ── Step ── */
+  .how-step {
+    position: relative;
+    display: flex;
+    gap: 32px;
+    padding: 36px 0 36px 0;
+    cursor: default;
+    transition: opacity 0.3s ease;
+  }
+
+  .how-step:not(.active) { opacity: 0.38; }
+
+  /* Step node */
+  .how-step-node {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition: all 0.35s ease;
+    margin-top: 2px;
+  }
+
+  .how-step.active .how-step-node {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 0 6px rgba(0,184,122,0.12);
+  }
+
+  /* Step content */
+  .how-step-content { flex: 1; padding-top: 6px; }
+
+  .how-step-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    transition: color 0.3s;
+  }
+
+  .how-step.active .how-step-tag { color: var(--accent); }
+
+  .how-step-tag-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .how-step-title {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2.2vw, 30px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  .how-step-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 480px;
+    margin-bottom: 16px;
+  }
+
+  .how-step-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--accent);
+    background: rgba(0,184,122,0.06);
+    border: 1px solid rgba(0,184,122,0.18);
+    padding: 9px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  .how-step-code:hover {
+    background: rgba(0,184,122,0.1);
+    border-color: rgba(0,184,122,0.3);
+  }
+
+  .how-step-code .copy-icon {
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .how-step-code .copy-icon:hover { opacity: 1; }
+
+  /* ── RIGHT: sticky terminal ── */
+  .how-visual {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+
+  .how-terminal {
+    background: #0d0f14;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 24px 64px rgba(0,0,0,0.28),
+      0 0 80px rgba(0,184,122,0.06);
+  }
+
+  /* Terminal top bar */
+  .how-terminal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .how-terminal-dots {
+    display: flex;
+    gap: 7px;
+  }
+
+  .how-terminal-dot {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+  }
+
+  .how-terminal-dot:nth-child(1) { background: #ff5f57; }
+  .how-terminal-dot:nth-child(2) { background: #febc2e; }
+  .how-terminal-dot:nth-child(3) { background: #28c840; }
+
+  .how-terminal-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.3px;
+  }
+
+  .how-terminal-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(0,230,160,0.7);
+  }
+
+  .how-terminal-status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #00e5a0;
+    animation: pulse-dot 1.5s ease infinite;
+  }
+
+  /* Terminal body */
+  .how-terminal-body {
+    padding: 20px;
+    min-height: 384px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Step screens */
+  .how-screen {
+    position: absolute;
+    inset: 20px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  .how-screen.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Terminal text lines */
+  .t-line {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.9;
+    display: block;
+    white-space: pre;
+  }
+
+  .t-prompt  { color: rgba(255,255,255,0.2); }
+  .t-cmd     { color: #e2e8f0; }
+  .t-comment { color: rgba(255,255,255,0.25); font-style: italic; }
+  .t-key     { color: #febc2e; }
+  .t-val     { color: #00e5a0; }
+  .t-str     { color: #7ee787; }
+  .t-muted   { color: rgba(255,255,255,0.3); }
+  .t-success { color: #00e5a0; font-weight: 600; }
+  .t-error   { color: #ff5f57; }
+  .t-num     { color: #79c0ff; }
+
+  /* Blinking cursor */
+  .t-cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: #00e5a0;
+    vertical-align: middle;
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* Progress bar inside terminal for step 3 */
+  .t-progress-wrap {
+    margin-top: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    height: 4px;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .t-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00b87a, #00e5a0);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .t-progress-bar.run { width: 100%; }
+
+  /* Step counter badge */
+  .how-step-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+  }
+
+  .how-step-pip {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .how-step-pip.active {
+    background: #00e5a0;
+    transform: scale(1.3);
+  }
+
+  @media (max-width: 1100px) {
+    .how-body { grid-template-columns: 1fr; }
+    .how-visual { position: static; }
+  }
+
+  @media (max-width: 960px) {
+    .how-section { padding: 80px 24px 100px; }
+  }
+
+  @media (max-width: 768px) {
+    .how-section { padding: 60px 20px 80px; }
+    .how-step { padding: 28px 0 28px 0; }
+    .how-step-content { padding-left: 16px; }
+    .how-step-title { font-size: 16px; }
+    .how-step-desc { font-size: 13px; }
+    .how-terminal { min-height: 300px; border-radius: 14px; }
+    .how-screen-code { font-size: 11px; }
+    .how-pip-nav { gap: 6px; }
+  }
+
+  @media (max-width: 480px) {
+    .how-section { padding: 48px 16px 64px; }
+    .how-step-tag { font-size: 10px; padding: 3px 8px; }
+    .how-step-title { font-size: 15px; }
+    .how-snippet { padding: 10px 12px; font-size: 11px; }
+    .how-terminal { min-height: 260px; }
+    .how-screen-code { font-size: 10px; line-height: 1.6; }
+  }
+
+  @media (max-width: 375px) {
+    .how-section { padding: 40px 14px 56px; }
+  }
+</style>
+
+<section class="how-section" id="how">
+  <div class="how-inner">
+
+    <!-- Header -->
+    <div class="how-header">
+      <div class="section-label reveal">How it works</div>
+      <h2 class="section-title reveal">Live in 3 minutes.</h2>
+      <p class="section-desc reveal">No SDK. No setup. Just curl and you're live.</p>
+    </div>
+
+    <!-- Body -->
+    <div class="how-body">
+
+      <!-- LEFT: Steps -->
+      <div class="how-steps" id="howSteps">
+        <div class="how-progress-line" id="howProgressLine"></div>
+
+        <!-- Step 1 -->
+        <div class="how-step active" data-step="0">
+          <div class="how-step-node">01</div>
+          <div class="how-step-content">
+            <div class="how-step-tag"><span class="how-step-tag-dot"></span>Step one</div>
+            <div class="how-step-title">Get your API key</div>
+            <p class="how-step-desc">Sign up in 30 seconds. No sales calls. No 2-week onboarding. Your key arrives instantly — live and ready to trade.</p>
+            <div class="how-step-code">
+              <span>$ pip install openfinance</span>
+              <svg class="copy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="how-step" data-step="1">
+          <div class="how-step-node">02</div>
+          <div class="how-step-content">
+            <div class="how-step-tag"><span class="how-step-tag-dot"></span>Step two</div>
+            <div class="how-step-title">Connect every market</div>
+            <p class="how-step-desc">One authentication. Every exchange — NYSE, Binance, LMAX, NSE. Your existing broker accounts link in seconds.</p>
+            <div class="how-step-code">
+              <span>client = Client(api_key="of_live_...")</span>
+              <svg class="copy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="how-step" data-step="2">
+          <div class="how-step-node">03</div>
+          <div class="how-step-content">
+            <div class="how-step-tag"><span class="how-step-tag-dot"></span>Step three</div>
+            <div class="how-step-title">Trade or automate</div>
+            <p class="how-step-desc">Execute manually, write strategies in Python, or let AI agents trade via MCP. Paper trading → live with one flag change.</p>
+            <div class="how-step-code">
+              <span>client.trade(symbol="BTC", side="buy")</span>
+              <svg class="copy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Sticky terminal -->
+      <div class="how-visual">
+        <div class="how-terminal">
+
+          <!-- Bar -->
+          <div class="how-terminal-bar">
+            <div class="how-terminal-dots">
+              <div class="how-terminal-dot"></div>
+              <div class="how-terminal-dot"></div>
+              <div class="how-terminal-dot"></div>
+            </div>
+            <span class="how-terminal-title" id="howTerminalTitle">install.sh</span>
+            <div class="how-terminal-status">
+              <div class="how-terminal-status-dot"></div>
+              connected
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="how-terminal-body">
+
+            <!-- Screen 0: Install -->
+            <div class="how-screen active" id="howScreen0">
+              <span class="t-line"><span class="t-prompt">~ $ </span><span class="t-cmd">pip install openfinance</span></span>
+              <span class="t-line t-muted">Collecting openfinance...</span>
+              <span class="t-line t-muted">  Downloading openfinance-2.4.1.tar.gz</span>
+              <span class="t-line t-muted">Installing collected packages: openfinance</span>
+              <span class="t-line t-success">✓ Successfully installed openfinance-2.4.1</span>
+              <span class="t-line"> </span>
+              <span class="t-line"><span class="t-prompt">~ $ </span><span class="t-cmd">python -c "import openfinance; print(openfinance.__version__)"</span></span>
+              <span class="t-line t-val">2.4.1</span>
+              <span class="t-line"> </span>
+              <span class="t-line"><span class="t-prompt">~ $ </span><span class="t-cursor"></span></span>
+            </div>
+
+            <!-- Screen 1: Auth -->
+            <div class="how-screen" id="howScreen1">
+              <span class="t-line"><span class="t-prompt">~ $ </span><span class="t-cmd">python</span></span>
+              <span class="t-line t-muted">Python 3.12.0 · OpenFinance SDK 2.4.1</span>
+              <span class="t-line"> </span>
+              <span class="t-line"><span class="t-prompt">>>> </span><span class="t-key">from </span><span class="t-cmd">openfinance </span><span class="t-key">import </span><span class="t-cmd">Client</span></span>
+              <span class="t-line"><span class="t-prompt">>>> </span><span class="t-cmd">client = Client(</span><span class="t-key">api_key</span><span class="t-cmd">=</span><span class="t-str">"of_live_..."</span><span class="t-cmd">)</span></span>
+              <span class="t-line"> </span>
+              <span class="t-line t-success">✓ Authenticated · live mode</span>
+              <span class="t-line"><span class="t-val">  Connected: </span><span class="t-muted">equities · crypto · forex · derivatives</span></span>
+              <span class="t-line"><span class="t-val">  Exchanges: </span><span class="t-muted">NYSE · BINANCE · LMAX · NSE · +38</span></span>
+              <span class="t-line"><span class="t-val">  Latency:   </span><span class="t-num">12ms</span></span>
+              <span class="t-line"> </span>
+              <span class="t-line"><span class="t-prompt">>>> </span><span class="t-cursor"></span></span>
+            </div>
+
+            <!-- Screen 2: Trade -->
+            <div class="how-screen" id="howScreen2">
+              <span class="t-line"><span class="t-prompt">>>> </span><span class="t-cmd">order = client.trade(</span></span>
+              <span class="t-line"><span class="t-prompt">...   </span><span class="t-key">symbol</span><span class="t-cmd">=</span><span class="t-str">"BTC"</span><span class="t-cmd">,</span></span>
+              <span class="t-line"><span class="t-prompt">...   </span><span class="t-key">side</span><span class="t-cmd">=</span><span class="t-str">"buy"</span><span class="t-cmd">,</span></span>
+              <span class="t-line"><span class="t-prompt">...   </span><span class="t-key">qty</span><span class="t-cmd">=</span><span class="t-num">0.5</span></span>
+              <span class="t-line"><span class="t-prompt">... </span><span class="t-cmd">)</span></span>
+              <span class="t-line"> </span>
+              <div class="t-progress-wrap"><div class="t-progress-bar" id="howProgressBar"></div></div>
+              <span class="t-line"> </span>
+              <span class="t-line t-success">✓ Order filled · 48ms</span>
+              <span class="t-line"><span class="t-val">  id:        </span><span class="t-muted">ord_8x2k9f</span></span>
+              <span class="t-line"><span class="t-val">  avg_price: </span><span class="t-num">$97,241.50</span></span>
+              <span class="t-line"><span class="t-val">  status:    </span><span class="t-str">filled</span></span>
+              <span class="t-line"><span class="t-prompt">>>> </span><span class="t-cursor"></span></span>
+            </div>
+
+          </div>
+
+          <!-- Pip dots -->
+          <div class="how-step-counter">
+            <div class="how-step-pip active" data-pip="0"></div>
+            <div class="how-step-pip" data-pip="1"></div>
+            <div class="how-step-pip" data-pip="2"></div>
+          </div>
+          <div style="height:16px;"></div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+function initHowItWorks() {
+  const steps     = document.querySelectorAll('.how-step');
+  const screens   = document.querySelectorAll('.how-screen');
+  const pips      = document.querySelectorAll('.how-step-pip');
+  const progLine  = document.getElementById('howProgressLine');
+  const titleEl   = document.getElementById('howTerminalTitle');
+  const titles    = ['install.sh', 'auth.py', 'trade.py'];
+  let current     = 0;
+  let progBarDone = false;
+
+  function activate(idx) {
+    if (idx === current && steps[idx].classList.contains('active')) return;
+    current = idx;
+
+    steps.forEach((s, i) => s.classList.toggle('active', i === idx));
+    screens.forEach((s, i) => s.classList.toggle('active', i === idx));
+    pips.forEach((p, i) => p.classList.toggle('active', i === idx));
+    if (titleEl) titleEl.textContent = titles[idx];
+
+    // Progress line height
+    if (progLine) {
+      const pct = idx === 0 ? 0 : idx === 1 ? 50 : 100;
+      progLine.style.height = pct + '%';
+    }
+
+    // Trigger progress bar on step 3
+    if (idx === 2 && !progBarDone) {
+      progBarDone = true;
+      setTimeout(() => {
+        const bar = document.getElementById('howProgressBar');
+        if (bar) bar.classList.add('run');
+      }, 300);
+    }
+  }
+
+  // Click on steps
+  steps.forEach((step, i) => {
+    step.addEventListener('click', () => activate(i));
+  });
+
+  // Click on pips
+  pips.forEach((pip, i) => {
+    pip.addEventListener('click', () => activate(i));
+  });
+
+  // Scroll-driven activation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = parseInt(entry.target.dataset.step);
+        activate(idx);
+      }
+    });
+  }, {
+    threshold: 0.5,
+    rootMargin: '0px 0px -20% 0px'
+  });
+
+  steps.forEach(step => observer.observe(step));
+
+  // Copy buttons
+  document.querySelectorAll('.how-step-code').forEach(el => {
+    el.addEventListener('click', () => {
+      const text = el.querySelector('span').textContent;
+      navigator.clipboard?.writeText(text).catch(() => {});
+      const icon = el.querySelector('.copy-icon');
+      if (icon) {
+        icon.style.color = 'var(--accent)';
+        setTimeout(() => icon.style.color = '', 1000);
+      }
+    });
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHowItWorks);
+} else {
+  initHowItWorks();
+}
+</script>

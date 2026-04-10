@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenFinance — Every Market. One API.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="global.css">
+</head>
+<body>
+
+<div data-include="sections/nav.html"></div>
+<div data-include="sections/hero.html"></div>
+<div data-include="sections/usecases.html"></div>
+<div data-include="sections/capabilities.html"></div>
+<div data-include="sections/how-it-works.html"></div>
+<div data-include="sections/faq.html"></div>
+<div data-include="sections/footer.html"></div>
+
+<script>
+  // Load all section partials, then init scroll reveals
+  function injectHTML(el, html) {
+    el.outerHTML = html;
+  }
+
+  function runScripts(container) {
+    container.querySelectorAll('script').forEach(oldScript => {
+      const newScript = document.createElement('script');
+      newScript.textContent = oldScript.textContent;
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+  }
+
+  const includes = document.querySelectorAll('[data-include]');
+  const promises = Array.from(includes).map(el =>
+    fetch(el.dataset.include)
+      .then(r => r.text())
+      .then(html => {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        el.replaceWith(tmp);
+        runScripts(tmp);
+      })
+  );
+
+  Promise.all(promises).then(() => {
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+  });
+</script>
+
+</body>
+</html>

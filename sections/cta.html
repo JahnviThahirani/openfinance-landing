@@ -1,0 +1,69 @@
+<style>
+  .final-cta {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: var(--section-gap) 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .final-cta h2 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 3.6vw, 45px);
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    letter-spacing: -2px;
+    line-height: 1.0;
+  }
+
+  .final-cta h2 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .final-cta p {
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+
+  .final-cta-code {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--text-muted);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 16px 32px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .final-cta-code:hover {
+    border-color: var(--accent-glow);
+    color: var(--accent);
+  }
+
+  .final-cta-code .dollar { color: var(--text-muted); margin-right: 4px; }
+  .final-cta-code .cmd   { color: var(--text-secondary); }
+</style>
+
+<section class="final-cta">
+  <h2 class="reveal">Ship your first trade <em>tonight.</em></h2>
+  <p class="reveal">Free tier. No credit card. No sales call.<br>Just an API key and every market on earth.</p>
+  <div class="reveal">
+    <a href="#" class="btn-primary" style="font-size:16px; padding: 18px 40px;">Get Your API Key</a>
+  </div>
+  <div class="final-cta-code reveal">
+    <span class="dollar">$</span>
+    <span class="cmd">pip install openfinance</span>
+  </div>
+</section>

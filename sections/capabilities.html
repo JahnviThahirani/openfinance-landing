@@ -1,0 +1,1079 @@
+<style>
+  /* ── Section ── */
+  .cap-section {
+    position: relative;
+    z-index: 1;
+    padding: var(--section-gap) 48px 0;
+    background: var(--bg);
+  }
+
+  .cap-header {
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .cap-header .section-label { display: inline-block; margin-bottom: 12px; }
+
+  .cap-header .section-title {
+    max-width: none;
+    white-space: nowrap;
+    margin: 0 auto 20px;
+  }
+
+  .cap-header .section-desc {
+    max-width: 520px;
+    margin: 0 auto;
+    margin-bottom: 0;
+  }
+
+  /* ── Carousel wrapper ── */
+  .cap-carousel-wrap {
+    /* Break out of section padding so track goes edge to edge */
+    margin-left: -48px;
+    margin-right: -48px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  /* Arrow buttons */
+  .cap-arrows {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+    margin-bottom: 0;
+  }
+
+  .cap-arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text-primary);
+    flex-shrink: 0;
+  }
+
+  .cap-arrow:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-highlight);
+  }
+
+  .cap-arrow svg { width: 14px; height: 14px; }
+
+  /* Scrollable track — padding set by JS to match header left edge */
+  .cap-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding: 8px 48px 24px;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cap-track::-webkit-scrollbar { display: none; }
+  .cap-track.grabbing { cursor: grabbing; }
+
+  /* Fade right edge only — hints more cards exist */
+  .cap-carousel-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 24px;
+    right: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
+  }
+
+  /* ── Card ── */
+  .cap-card {
+    flex-shrink: 0;
+    width: 422px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .cap-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  /* Card text area */
+  .cap-card-body {
+    padding: 28px 28px 20px;
+    flex-shrink: 0;
+  }
+
+  .cap-card-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    line-height: 1.15;
+  }
+
+  .cap-card-desc {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Visual area — blends into card */
+  .cap-card-visual {
+    flex: 1;
+    position: relative;
+    min-height: 305px;
+    overflow: hidden;
+    margin: 0 12px 12px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* CTA badge — sits bottom right of card, blending in */
+  .cap-card-cta {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.15s;
+    white-space: nowrap;
+  }
+
+  .cap-card-cta:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+  .cap-card-cta svg {
+    width: 11px; height: 11px;
+    opacity: 0.5;
+  }
+
+  /* ── Card visual contents ── */
+
+  /* Leverage — candlestick chart */
+  .vis-leverage {
+    width: 100%; height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .candle-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 18px;
+  }
+
+  .candle-wick {
+    width: 1.5px;
+    background: var(--border-highlight);
+    border-radius: 1px;
+  }
+
+  .candle-body {
+    border-radius: 3px;
+    height: 100%;
+  }
+
+  .candle-body.up { background: var(--accent); }
+  .candle-body.down { background: var(--red); opacity: 0.7; }
+
+  /* Leverage badge */
+  .leverage-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 6px;
+  }
+
+  /* Custom UI — dashboard mockup */
+  .vis-dashboard {
+    width: calc(100% - 24px);
+    margin: 12px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .dash-bar {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .dash-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .dash-body {
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .dash-tile {
+    background: var(--bg-elevated);
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    padding: 10px;
+  }
+
+  .dash-tile-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .dash-tile-val {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .dash-tile-val.up { color: var(--accent); }
+  .dash-tile-val.down { color: var(--red); }
+
+  /* DeFi yields — protocol rows */
+  .vis-defi {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .defi-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+
+  .defi-protocol {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .defi-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 800;
+  }
+
+  .defi-name {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .defi-apy {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* Instant accounts — form mockup */
+  .vis-account {
+    width: calc(100% - 24px);
+    margin: 12px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .acc-title {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .acc-field {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .acc-btn {
+    width: 100%;
+    background: var(--text-primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .acc-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    justify-content: center;
+  }
+
+  .acc-pip { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+
+  .acc-ready {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+  }
+
+  /* Virtual accounts — card mockup */
+  .vis-virtual {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .bank-card {
+    width: 100%;
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bank-card.us {
+    background: linear-gradient(135deg, #0d0f14 0%, #1e2130 100%);
+  }
+
+  .bank-card.eu {
+    background: linear-gradient(135deg, #1a3a6e 0%, #2563eb 100%);
+  }
+
+  .bank-card-flag {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .bank-card-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+  }
+
+  .bank-card-label {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Credit card visual */
+  .vis-credit {
+    width: 100%;
+    padding: 16px 16px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .credit-card {
+    width: 100%;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0d0f14 0%, #2a2e45 100%);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .credit-chip {
+    width: 28px; height: 22px;
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .credit-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .credit-name {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .credit-logo {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .credit-glow {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.15;
+    filter: blur(20px);
+  }
+
+  /* Global equities — market rows */
+  .vis-equities {
+    width: 100%;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .eq-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+
+  .eq-ticker {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .eq-exchange {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .eq-price {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .eq-price.up { color: var(--accent); }
+  .eq-price.dn { color: var(--red); }
+
+  /* Multiple brokers — connection diagram */
+  .vis-brokers {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .broker-center {
+    background: var(--text-primary);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .broker-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .broker-pill {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .broker-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* Derivatives — options table */
+  .vis-derivatives {
+    width: 100%;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 14px;
+    width: calc(100% - 28px);
+  }
+
+  .deriv-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    background: var(--bg-card);
+    padding: 7px 10px;
+    gap: 4px;
+  }
+
+  .deriv-col {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .deriv-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    background: #fff;
+    padding: 8px 10px;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .deriv-cell {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .deriv-cell.call { color: var(--accent); font-weight: 600; }
+  .deriv-cell.put  { color: var(--red); font-weight: 600; }
+
+  /* Chart mini SVG reused across cards */
+  .mini-chart-wrap {
+    padding: 8px 16px;
+    width: 100%;
+  }
+
+  @media (max-width: 960px) {
+    .cap-section { padding: 80px 24px; }
+    .cap-carousel-wrap { margin-left: -24px; margin-right: -24px; }
+    .cap-track { padding: 8px 24px 24px; }
+    .cap-card { width: 320px; }
+  }
+
+  @media (max-width: 768px) {
+    .cap-section { padding: 60px 20px; }
+    .cap-carousel-wrap { margin-left: -20px; margin-right: -20px; }
+    .cap-track { padding: 8px 20px 20px; gap: 12px; }
+    .cap-card { width: 280px; min-height: 260px; }
+    .cap-card-body { padding: 20px 20px 0; }
+    .cap-card-title { font-size: 14px; }
+    .cap-card-desc { font-size: 12px; }
+    .cap-arrows { gap: 6px; }
+    .cap-arrow { width: 34px; height: 34px; }
+  }
+
+  @media (max-width: 480px) {
+    .cap-section { padding: 48px 16px; }
+    .cap-carousel-wrap { margin-left: -16px; margin-right: -16px; }
+    .cap-track { padding: 8px 16px 20px; }
+    .cap-card { width: calc(100vw - 64px); min-height: 240px; }
+    .section-title { letter-spacing: -1px; }
+  }
+</style>
+
+<section class="cap-section" id="capabilities">
+  <div class="cap-header">
+    <div class="section-label reveal">Capabilities</div>
+    <h2 class="section-title reveal">Every market built in. One API.</h2>
+    <p class="section-desc reveal">
+      Accounts, credit, trading, leverage, DeFi, and derivatives — reimagine trading.
+    </p>
+  </div>
+
+  <div class="cap-carousel-wrap reveal">
+    <div class="cap-track" id="capTrack">
+
+      <!-- Card 1: Leverage trading -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">Leverage trading</div>
+          <div class="cap-card-desc">Trade crypto and stocks with up to 10x leverage. Built-in risk controls and liquidation protection.</div>
+        </div>
+        <div class="cap-card-visual">
+          <div class="vis-leverage">
+            <div class="candle-row"><div class="candle-wick" style="height:28px"></div><div class="candle-body up" style="width:18px"></div><div class="candle-wick" style="height:10px"></div></div>
+            <div class="candle-row"><div class="candle-wick" style="height:16px"></div><div class="candle-body down" style="width:14px"></div><div class="candle-wick" style="height:20px"></div></div>
+            <div class="candle-row"><div class="candle-wick" style="height:20px"></div><div class="candle-body up" style="width:22px"></div><div class="candle-wick" style="height:8px"></div></div>
+            <div class="candle-row"><div class="candle-wick" style="height:10px"></div><div class="candle-body up" style="width:30px"></div><div class="candle-wick" style="height:12px"></div></div>
+            <div class="candle-row"><div class="candle-wick" style="height:14px"></div><div class="candle-body down" style="width:16px"></div><div class="candle-wick" style="height:22px"></div></div>
+            <div class="candle-row"><div class="candle-wick" style="height:8px"></div><div class="candle-body up" style="width:26px"></div><div class="candle-wick" style="height:14px"></div></div>
+            <svg style="position:absolute;left:0;right:0;bottom:0;width:100%;height:40px;opacity:0.3" viewBox="0 0 280 40" preserveAspectRatio="none"><polyline points="0,30 40,25 80,18 120,22 160,12 200,8 240,4 280,2" stroke="#00b87a" stroke-width="2" fill="none"/></svg>
+          </div>
+          <div class="leverage-badge">10×</div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Card 2: Custom UI -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">Custom UI</div>
+          <div class="cap-card-desc">Build your own trading dashboard, terminal, or mobile app. Your charts, your layout, your edge.</div>
+        </div>
+        <div class="cap-card-visual" style="padding:0; align-items:flex-start;">
+          <div class="vis-dashboard" style="margin:0;width:100%;border-radius:0;border:none;box-shadow:none;">
+            <div class="dash-bar">
+              <div class="dash-dot" style="background:#ff5f57"></div>
+              <div class="dash-dot" style="background:#febc2e"></div>
+              <div class="dash-dot" style="background:#28c840"></div>
+            </div>
+            <div class="dash-body">
+              <div class="dash-tile"><div class="dash-tile-label">BTC/USD</div><div class="dash-tile-val up">$97,241</div></div>
+              <div class="dash-tile"><div class="dash-tile-label">P&L</div><div class="dash-tile-val up">+$4,821</div></div>
+              <div class="dash-tile"><div class="dash-tile-label">ETH/USD</div><div class="dash-tile-val down">$3,891</div></div>
+              <div class="dash-tile"><div class="dash-tile-label">Margin</div><div class="dash-tile-val">72%</div></div>
+            </div>
+            <div style="padding:0 12px 12px;">
+              <svg width="100%" height="50" viewBox="0 0 260 50" fill="none"><polyline points="0,40 30,35 60,28 90,32 120,18 150,22 180,10 210,14 240,6 260,4" stroke="#00b87a" stroke-width="1.8" fill="none"/><polyline points="0,45 60,42 120,38 180,35 260,30" stroke="#e2e4e9" stroke-width="1.2" fill="none"/></svg>
+            </div>
+          </div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Card 3: DeFi yields -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">DeFi yields</div>
+          <div class="cap-card-desc">Deposit into Aave, Compound, Morpho — earn yield without managing wallets or gas.</div>
+        </div>
+        <div class="cap-card-visual">
+          <div class="vis-defi">
+            <div class="defi-row">
+              <div class="defi-protocol">
+                <div class="defi-icon" style="background:#b6509e18;color:#b6509e;">Aa</div>
+                <div class="defi-name">Aave</div>
+              </div>
+              <div class="defi-apy">4.82% APY</div>
+            </div>
+            <div class="defi-row">
+              <div class="defi-protocol">
+                <div class="defi-icon" style="background:#00d39518;color:#00d395;">Co</div>
+                <div class="defi-name">Compound</div>
+              </div>
+              <div class="defi-apy">3.94% APY</div>
+            </div>
+            <div class="defi-row">
+              <div class="defi-protocol">
+                <div class="defi-icon" style="background:#2470ff18;color:#2470ff;">Mo</div>
+                <div class="defi-name">Morpho</div>
+              </div>
+              <div class="defi-apy">6.21% APY</div>
+            </div>
+          </div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Card 4: Instant accounts -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">Instant accounts</div>
+          <div class="cap-card-desc">Open a funded trading account in seconds. Ready to trade the moment you sign up.</div>
+        </div>
+        <div class="cap-card-visual">
+          <div class="vis-account">
+            <div class="acc-title">Open your account</div>
+            <div class="acc-field">Full name</div>
+            <div class="acc-field">Email address</div>
+            <div class="acc-btn">Create account →</div>
+            <div class="acc-badge">
+              <div class="acc-pip"></div>
+              <div class="acc-ready">Ready to trade in ~8 seconds</div>
+            </div>
+          </div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Card 5: Virtual US/EUR accounts -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">Virtual US/EUR accounts</div>
+          <div class="cap-card-desc">Get a US or European bank account instantly. Hold, send, and receive USD or EUR.</div>
+        </div>
+        <div class="cap-card-visual">
+          <div class="vis-virtual">
+            <div class="bank-card us">
+              <div class="bank-card-flag">🇺🇸</div>
+              <div class="bank-card-num">•••• •••• •••• 4291</div>
+              <div class="bank-card-label">USD · Routing 021000021</div>
+            </div>
+            <div class="bank-card eu">
+              <div class="bank-card-flag">🇪🇺</div>
+              <div class="bank-card-num">DE89 •••• •••• •••• 3701</div>
+              <div class="bank-card-label">EUR · IBAN · SWIFT</div>
+            </div>
+          </div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Card 6: Credit card -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">Credit card</div>
+          <div class="cap-card-desc">Launch a credit card linked to your account. Spend your portfolio. Earn on idle capital.</div>
+        </div>
+        <div class="cap-card-visual">
+          <div class="vis-credit">
+            <div class="credit-card">
+              <div class="credit-chip"></div>
+              <div class="credit-num">•••• •••• •••• 8821</div>
+              <div class="credit-name">OpenFinance Member</div>
+              <div class="credit-logo">OF</div>
+              <div class="credit-glow"></div>
+            </div>
+            <div style="display:flex;gap:16px;width:100%;">
+              <div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;">
+                <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);margin-bottom:2px;">CASHBACK</div>
+                <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--accent);">2.5%</div>
+              </div>
+              <div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;">
+                <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);margin-bottom:2px;">YIELD</div>
+                <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--accent);">4.8%</div>
+              </div>
+            </div>
+          </div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Card 7: Global equities -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">Global equities</div>
+          <div class="cap-card-desc">Buy and sell stocks on NYSE, NASDAQ, LSE, NSE, and 20+ exchanges worldwide.</div>
+        </div>
+        <div class="cap-card-visual">
+          <div class="vis-equities">
+            <div class="eq-row">
+              <div><div class="eq-ticker">AAPL</div><div class="eq-exchange">NASDAQ</div></div>
+              <div class="eq-price up">$247.31 ↑</div>
+            </div>
+            <div class="eq-row">
+              <div><div class="eq-ticker">RELIANCE</div><div class="eq-exchange">NSE</div></div>
+              <div class="eq-price up">₹2,841 ↑</div>
+            </div>
+            <div class="eq-row">
+              <div><div class="eq-ticker">SHEL</div><div class="eq-exchange">LSE</div></div>
+              <div class="eq-price dn">£28.12 ↓</div>
+            </div>
+            <div class="eq-row">
+              <div><div class="eq-ticker">TSLA</div><div class="eq-exchange">NASDAQ</div></div>
+              <div class="eq-price up">$182.40 ↑</div>
+            </div>
+          </div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Card 8: Multiple brokers -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">Multiple brokers</div>
+          <div class="cap-card-desc">Connect Alpaca, IBKR, and more. One API aggregates all your broker accounts into one.</div>
+        </div>
+        <div class="cap-card-visual">
+          <div class="vis-brokers">
+            <div class="broker-row">
+              <div class="broker-pill"><div class="broker-dot" style="background:#00b87a"></div>Alpaca</div>
+              <div class="broker-pill"><div class="broker-dot" style="background:#e03e3e"></div>IBKR</div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:0;flex-direction:column;gap:4px;">
+              <div style="width:1px;height:16px;background:var(--border)"></div>
+              <div class="broker-center">OpenFinance API</div>
+              <div style="width:1px;height:16px;background:var(--border)"></div>
+            </div>
+            <div class="broker-row">
+              <div class="broker-pill"><div class="broker-dot" style="background:#2563eb"></div>Schwab</div>
+              <div class="broker-pill"><div class="broker-dot" style="background:#d97706"></div>TD Ameritrade</div>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-align:center;margin-top:4px;">+ more coming soon</div>
+          </div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Card 9: Derivatives -->
+      <div class="cap-card">
+        <div class="cap-card-body">
+          <div class="cap-card-title">Derivatives</div>
+          <div class="cap-card-desc">Options, futures, and structured products with unified margin and risk reporting.</div>
+        </div>
+        <div class="cap-card-visual" style="padding:12px 0 0;">
+          <div class="vis-derivatives">
+            <div class="deriv-header">
+              <div class="deriv-col">Strike</div>
+              <div class="deriv-col">Type</div>
+              <div class="deriv-col">IV</div>
+              <div class="deriv-col">Premium</div>
+            </div>
+            <div class="deriv-row">
+              <div class="deriv-cell">$250</div>
+              <div class="deriv-cell call">CALL</div>
+              <div class="deriv-cell">42%</div>
+              <div class="deriv-cell">$3.20</div>
+            </div>
+            <div class="deriv-row">
+              <div class="deriv-cell">$245</div>
+              <div class="deriv-cell put">PUT</div>
+              <div class="deriv-cell">38%</div>
+              <div class="deriv-cell">$2.85</div>
+            </div>
+            <div class="deriv-row">
+              <div class="deriv-cell">$260</div>
+              <div class="deriv-cell call">CALL</div>
+              <div class="deriv-cell">45%</div>
+              <div class="deriv-cell">$1.60</div>
+            </div>
+          </div>
+          <a href="#" class="cap-card-cta">openfinance.tech <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+
+    </div><!-- /cap-track -->
+
+    <!-- Arrows -->
+    <div class="cap-arrows">
+      <button class="cap-arrow" id="capPrev" aria-label="Previous">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="cap-arrow" id="capNext" aria-label="Next">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+  </div><!-- /cap-carousel-wrap -->
+</section>
+
+<script>
+  function initCapabilities() {
+    const track = document.getElementById('capTrack');
+    const prevBtn = document.getElementById('capPrev');
+    const nextBtn = document.getElementById('capNext');
+    const header = document.querySelector('.cap-header');
+    if (!track) return;
+
+    // Match track padding to header's actual left edge — guaranteed to align
+    function alignTrack() {
+      if (!header) return;
+      const left = header.getBoundingClientRect().left;
+      track.style.paddingLeft = left + 'px';
+      track.style.paddingRight = left + 'px';
+    }
+
+    alignTrack();
+    window.addEventListener('resize', alignTrack);
+
+    const CARD_WIDTH = 422;
+    const GAP = 16;
+    const STEP = CARD_WIDTH + GAP;
+    const TOTAL_CARDS = track.querySelectorAll('.cap-card').length;
+
+    // How many whole cards fit in the visible track width
+    const visibleCards = Math.floor(track.offsetWidth / STEP);
+    // Last index where scrolling further would show card 9 as rightmost
+    const LAST_INDEX = TOTAL_CARDS - visibleCards - 1;
+
+    let currentIndex = 0;
+    let isSweeping = false;
+
+    // Always keep currentIndex in sync with actual scroll position
+    let scrollSyncTimer;
+    track.addEventListener('scroll', () => {
+      if (isSweeping) return;
+      clearTimeout(scrollSyncTimer);
+      scrollSyncTimer = setTimeout(() => {
+        currentIndex = Math.min(Math.max(Math.round(track.scrollLeft / STEP), 0), LAST_INDEX);
+      }, 100);
+    }, { passive: true });
+
+    function goTo(index) {
+      currentIndex = Math.min(Math.max(index, 0), LAST_INDEX);
+      track.scrollTo({ left: currentIndex * STEP, behavior: 'smooth' });
+    }
+
+    function sweepBackToStart() {
+      isSweeping = true;
+      nextBtn.disabled = true;
+      prevBtn.disabled = true;
+
+      // Use actual scroll position, not currentIndex, so trackpad scroll is handled correctly
+      let px = track.scrollLeft;
+
+      function step() {
+        if (px <= 0) {
+          track.scrollTo({ left: 0, behavior: 'instant' });
+          currentIndex = 0;
+          isSweeping = false;
+          nextBtn.disabled = false;
+          prevBtn.disabled = false;
+          return;
+        }
+        px = Math.max(px - STEP, 0);
+        track.scrollTo({ left: px, behavior: 'instant' });
+        setTimeout(step, 67); // ~10% slower than 61ms
+      }
+
+      setTimeout(step, 80);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (isSweeping) return;
+      if (currentIndex >= LAST_INDEX) {
+        sweepBackToStart();
+      } else {
+        goTo(currentIndex + 1);
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (isSweeping) return;
+      goTo(currentIndex - 1);
+    });
+
+    // Mouse drag
+    let isDown = false, startX, dragStartScroll;
+
+    track.addEventListener('mousedown', e => {
+      if (isSweeping) return;
+      isDown = true;
+      track.classList.add('grabbing');
+      startX = e.pageX - track.offsetLeft;
+      dragStartScroll = track.scrollLeft;
+    });
+
+    const endDrag = () => {
+      if (!isDown) return;
+      isDown = false;
+      track.classList.remove('grabbing');
+      const nearest = Math.min(Math.max(Math.round(track.scrollLeft / STEP), 0), LAST_INDEX);
+      currentIndex = nearest;
+      track.scrollTo({ left: nearest * STEP, behavior: 'smooth' });
+    };
+
+    track.addEventListener('mouseleave', endDrag);
+    track.addEventListener('mouseup', endDrag);
+
+    track.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      track.scrollLeft = dragStartScroll - (e.pageX - track.offsetLeft - startX) * 1.5;
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCapabilities);
+  } else {
+    initCapabilities();
+  }
+</script>

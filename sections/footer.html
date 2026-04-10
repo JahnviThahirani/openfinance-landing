@@ -1,0 +1,459 @@
+<style>
+  /*
+   * THE MECHANIC (from React source):
+   * 1. .cf-curtain = h-screen wrapper with clip-path — clips visibility to its bounds
+   * 2. .cf-footer = position:fixed; bottom:0 — sits UNDER everything, always rendered
+   * 3. As page scrolls to curtain, footer becomes visible through the clip window
+   * 4. GSAP scrubs elements relative to curtain's scroll position in the page
+   */
+
+  .cf-curtain {
+    position: relative;
+    height: 130vh;
+    width: 100%;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  .cf-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #0d0f14;
+    overflow: hidden;
+    z-index: 0; /* below page content, revealed only through curtain clip */
+  }
+
+  /* ── Aurora ── */
+  .cf-aurora {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw; height: 60vh;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%,
+      rgba(0,184,122,0.15) 0%, rgba(0,100,80,0.08) 40%, transparent 70%);
+    filter: blur(80px);
+    animation: cf-breathe 8s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes cf-breathe {
+    from { transform: translate(-50%,-50%) scale(1);    opacity: 0.6; }
+    to   { transform: translate(-50%,-50%) scale(1.12); opacity: 1;   }
+  }
+
+  /* ── Grid ── */
+  .cf-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-size: 60px 60px;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+  }
+
+  /* ── Giant bg text ── */
+  .cf-bg-text {
+    position: absolute;
+    bottom: -5vh;
+    left: 50%;
+    transform: translateX(-50%) translateY(10vh) scale(0.8);
+    font-family: var(--font-display);
+    font-size: 26vw;
+    font-weight: 800;
+    line-height: 0.75;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.05);
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    opacity: 0;
+  }
+
+  /* ── Marquee ── */
+  .cf-marquee-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    z-index: 10;
+    overflow: hidden;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(13,15,20,0.7);
+    backdrop-filter: blur(12px);
+    padding: 14px 0;
+    margin-top: 160px;
+    transform: rotate(-1.8deg) scaleX(1.05);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  .cf-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: cf-marquee 30s linear infinite;
+  }
+
+  @keyframes cf-marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .cf-marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 0 32px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+  }
+
+  .cf-marquee-dot { color: var(--accent); opacity: 0.7; }
+
+  /* ── Center — flex:1, mt-20 like original ── */
+  .cf-center {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 48px 20px;
+    margin-top: 0;
+    text-align: center;
+  }
+
+  .cf-headline {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 1.0;
+    margin-bottom: 48px;
+    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.45) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    transform: translateY(60px) scale(0.92);
+  }
+
+  .cf-headline em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent) 0%, #00e5a0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cf-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+
+  .cf-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .cf-btn-primary {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: #0d0f14;
+    background: var(--accent);
+    padding: 14px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .cf-btn-primary:hover {
+    background: #00e5a0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,184,122,0.35);
+  }
+
+  .cf-btn-secondary {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 14px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s;
+  }
+
+  .cf-btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  /* ── Bottom bar — slim, clean ── */
+  .cf-bottom {
+    position: relative;
+    z-index: 20;
+    width: 100%;
+    padding: 10px 48px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background: rgba(13,15,20,0.6);
+    backdrop-filter: blur(12px);
+  }
+
+  .cf-bottom-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .cf-bottom-links a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    text-decoration: none;
+    transition: color 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .cf-bottom-links a:hover { color: rgba(255,255,255,0.7); }
+
+  .cf-made-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    margin-right: 24px;
+  }
+
+  .cf-made-text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.3px;
+  }
+
+  .cf-made-sep {
+    color: rgba(255,255,255,0.15);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .cf-made-site {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.3px;
+  }
+
+  .cf-top-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: rgba(255,255,255,0.4);
+    flex-shrink: 0;
+  }
+
+  .cf-top-btn:hover { background: rgba(255,255,255,0.12); color: #fff; transform: translateY(-2px); }
+  .cf-top-btn svg { width: 14px; height: 14px; }
+
+  @media (max-width: 768px) {
+    .cf-curtain { height: 130vh; }
+    .cf-headline { font-size: clamp(36px, 7vw, 72px); letter-spacing: -2px; margin-bottom: 32px; }
+    .cf-bg-text { font-size: 38vw; }
+    .cf-marquee-wrap { margin-top: 120px; }
+    .cf-bottom { padding: 10px 24px; }
+    .cf-made-badge { margin-right: 12px; }
+  }
+
+  @media (max-width: 640px) {
+    .cf-curtain { height: 140vh; }
+    .cf-headline { font-size: clamp(30px, 8vw, 52px); letter-spacing: -1.5px; }
+    .cf-actions { flex-direction: column; align-items: center; width: 100%; }
+    .cf-btn-primary, .cf-btn-secondary { width: 80%; justify-content: center; }
+    .cf-marquee-item { font-size: 10px; gap: 20px; padding: 0 20px; }
+    .cf-bottom { flex-wrap: wrap; gap: 10px; padding: 10px 16px; }
+    .cf-made-badge { margin-right: 0; }
+    .cf-bg-text { font-size: 45vw; }
+  }
+
+  @media (max-width: 480px) {
+    .cf-headline { font-size: clamp(26px, 9vw, 42px); }
+    .cf-btn-primary, .cf-btn-secondary { width: 90%; padding: 12px 24px; font-size: 13px; }
+    .cf-bottom-links { gap: 16px; }
+    .cf-made-text, .cf-made-sep, .cf-made-site { font-size: 10px; }
+  }
+</style>
+
+<!-- Curtain: h-screen clip-path wrapper -->
+<div class="cf-curtain" id="cfCurtain">
+
+  <!-- Footer: fixed bottom-0, always rendered, clipped by curtain -->
+  <footer class="cf-footer" id="cfFooter">
+
+    <div class="cf-aurora"></div>
+    <div class="cf-grid"></div>
+    <div class="cf-bg-text" id="cfBgText">TRADE</div>
+
+    <!-- Marquee -->
+    <div class="cf-marquee-wrap">
+      <div class="cf-marquee-track">
+        <div class="cf-marquee-item">
+          Live Markets <span class="cf-marquee-dot">✦</span>
+          One API <span class="cf-marquee-dot">✦</span>
+          Trade Anything <span class="cf-marquee-dot">✦</span>
+          Prediction Parlays <span class="cf-marquee-dot">✦</span>
+        </div>
+        <div class="cf-marquee-item">
+          Live Markets <span class="cf-marquee-dot">✦</span>
+          One API <span class="cf-marquee-dot">✦</span>
+          Trade Anything <span class="cf-marquee-dot">✦</span>
+          Prediction Parlays <span class="cf-marquee-dot">✦</span>
+        </div>
+        <div class="cf-marquee-item">
+          Live Markets <span class="cf-marquee-dot">✦</span>
+          One API <span class="cf-marquee-dot">✦</span>
+          Trade Anything <span class="cf-marquee-dot">✦</span>
+          Prediction Parlays <span class="cf-marquee-dot">✦</span>
+        </div>
+        <div class="cf-marquee-item">
+          Live Markets <span class="cf-marquee-dot">✦</span>
+          One API <span class="cf-marquee-dot">✦</span>
+          Trade Anything <span class="cf-marquee-dot">✦</span>
+          Prediction Parlays <span class="cf-marquee-dot">✦</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center content -->
+    <div class="cf-center">
+      <h2 class="cf-headline" id="cfHeadline">
+        Ship your first <em>trade.</em>
+      </h2>
+      <div class="cf-links" id="cfLinks">
+        <div class="cf-actions">
+          <a href="#" class="cf-btn-primary">Get API Key — Free</a>
+          <a href="https://docs.openfinance.tech" class="cf-btn-secondary">Read the Docs →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="cf-bottom">
+      <ul class="cf-bottom-links">
+        <li><a href="https://docs.openfinance.tech">Docs</a></li>
+        <li><a href="#">GitHub</a></li>
+        <li><a href="#">Status</a></li>
+      </ul>
+      <div class="cf-made-badge">
+        <span class="cf-made-text">Built for traders</span>
+        <span class="cf-made-sep">·</span>
+        <span class="cf-made-site">openfinance.tech</span>
+      </div>
+      <button class="cf-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>
+      </button>
+    </div>
+
+  </footer>
+</div>
+
+<script>
+(function() {
+  function initFooter() {
+    const curtain  = document.getElementById('cfCurtain');
+    const bgText   = document.getElementById('cfBgText');
+    const headline = document.getElementById('cfHeadline');
+    const links    = document.getElementById('cfLinks');
+    if (!curtain) return;
+
+    function update() {
+      const rect = curtain.getBoundingClientRect();
+      const vh   = window.innerHeight;
+
+      // progress 0 = curtain top at viewport bottom, 1 = curtain top at viewport top
+      const raw      = 1 - rect.top / vh;
+      const progress = Math.min(Math.max(raw, 0), 1);
+
+      // bgText: scale 0.8→1, translateY 10vh→0, opacity 0→1
+      const bgScale = 0.8 + progress * 0.2;
+      const bgY     = (1 - progress) * 10;
+      bgText.style.transform = `translateX(-50%) translateY(${bgY}vh) scale(${bgScale})`;
+      bgText.style.opacity   = progress;
+
+      // headline: slightly delayed (starts at progress 0.2)
+      const hProg  = Math.min(Math.max((progress - 0.15) / 0.6, 0), 1);
+      const hScale = 0.92 + hProg * 0.08;
+      const hY     = (1 - hProg) * 60;
+      headline.style.transform = `translateY(${hY}px) scale(${hScale})`;
+      headline.style.opacity   = hProg;
+
+      // links: more delayed (starts at progress 0.35)
+      const lProg  = Math.min(Math.max((progress - 0.3) / 0.6, 0), 1);
+      const lScale = 0.95 + lProg * 0.05;
+      const lY     = (1 - lProg) * 40;
+      links.style.transform = `translateY(${lY}px) scale(${lScale})`;
+      links.style.opacity   = lProg;
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFooter);
+  } else {
+    initFooter();
+  }
+})();
+</script>
