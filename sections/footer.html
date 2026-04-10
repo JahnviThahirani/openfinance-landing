@@ -456,14 +456,29 @@
     initFooter();
   }
 
-  // Clamp scroll at the bottom — prevents rubber-band/overscroll revealing
-  // anything beyond the page end. No visual changes, just blocks over-scroll.
-  window.addEventListener('scroll', function() {
+  // Block overscroll bounce at the bottom on Mac Chrome (wheel events)
+  // and iOS Safari (touchmove events). preventDefault() must be called
+  // before the browser applies momentum — scroll events are too late.
+  window.addEventListener('wheel', function(e) {
+    if (e.deltaY <= 0) return; // scrolling up — never block
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    if (window.scrollY > maxScroll) {
-      window.scrollTo({ top: maxScroll, behavior: 'instant' });
-    }
+    const atBottom  = window.scrollY >= maxScroll - 1;
+    if (atBottom) e.preventDefault();
   }, { passive: false });
+
+  (function() {
+    var lastTouchY = 0;
+    window.addEventListener('touchstart', function(e) {
+      lastTouchY = e.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener('touchmove', function(e) {
+      var dy = lastTouchY - e.touches[0].clientY; // positive = scrolling down
+      lastTouchY = e.touches[0].clientY;
+      if (dy <= 0) return; // scrolling up — never block
+      var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (window.scrollY >= maxScroll - 1) e.preventDefault();
+    }, { passive: false });
+  })();
 
 })();
 </script>
