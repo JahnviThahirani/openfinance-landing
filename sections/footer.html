@@ -455,5 +455,15 @@
   } else {
     initFooter();
   }
+
+  // Clamp scroll at the bottom — prevents rubber-band/overscroll revealing
+  // anything beyond the page end. No visual changes, just blocks over-scroll.
+  window.addEventListener('scroll', function() {
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    if (window.scrollY > maxScroll) {
+      window.scrollTo({ top: maxScroll, behavior: 'instant' });
+    }
+  }, { passive: false });
+
 })();
 </script>
