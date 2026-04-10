@@ -563,8 +563,12 @@ function initHowItWorks() {
     pip.addEventListener('click', () => activate(i));
   });
 
-  // Scroll-driven activation
+  // Scroll-driven activation — works on both desktop (sticky visual) and mobile (stacked)
+  const isMobile = () => window.innerWidth <= 1100;
+
+  // Desktop: IntersectionObserver on steps (steps stay visible alongside terminal)
   const observer = new IntersectionObserver((entries) => {
+    if (isMobile()) return; // mobile uses scroll listener instead
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const idx = parseInt(entry.target.dataset.step);
@@ -577,6 +581,27 @@ function initHowItWorks() {
   });
 
   steps.forEach(step => observer.observe(step));
+
+  // Mobile: scroll listener — activate step based on which step has been scrolled past
+  function onScrollMobile() {
+    if (!isMobile()) return;
+    const stepEls = Array.from(steps);
+    const viewportMid = window.innerHeight * 0.55;
+
+    let activeIdx = 0;
+    stepEls.forEach((step, i) => {
+      const rect = step.getBoundingClientRect();
+      // Step is above the viewport midpoint — it's been scrolled past
+      if (rect.top < viewportMid) {
+        activeIdx = i;
+      }
+    });
+    if (activeIdx !== current) activate(activeIdx);
+  }
+
+  window.addEventListener('scroll', onScrollMobile, { passive: true });
+  // Also run once on load in case already scrolled
+  onScrollMobile();
 
   // Copy buttons
   document.querySelectorAll('.how-step-code').forEach(el => {
