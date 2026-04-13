@@ -476,7 +476,7 @@
       </p>
 
       <div class="hero-actions">
-        <a href="#" class="btn-primary" style="font-size:14px;padding:13px 28px;border-radius:10px;font-family:var(--font-body);font-weight:700;">Get Your API Key →</a>
+        <button id="heroApiKeyBtn" class="btn-primary" style="font-size:14px;padding:13px 28px;border-radius:10px;font-family:var(--font-body);font-weight:700;border:none;cursor:pointer;">Get Your API Key →</button>
         <a href="https://docs.openfinance.tech" class="btn-secondary" style="font-size:14px;padding:13px 24px;border-radius:10px;font-family:var(--font-body);font-weight:700;">Read the Docs</a>
       </div>
 
@@ -627,6 +627,262 @@
 
     </div>
   </div>
+
+<!-- ── API Key Modal ── -->
+<div id="apiKeyModal" class="akm-backdrop" aria-modal="true" role="dialog" aria-labelledby="akmTitle">
+  <div class="akm-card">
+
+    <!-- Close -->
+    <button class="akm-close" id="akmClose" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Top accent bar -->
+    <div class="akm-accent-bar"></div>
+
+    <!-- Icon -->
+    <div class="akm-icon-wrap">
+      <div class="akm-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Heading -->
+    <h2 class="akm-title" id="akmTitle">Your API key is one step away.</h2>
+    <p class="akm-sub">Sign in and deposit as little as <strong>$1</strong> to unlock access to every market on earth.</p>
+
+    <!-- Value props -->
+    <ul class="akm-props">
+      <li>
+        <span class="akm-prop-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        Instant API key — no waitlist, no calls
+      </li>
+      <li>
+        <span class="akm-prop-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        Access BTC, stocks, forex, oil & more
+      </li>
+      <li>
+        <span class="akm-prop-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        Start with $1 — scale when you're ready
+      </li>
+    </ul>
+
+    <!-- CTAs -->
+    <div class="akm-actions">
+      <button class="akm-btn-primary" id="akmSignIn">Sign In to Get Started</button>
+      <p class="akm-fine">Already have an account? <a href="#" id="akmLogin">Log in →</a></p>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ── Backdrop ── */
+  .akm-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(13,15,20,0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .akm-backdrop.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── Card ── */
+  .akm-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 36px 36px;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.04),
+      0 24px 64px rgba(0,0,0,0.14),
+      0 8px 24px rgba(0,0,0,0.08);
+    transform: translateY(16px) scale(0.97);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+  }
+
+  .akm-backdrop.open .akm-card {
+    transform: translateY(0) scale(1);
+  }
+
+  /* Top green accent line */
+  .akm-accent-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, #00e5a0 100%);
+    border-radius: 20px 20px 0 0;
+  }
+
+  /* Close button */
+  .akm-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .akm-close:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  /* Icon */
+  .akm-icon-wrap {
+    margin-bottom: 20px;
+  }
+
+  .akm-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: rgba(0,184,122,0.08);
+    border: 1px solid rgba(0,184,122,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+  }
+
+  /* Title */
+  .akm-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .akm-sub {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .akm-sub strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Value props */
+  .akm-props {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 16px;
+    background: var(--bg-elevated);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .akm-props li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .akm-prop-icon {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: rgba(0,184,122,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Actions */
+  .akm-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .akm-btn-primary {
+    width: 100%;
+    padding: 13px 24px;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: -0.1px;
+  }
+
+  .akm-btn-primary:hover {
+    background: #00c985;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,184,122,0.3);
+  }
+
+  .akm-fine {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .akm-fine a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .akm-fine a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .akm-card { padding: 32px 24px 28px; }
+    .akm-title { font-size: 19px; }
+  }
+</style>
+
 </section>
 
 <script>
@@ -715,4 +971,64 @@
   });
 
 })();
+
+  // ── API Key Modal ──────────────────────────────────────────────────────────
+  // SET THIS TO true AFTER PRIVY AUTH SYNC — modal will be skipped for signed-in users
+  const IS_SIGNED_IN = false;
+
+  (function() {
+    const btn     = document.getElementById('heroApiKeyBtn');
+    const modal   = document.getElementById('apiKeyModal');
+    const closeBtn = document.getElementById('akmClose');
+    const signInBtn = document.getElementById('akmSignIn');
+    const loginBtn  = document.getElementById('akmLogin');
+    if (!btn || !modal) return;
+
+    function openModal() {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    btn.addEventListener('click', () => {
+      if (IS_SIGNED_IN) {
+        // TODO: replace with signed-in flow after Privy sync
+        return;
+      }
+      openModal();
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Sign in button — replace href with Privy auth trigger after sync
+    if (signInBtn) {
+      signInBtn.addEventListener('click', () => {
+        // TODO: trigger Privy sign-in flow
+        console.log('Privy sign-in trigger goes here');
+      });
+    }
+
+    if (loginBtn) {
+      loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // TODO: trigger Privy login flow
+        console.log('Privy login trigger goes here');
+      });
+    }
+  })();
+
 </script>
