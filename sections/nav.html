@@ -14,7 +14,7 @@
     -webkit-backdrop-filter: blur(20px);
     /* No border by default — outline expands in from pill on scroll */
     border-bottom: 1px solid transparent;
-    transition: border-color 1.2s ease;
+    transition: border-color 0.8s ease;
   }
 
   nav.scrolled {
@@ -84,10 +84,10 @@
     border-radius: 100px;
     padding: 5px;
     background: var(--bg-elevated);
-    transition: border-radius 1.2s cubic-bezier(0.22, 1, 0.36, 1),
-                border-color 1.2s ease,
-                background 1.2s ease,
-                padding 1.2s ease;
+    transition: border-radius 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.8s ease,
+                background 0.8s ease,
+                padding 0.8s ease;
   }
 
   /* When scrolled — pill expands to full-width nav bar feel */
@@ -144,19 +144,36 @@
     font-size: 14px;
     font-weight: 600;
     color: #fff;
-    background: var(--text-primary);
+    background: #0d0f14;
     text-decoration: none;
     padding: 8px 20px;
     border-radius: 8px;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
     white-space: nowrap;
     letter-spacing: -0.2px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.08) inset,
+      0 2px 8px rgba(0,0,0,0.25),
+      0 0 16px rgba(0,0,0,0.15);
+  }
+
+  .nav-cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 60%);
+    pointer-events: none;
   }
 
   .nav-cta:hover {
     background: #1a1d26;
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.1) inset,
+      0 4px 16px rgba(0,0,0,0.3),
+      0 0 28px rgba(0,0,0,0.2);
   }
 
   /* ── Mobile ── */
@@ -167,7 +184,7 @@
       height: 64px;
     }
     .nav-center { display: none; }
-    .nav-signin { display: none; }
+    .nav-signin { display: none !important; }
   }
 
   @media (max-width: 480px) {
@@ -307,8 +324,7 @@
   </div>
 
   <div class="nav-actions">
-    <a href="#" class="nav-signin">Sign in</a>
-    <a href="#" class="nav-cta">Get API Key</a>
+    <a href="#" class="nav-cta">Sign In</a>
     <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -324,7 +340,7 @@
   <a href="#faq">FAQ</a>
   <div class="nav-drawer-cta">
     <a href="#" class="drawer-signin">Sign in</a>
-    <a href="#" class="drawer-getkey">Get API Key</a>
+    <a href="#" class="drawer-getkey">Sign In</a>
   </div>
 </div>
 
