@@ -10,7 +10,6 @@
     overflow: hidden;
   }
 
-  /* Canvas — full hero background */
   #heroCanvas {
     position: absolute;
     inset: 0;
@@ -24,27 +23,68 @@
     max-width: 1280px;
     margin: 0 auto;
     width: 100%;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 60fr 40fr;
+    gap: 64px;
     align-items: center;
-    text-align: center;
   }
 
-  /* ── Heading ── */
+  /* ── LEFT COLUMN ── */
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,184,122,0.08);
+    border: 1px solid rgba(0,184,122,0.2);
+    border-radius: 100px;
+    padding: 6px 14px 6px 8px;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: appear 0.5s ease-out 0.05s forwards;
+  }
+
+  .hero-eyebrow-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse-green 2s ease infinite;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,184,122,0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(0,184,122,0); }
+  }
+
+  .hero-eyebrow-text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
   .hero h1 {
     font-family: var(--font-display);
-    font-size: clamp(36px, 4.2vw, 58px);
-    line-height: 1.1;
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.08;
     font-weight: 800;
-    letter-spacing: -2px;
-    margin-bottom: 28px;
+    letter-spacing: -2.5px;
+    margin-bottom: 20px;
     color: var(--text-primary);
   }
 
   .hero-line {
     display: block;
     overflow: hidden;
-    line-height: 1.18;
+    line-height: 1.15;
   }
 
   .hero-line-inner {
@@ -54,8 +94,9 @@
     animation: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
-  .hero-line:nth-child(1) .hero-line-inner { animation-delay: 0.05s; }
-  .hero-line:nth-child(2) .hero-line-inner { animation-delay: 0.2s; }
+  .hero-line:nth-child(1) .hero-line-inner { animation-delay: 0.1s; }
+  .hero-line:nth-child(2) .hero-line-inner { animation-delay: 0.22s; }
+  .hero-line:nth-child(3) .hero-line-inner { animation-delay: 0.34s; }
 
   @keyframes slideUp {
     from { transform: translateY(110%); opacity: 0; }
@@ -67,33 +108,40 @@
     color: var(--accent);
   }
 
-  /* ── Sub text ── */
-  .hero-sub {
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    max-width: 460px;
-    line-height: 1.65;
-    margin-bottom: 8px;
+  .hero-sub-label {
+    font-family: var(--font-display);
+    font-size: clamp(17px, 1.8vw, 22px);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    margin-bottom: 14px;
     opacity: 0;
-    animation: appear 0.6s ease-out 0.35s forwards;
+    animation: appear 0.6s ease-out 0.45s forwards;
   }
 
-  .hero-sub.body {
-    font-size: 14px;
+  .hero-body {
+    font-size: 15px;
     font-weight: 400;
-    color: var(--text-muted);
-    margin-bottom: 40px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    max-width: 480px;
+    opacity: 0;
+    animation: appear 0.6s ease-out 0.55s forwards;
   }
 
-  /* ── Actions ── */
+  .hero-body strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
   .hero-actions {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 12px;
+    margin-bottom: 40px;
     opacity: 0;
-    animation: appear 0.6s ease-out 0.5s forwards;
+    animation: appear 0.6s ease-out 0.65s forwards;
   }
 
   @keyframes appear {
@@ -101,25 +149,318 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  @media (max-width: 960px) {
-    .hero { padding: 100px 24px 60px; min-height: auto; }
-    .hero h1 { font-size: clamp(32px, 7vw, 48px); letter-spacing: -1.5px; }
-    .hero-actions { flex-direction: column; align-items: center; }
+  .hero-available {
+    opacity: 0;
+    animation: appear 0.6s ease-out 0.78s forwards;
+  }
+
+  .hero-available-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .hero-available-pills {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 13px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: all 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    cursor: default;
+  }
+
+  .hero-pill:hover {
+    border-color: var(--border-highlight);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+  }
+
+  .hero-pill-icon {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── RIGHT COLUMN ── */
+  .hero-right {
+    position: relative;
+    opacity: 0;
+    animation: appear 0.8s ease-out 0.3s forwards;
+  }
+
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    inset: -40px;
+    background: radial-gradient(ellipse at 50% 50%, rgba(0,184,122,0.1) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-demo-window {
+    position: relative;
+    z-index: 1;
+    background: #0d0f14;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.08),
+      0 32px 80px rgba(0,0,0,0.2),
+      0 0 60px rgba(0,184,122,0.07);
+    aspect-ratio: 16/10;
+  }
+
+  .demo-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .demo-dots { display: flex; gap: 6px; }
+  .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .demo-dot:nth-child(1) { background: #ff5f57; }
+  .demo-dot:nth-child(2) { background: #febc2e; }
+  .demo-dot:nth-child(3) { background: #28c840; }
+
+  .demo-bar-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.28);
+    flex: 1;
+    text-align: center;
+  }
+
+  .demo-live {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: rgba(0,230,160,0.7);
+  }
+
+  .demo-live-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #00e5a0;
+    animation: pulse-green 1.5s ease infinite;
+  }
+
+  .demo-body {
+    width: 100%;
+    height: calc(100% - 38px);
+    position: relative;
+    overflow: hidden;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .demo-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-size: 40px 40px;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+  }
+
+  .demo-ticker-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 8px 12px;
+    transition: background 0.4s;
+  }
+
+  .demo-ticker-row:hover { background: rgba(255,255,255,0.07); }
+
+  .demo-ticker-symbol {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.5px;
+  }
+
+  .demo-ticker-exchange {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+    margin-top: 1px;
+  }
+
+  .demo-ticker-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .demo-ticker-price {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+
+  .demo-ticker-price.up { color: #00e5a0; }
+  .demo-ticker-price.dn { color: #ff5f57; }
+
+  .demo-ticker-change {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .demo-ticker-change.up { background: rgba(0,229,160,0.12); color: #00e5a0; }
+  .demo-ticker-change.dn { background: rgba(255,95,87,0.12); color: #ff5f57; }
+
+  /* Chart area */
+  .demo-chart-area {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    margin-top: 4px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .demo-chart-area svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .demo-placeholder-label {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: rgba(255,255,255,0.15);
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  /* Floating badges */
+  .hero-badge {
+    position: absolute;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    z-index: 2;
+    white-space: nowrap;
+  }
+
+  .hero-badge-left {
+    left: -32px;
+    top: 28%;
+    animation: floatY 4s ease-in-out infinite;
+  }
+
+  .hero-badge-bottom {
+    right: -28px;
+    bottom: 22%;
+    animation: floatY 4s ease-in-out 1.8s infinite;
+  }
+
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+
+  .hero-badge-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .hero-badge-title {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: block;
+    line-height: 1.2;
+  }
+
+  .hero-badge-sub {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--text-muted);
+    display: block;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1100px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+    .hero-left { align-items: center; text-align: center; }
+    .hero-body { text-align: center; }
+    .hero-available-pills { justify-content: center; }
+    .hero-actions { justify-content: center; }
+    .hero-badge-left { left: -12px; }
+    .hero-badge-bottom { right: -12px; }
+  }
+
+  @media (max-width: 768px) {
+    .hero { padding: 100px 24px 60px; }
+    .hero h1 { font-size: clamp(30px, 7vw, 44px); letter-spacing: -1.5px; }
+    .hero-badge { display: none; }
   }
 
   @media (max-width: 640px) {
-    .hero { padding: 80px 20px 48px; min-height: auto; }
-    .hero h1 { font-size: clamp(28px, 8vw, 40px); letter-spacing: -1px; margin-bottom: 16px; }
-    .hero-sub { font-size: 15px; margin-bottom: 6px; }
-    .hero-sub.body { font-size: 13px; margin-bottom: 28px; }
-    .hero-actions { gap: 8px; width: 100%; }
+    .hero { padding: 80px 20px 48px; }
+    .hero h1 { font-size: clamp(26px, 8vw, 36px); letter-spacing: -1px; }
+    .hero-actions { flex-direction: column; width: 100%; }
     .hero-actions a { width: 100%; text-align: center; justify-content: center; }
   }
 
   @media (max-width: 375px) {
     .hero { padding: 72px 16px 40px; }
-    .hero h1 { font-size: 26px; margin-bottom: 12px; }
-    .hero-sub { font-size: 14px; }
   }
 </style>
 
@@ -127,210 +468,256 @@
   <canvas id="heroCanvas"></canvas>
 
   <div class="hero-inner">
-    <h1>
-      <span class="hero-line"><span class="hero-line-inner">One API key.</span></span>
-      <span class="hero-line"><span class="hero-line-inner">Every market opportunity <em>on earth.</em></span></span>
-    </h1>
 
-    <p class="hero-sub">
-      Trade BTC. Short Google. Buy oil on weekends. Bet on elections. Earn 5% on idle capital. Run strategies 24/7.
-    </p>
-    <p class="hero-sub body">
-      All through one API. Authenticate once &amp; let us handle the rest.
-    </p>
+    <!-- ── LEFT ── -->
+    <div class="hero-left">
 
-    <div class="hero-actions">
-      <a href="#" class="btn-primary" style="font-size:14px;padding:13px 28px;border-radius:10px;">Request Beta Access →</a>
-      <a href="https://docs.openfinance.tech" class="btn-secondary" style="font-size:14px;padding:13px 24px;border-radius:10px;">Read the Docs</a>
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        <span class="hero-eyebrow-text">Now in beta · limited access</span>
+      </div>
+
+      <h1>
+        <span class="hero-line"><span class="hero-line-inner">Trading OS for</span></span>
+        <span class="hero-line"><span class="hero-line-inner">traders, agents &amp;</span></span>
+        <span class="hero-line"><span class="hero-line-inner"><em>AI hedge funds.</em></span></span>
+      </h1>
+
+      <p class="hero-sub-label">One API. Every Market.</p>
+
+      <p class="hero-body">
+        Trade <strong>$BTC</strong>. Short Google. Long oil. Run options strategies. Predict elections. Generate <strong>6% yield</strong> on idle capital.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#" class="btn-primary" style="font-size:14px;padding:13px 28px;border-radius:10px;">Get Your API Key →</a>
+        <a href="https://docs.openfinance.tech" class="btn-secondary" style="font-size:14px;padding:13px 24px;border-radius:10px;">Read the Docs</a>
+      </div>
+
+      <div class="hero-available">
+        <div class="hero-available-label">Available via</div>
+        <div class="hero-available-pills">
+
+          <!-- Claude -->
+          <div class="hero-pill">
+            <div class="hero-pill-icon" style="background:#cc785c;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.5 2.5C15.8 2.5 14.3 3.4 13.5 4.8L8.2 14.2C7.8 14.9 7.6 15.7 7.6 16.5C7.6 19.3 9.8 21.5 12.6 21.5C14.3 21.5 15.8 20.6 16.6 19.2L21.9 9.8C22.3 9.1 22.5 8.3 22.5 7.5C22.5 4.7 20.3 2.5 17.5 2.5Z" fill="white" opacity="0.9"/>
+                <path d="M6.5 2.5C4.8 2.5 3.3 3.4 2.5 4.8L2.1 5.5C1.7 6.2 1.5 7 1.5 7.8C1.5 10.6 3.7 12.8 6.5 12.8C8.2 12.8 9.7 11.9 10.5 10.5L10.9 9.8C11.3 9.1 11.5 8.3 11.5 7.5C11.5 4.7 9.3 2.5 6.5 2.5Z" fill="white" opacity="0.6"/>
+              </svg>
+            </div>
+            Claude
+          </div>
+
+          <!-- ChatGPT -->
+          <div class="hero-pill">
+            <div class="hero-pill-icon" style="background:#10a37f;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.5 9.3a5.5 5.5 0 00-4.2-6.6 5.5 5.5 0 00-6.1 2A5.5 5.5 0 003.5 8a5.5 5.5 0 00.7 6.7 5.5 5.5 0 004.2 6.6 5.5 5.5 0 006.1-2A5.5 5.5 0 0020.5 16a5.5 5.5 0 000-6.7zM12 16.5a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"/>
+              </svg>
+            </div>
+            ChatGPT
+          </div>
+
+          <!-- Terminal -->
+          <div class="hero-pill">
+            <div class="hero-pill-icon" style="background:#1c1c1e;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 17 10 11 4 5"/>
+                <line x1="12" y1="19" x2="20" y2="19"/>
+              </svg>
+            </div>
+            Terminal
+          </div>
+
+          <!-- OpenClaw -->
+          <div class="hero-pill">
+            <div class="hero-pill-icon" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            OpenClaw
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT ── -->
+    <div class="hero-right">
+
+      <div class="hero-badge hero-badge-left">
+        <div class="hero-badge-icon" style="background:rgba(0,184,122,0.1);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00b87a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div>
+          <span class="hero-badge-title">$BTC order filled</span>
+          <span class="hero-badge-sub">+0.5 BTC · 48ms execution</span>
+        </div>
+      </div>
+
+      <div class="hero-demo-window">
+        <div class="demo-bar">
+          <div class="demo-dots">
+            <div class="demo-dot"></div>
+            <div class="demo-dot"></div>
+            <div class="demo-dot"></div>
+          </div>
+          <span class="demo-bar-title">openfinance · live markets</span>
+          <div class="demo-live"><div class="demo-live-dot"></div>live</div>
+        </div>
+
+        <div class="demo-body">
+          <div class="demo-grid-bg"></div>
+
+          <div class="demo-ticker-row">
+            <div><div class="demo-ticker-symbol">BTC/USD</div><div class="demo-ticker-exchange">BINANCE</div></div>
+            <div class="demo-ticker-right">
+              <span class="demo-ticker-price up" id="btcPrice">$97,241.50</span>
+              <span class="demo-ticker-change up">+2.4%</span>
+            </div>
+          </div>
+          <div class="demo-ticker-row">
+            <div><div class="demo-ticker-symbol">AAPL</div><div class="demo-ticker-exchange">NASDAQ</div></div>
+            <div class="demo-ticker-right">
+              <span class="demo-ticker-price up" id="aaplPrice">$247.31</span>
+              <span class="demo-ticker-change up">+0.8%</span>
+            </div>
+          </div>
+          <div class="demo-ticker-row">
+            <div><div class="demo-ticker-symbol">EUR/USD</div><div class="demo-ticker-exchange">FOREX</div></div>
+            <div class="demo-ticker-right">
+              <span class="demo-ticker-price dn" id="eurPrice">$1.0842</span>
+              <span class="demo-ticker-change dn">-0.3%</span>
+            </div>
+          </div>
+          <div class="demo-ticker-row">
+            <div><div class="demo-ticker-symbol">CRUDE OIL</div><div class="demo-ticker-exchange">CME</div></div>
+            <div class="demo-ticker-right">
+              <span class="demo-ticker-price up" id="oilPrice">$78.42</span>
+              <span class="demo-ticker-change up">+1.1%</span>
+            </div>
+          </div>
+
+          <div class="demo-chart-area">
+            <svg viewBox="0 0 400 80" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00b87a" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#00b87a" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0 65 C40 60 60 45 90 40 S140 25 170 30 S220 15 255 10 S300 20 330 14 S370 4 400 2" stroke="#00b87a" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M0 65 C40 60 60 45 90 40 S140 25 170 30 S220 15 255 10 S300 20 330 14 S370 4 400 2 L400 80 L0 80Z" fill="url(#cg)"/>
+              <circle cx="400" cy="2" r="3.5" fill="#00b87a">
+                <animate attributeName="r" values="2.5;4.5;2.5" dur="1.5s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            <div class="demo-placeholder-label">// replace with demo video or GIF</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-badge hero-badge-bottom">
+        <div class="hero-badge-icon" style="background:rgba(99,102,241,0.1);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <div>
+          <span class="hero-badge-title">AI Agent active</span>
+          <span class="hero-badge-sub">Running 3 strategies</span>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <script>
 (function () {
+  // Canvas particle system
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const DOT_COLOR='0,230,160', GRID_COLOR='180,185,180';
+  const DOT_COUNT=120, GRID_COLS=28, GRID_ROWS=18;
+  const MOUSE_RADIUS=120, MOUSE_FORCE=60;
+  let W, H, mouse={x:-9999,y:-9999}, particles=[], raf;
 
-  const DOT_COLOR   = '0,230,160';   // accent green
-  const GRID_COLOR  = '180,185,180'; // very light grey grid
-  const DOT_COUNT   = 120;
-  const GRID_COLS   = 28;
-  const GRID_ROWS   = 18;
-  const MOUSE_RADIUS = 120;
-  const MOUSE_FORCE  = 60;
-
-  let W, H, mouse = { x: -9999, y: -9999 };
-  let particles = [];
-  let raf;
-
-  function resize() {
-    const section = canvas.parentElement;
-    W = canvas.width  = section.offsetWidth;
-    H = canvas.height = section.offsetHeight;
-  }
+  function resize() { const s=canvas.parentElement; W=canvas.width=s.offsetWidth; H=canvas.height=s.offsetHeight; }
 
   class Particle {
     constructor() { this.reset(true); }
-
     reset(init) {
-      this.x  = Math.random() * W;
-      this.y  = init ? Math.random() * H : H + 10;
-      this.ox = this.x;
-      this.oy = this.y;
-      this.vx = (Math.random() - 0.5) * 0.3;
-      this.vy = -Math.random() * 0.48 - 0.12;
-      this.r  = Math.random() * 2 + 1.2;
-      this.alpha = Math.random() * 0.5 + 0.5;
-      this.life  = 0;
-      this.maxLife = Math.random() * 300 + 200;
+      this.x=Math.random()*W; this.y=init?Math.random()*H:H+10;
+      this.ox=this.x; this.oy=this.y;
+      this.vx=(Math.random()-0.5)*0.3; this.vy=-Math.random()*0.48-0.12;
+      this.r=Math.random()*2+1.2; this.alpha=Math.random()*0.5+0.5;
+      this.life=0; this.maxLife=Math.random()*300+200;
     }
-
     update() {
-      // Mouse repulsion
-      const dx = this.x - mouse.x;
-      const dy = this.y - mouse.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < MOUSE_RADIUS && dist > 0) {
-        const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
-        this.x += (dx / dist) * force * MOUSE_FORCE * 0.04;
-        this.y += (dy / dist) * force * MOUSE_FORCE * 0.04;
-      }
-
-      // Drift back to origin gently
-      this.x += (this.ox - this.x) * 0.012;
-      this.y += (this.oy - this.y) * 0.012;
-
-      // Slow drift
-      this.ox += this.vx;
-      this.oy += this.vy;
-
-      this.life++;
-
-      // Fade in/out
-      if (this.life < 40) this.alpha = (this.life / 40) * 0.95;
-      else if (this.life > this.maxLife - 40)
-        this.alpha = ((this.maxLife - this.life) / 40) * 0.95;
-
-      if (this.life >= this.maxLife || this.oy < -20) this.reset(false);
+      const dx=this.x-mouse.x, dy=this.y-mouse.y, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<MOUSE_RADIUS&&dist>0){const f=(MOUSE_RADIUS-dist)/MOUSE_RADIUS;this.x+=(dx/dist)*f*MOUSE_FORCE*0.04;this.y+=(dy/dist)*f*MOUSE_FORCE*0.04;}
+      this.x+=(this.ox-this.x)*0.012; this.y+=(this.oy-this.y)*0.012;
+      this.ox+=this.vx; this.oy+=this.vy; this.life++;
+      if(this.life<40)this.alpha=(this.life/40)*0.95;
+      else if(this.life>this.maxLife-40)this.alpha=((this.maxLife-this.life)/40)*0.95;
+      if(this.life>=this.maxLife||this.oy<-20)this.reset(false);
     }
-
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${DOT_COLOR},${this.alpha})`;
-      ctx.fill();
-    }
+    draw() { ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(${DOT_COLOR},${this.alpha})`;ctx.fill(); }
   }
 
   function drawGrid() {
-    const cw = W / GRID_COLS;
-    const ch = H / GRID_ROWS;
-
-    ctx.strokeStyle = `rgba(${GRID_COLOR},0.28)`;
-    ctx.lineWidth = 0.5;
-
-    // Vertical lines
-    for (let c = 0; c <= GRID_COLS; c++) {
-      const x = c * cw;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, H);
-      ctx.stroke();
-    }
-
-    // Horizontal lines
-    for (let r = 0; r <= GRID_ROWS; r++) {
-      const y = r * ch;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
-    }
-
-    // Grid intersection dots
-    ctx.fillStyle = `rgba(${GRID_COLOR},0.56)`;
-    for (let c = 0; c <= GRID_COLS; c++) {
-      for (let r = 0; r <= GRID_ROWS; r++) {
-        ctx.beginPath();
-        ctx.arc(c * cw, r * ch, 1.2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
+    const cw=W/GRID_COLS,ch=H/GRID_ROWS;
+    ctx.strokeStyle=`rgba(${GRID_COLOR},0.28)`;ctx.lineWidth=0.5;
+    for(let c=0;c<=GRID_COLS;c++){ctx.beginPath();ctx.moveTo(c*cw,0);ctx.lineTo(c*cw,H);ctx.stroke();}
+    for(let r=0;r<=GRID_ROWS;r++){ctx.beginPath();ctx.moveTo(0,r*ch);ctx.lineTo(W,r*ch);ctx.stroke();}
+    ctx.fillStyle=`rgba(${GRID_COLOR},0.56)`;
+    for(let c=0;c<=GRID_COLS;c++)for(let r=0;r<=GRID_ROWS;r++){ctx.beginPath();ctx.arc(c*cw,r*ch,1.2,0,Math.PI*2);ctx.fill();}
   }
 
   function drawConnections() {
-    // Connect nearby particles with faint lines
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const d  = Math.sqrt(dx * dx + dy * dy);
-        if (d < 90) {
-          const a = (1 - d / 90) * 0.18;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(${DOT_COLOR},${a})`;
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-      }
+    for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<90){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(${DOT_COLOR},${(1-d/90)*0.18})`;ctx.lineWidth=0.8;ctx.stroke();}
     }
   }
 
   function drawTopFade() {
-    const navH = 72;
-    const fadeHeight = 220;
-    const grad = ctx.createLinearGradient(0, navH, 0, navH + fadeHeight);
-    grad.addColorStop(0,    '#ffffff');
-    grad.addColorStop(0.35, '#ffffff');
-    grad.addColorStop(1,    'rgba(255,255,255,0)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, navH + fadeHeight);
+    const g=ctx.createLinearGradient(0,72,0,292);
+    g.addColorStop(0,'#ffffff');g.addColorStop(0.35,'#ffffff');g.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,292);
   }
 
-  function loop() {
-    ctx.clearRect(0, 0, W, H);
-    drawGrid();
-    drawConnections();
-    particles.forEach(p => { p.update(); p.draw(); });
-    drawTopFade();
-    raf = requestAnimationFrame(loop);
-  }
+  function loop() { ctx.clearRect(0,0,W,H);drawGrid();drawConnections();particles.forEach(p=>{p.update();p.draw();});drawTopFade();raf=requestAnimationFrame(loop); }
 
-  function init() {
-    resize();
-    const isMobile = W < 768;
-    const count = isMobile ? 40 : DOT_COUNT;
-    particles = Array.from({ length: count }, () => new Particle());
-    loop();
-  }
+  function init() { resize(); particles=Array.from({length:W<768?40:DOT_COUNT},()=>new Particle()); loop(); }
 
-  // Mouse tracking
-  const section = canvas.parentElement;
-  section.addEventListener('mousemove', e => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-  });
-  section.addEventListener('mouseleave', () => {
-    mouse.x = -9999;
-    mouse.y = -9999;
+  const section=canvas.parentElement;
+  section.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;});
+  section.addEventListener('mouseleave',()=>{mouse.x=-9999;mouse.y=-9999;});
+  window.addEventListener('resize',()=>{cancelAnimationFrame(raf);resize();particles.forEach(p=>p.reset(true));loop();});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else requestAnimationFrame(init);
+
+  // Live ticker prices
+  const tickers = {
+    btcPrice:  { val: 97241.50, dec: 2, pre: '$', vol: 85,     fmt: true },
+    aaplPrice: { val: 247.31,   dec: 2, pre: '$', vol: 0.6,    fmt: false },
+    eurPrice:  { val: 1.0842,   dec: 4, pre: '$', vol: 0.0006, fmt: false },
+    oilPrice:  { val: 78.42,    dec: 2, pre: '$', vol: 0.18,   fmt: false },
+  };
+
+  Object.entries(tickers).forEach(([id, t]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    setInterval(() => {
+      t.val += (Math.random() - 0.49) * t.vol;
+      const str = t.val.toFixed(t.dec);
+      el.textContent = t.pre + (t.fmt ? str.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : str);
+    }, 1600 + Math.random() * 1400);
   });
 
-  window.addEventListener('resize', () => {
-    cancelAnimationFrame(raf);
-    resize();
-    particles.forEach(p => p.reset(true));
-    loop();
-  });
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    // Wait one frame so section has layout
-    requestAnimationFrame(init);
-  }
 })();
 </script>
