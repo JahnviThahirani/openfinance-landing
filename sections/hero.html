@@ -637,7 +637,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
 
-    <!-- Top accent bar -->
+    <!-- Animated top bar -->
     <div class="akm-accent-bar"></div>
 
     <!-- Icon -->
@@ -651,23 +651,40 @@
 
     <!-- Heading -->
     <h2 class="akm-title" id="akmTitle">Your API key is one step away.</h2>
-    <p class="akm-sub">Sign in and deposit as little as <strong>$1</strong> to unlock access to every market on earth.</p>
 
-    <!-- Value props -->
+    <!-- Animated deposit highlight -->
+    <div class="akm-deposit-card">
+      <div class="akm-deposit-left">
+        <span class="akm-deposit-label">Minimum deposit</span>
+        <div class="akm-deposit-amount">
+          <span class="akm-dollar">$</span>
+          <span class="akm-amount-num" id="akmCounter">1</span>
+        </div>
+      </div>
+      <div class="akm-deposit-right">
+        <div class="akm-deposit-badge">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          That's it
+        </div>
+        <p class="akm-deposit-sub">Sign in to unlock every<br>market on earth</p>
+      </div>
+    </div>
+
+    <!-- Value props — staggered reveal -->
     <ul class="akm-props">
-      <li>
+      <li class="akm-prop-item">
         <span class="akm-prop-icon">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
         Instant API key — no waitlist, no calls
       </li>
-      <li>
+      <li class="akm-prop-item">
         <span class="akm-prop-icon">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
-        Access BTC, stocks, forex, oil & more
+        Access BTC, stocks, forex, oil &amp; more
       </li>
-      <li>
+      <li class="akm-prop-item">
         <span class="akm-prop-icon">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
@@ -675,10 +692,12 @@
       </li>
     </ul>
 
-    <!-- CTAs -->
+    <!-- CTA -->
     <div class="akm-actions">
-      <button class="akm-btn-primary" id="akmSignIn">Sign In to Get Started</button>
-      <p class="akm-fine">Already have an account? <a href="#" id="akmLogin">Log in →</a></p>
+      <button class="akm-btn-primary" id="akmSignIn">
+        <span class="akm-btn-text">Sign In to Get Started</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
     </div>
 
   </div>
@@ -694,12 +713,12 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background: rgba(13,15,20,0.55);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: rgba(13,15,20,0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.28s ease;
   }
 
   .akm-backdrop.open {
@@ -711,17 +730,17 @@
   .akm-card {
     position: relative;
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 24px;
     border: 1px solid var(--border);
     width: 100%;
-    max-width: 420px;
-    padding: 40px 36px 36px;
+    max-width: 440px;
+    padding: 44px 40px 40px;
     box-shadow:
-      0 0 0 1px rgba(0,0,0,0.04),
-      0 24px 64px rgba(0,0,0,0.14),
+      0 0 0 1px rgba(0,0,0,0.03),
+      0 32px 80px rgba(0,0,0,0.16),
       0 8px 24px rgba(0,0,0,0.08);
-    transform: translateY(16px) scale(0.97);
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     overflow: hidden;
   }
 
@@ -729,20 +748,26 @@
     transform: translateY(0) scale(1);
   }
 
-  /* Top green accent line */
+  /* Animated top bar — expands from center on open */
   .akm-accent-bar {
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0; left: 50%; right: 50%;
     height: 3px;
     background: linear-gradient(90deg, var(--accent) 0%, #00e5a0 100%);
     border-radius: 20px 20px 0 0;
+    transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+                right 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
   }
 
-  /* Close button */
+  .akm-backdrop.open .akm-accent-bar {
+    left: 0; right: 0;
+  }
+
+  /* Close */
   .akm-close {
     position: absolute;
     top: 16px; right: 16px;
-    width: 30px; height: 30px;
+    width: 32px; height: 32px;
     border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--bg-elevated);
@@ -754,78 +779,195 @@
     transition: all 0.15s;
   }
 
-  .akm-close:hover {
-    background: var(--bg-card);
-    color: var(--text-primary);
-  }
+  .akm-close:hover { background: var(--bg-card); color: var(--text-primary); }
 
   /* Icon */
-  .akm-icon-wrap {
-    margin-bottom: 20px;
-  }
+  .akm-icon-wrap { margin-bottom: 20px; }
 
   .akm-icon {
-    width: 44px; height: 44px;
-    border-radius: 12px;
+    width: 46px; height: 46px;
+    border-radius: 13px;
     background: rgba(0,184,122,0.08);
     border: 1px solid rgba(0,184,122,0.18);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--accent);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .akm-backdrop.open .akm-icon {
+    animation: akm-icon-bounce 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  }
+
+  @keyframes akm-icon-bounce {
+    0%   { transform: scale(0.7); opacity: 0; }
+    60%  { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
   }
 
   /* Title */
   .akm-title {
     font-family: var(--font-display);
-    font-size: 22px;
+    font-size: 23px;
     font-weight: 800;
-    letter-spacing: -0.8px;
+    letter-spacing: -0.9px;
     color: var(--text-primary);
     line-height: 1.2;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
-  .akm-sub {
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 24px;
+  /* ── Deposit highlight card ── */
+  .akm-deposit-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #0d0f14;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
   }
 
-  .akm-sub strong {
-    color: var(--text-primary);
+  /* Subtle green glow inside dark card */
+  .akm-deposit-card::before {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: -20px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(0,184,122,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .akm-deposit-left {
+    position: relative;
+    z-index: 1;
+  }
+
+  .akm-deposit-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
     font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    display: block;
+    margin-bottom: 6px;
   }
 
-  /* Value props */
+  .akm-deposit-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+
+  .akm-dollar {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.5);
+    line-height: 1;
+  }
+
+  .akm-amount-num {
+    font-family: var(--font-display);
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -3px;
+    color: #fff;
+    line-height: 1;
+    /* Number rolls in on open */
+    display: inline-block;
+  }
+
+  .akm-backdrop.open .akm-amount-num {
+    animation: akm-num-roll 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  }
+
+  @keyframes akm-num-roll {
+    0%   { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0);    opacity: 1; }
+  }
+
+  .akm-deposit-right {
+    position: relative;
+    z-index: 1;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .akm-deposit-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0,184,122,0.15);
+    border: 1px solid rgba(0,184,122,0.3);
+    color: #00e5a0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 100px;
+    letter-spacing: 0.2px;
+  }
+
+  .akm-deposit-sub {
+    font-family: var(--font-body);
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ── Value props with staggered reveal ── */
   .akm-props {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0;
     margin-bottom: 28px;
-    padding: 16px;
-    background: var(--bg-elevated);
     border-radius: 12px;
     border: 1px solid var(--border);
+    overflow: hidden;
   }
 
-  .akm-props li {
+  .akm-prop-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-family: var(--font-body);
     font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.4;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: background 0.15s;
+  }
+
+  .akm-prop-item:last-child { border-bottom: none; }
+  .akm-prop-item:hover { background: var(--bg-card); }
+
+  .akm-backdrop.open .akm-prop-item:nth-child(1) { animation: akm-slide-in 0.4s ease 0.3s forwards; }
+  .akm-backdrop.open .akm-prop-item:nth-child(2) { animation: akm-slide-in 0.4s ease 0.42s forwards; }
+  .akm-backdrop.open .akm-prop-item:nth-child(3) { animation: akm-slide-in 0.4s ease 0.54s forwards; }
+
+  @keyframes akm-slide-in {
+    to { opacity: 1; transform: translateX(0); }
   }
 
   .akm-prop-icon {
-    width: 22px; height: 22px;
-    border-radius: 6px;
+    width: 24px; height: 24px;
+    border-radius: 7px;
     background: rgba(0,184,122,0.1);
+    border: 1px solid rgba(0,184,122,0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -833,53 +975,62 @@
     flex-shrink: 0;
   }
 
-  /* Actions */
-  .akm-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+  /* ── CTA Button ── */
+  .akm-actions { display: flex; flex-direction: column; }
 
   .akm-btn-primary {
     width: 100%;
-    padding: 13px 24px;
+    padding: 14px 24px;
     background: var(--accent);
     color: #fff;
     font-family: var(--font-body);
     font-size: 14px;
     font-weight: 700;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
     letter-spacing: -0.1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
   }
+
+  /* Shimmer sweep on hover */
+  .akm-btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.4s ease;
+  }
+
+  .akm-btn-primary:hover::after { left: 150%; }
 
   .akm-btn-primary:hover {
     background: #00c985;
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0,184,122,0.3);
+    box-shadow: 0 8px 24px rgba(0,184,122,0.35);
   }
 
-  .akm-fine {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    color: var(--text-muted);
-    text-align: center;
-    line-height: 1.5;
+  .akm-btn-primary:hover svg {
+    transform: translateX(3px);
   }
 
-  .akm-fine a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 500;
+  .akm-btn-primary svg {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
   }
-
-  .akm-fine a:hover { text-decoration: underline; }
 
   @media (max-width: 480px) {
     .akm-card { padding: 32px 24px 28px; }
-    .akm-title { font-size: 19px; }
+    .akm-title { font-size: 20px; }
+    .akm-amount-num { font-size: 42px; }
   }
 </style>
 
@@ -1022,13 +1173,7 @@
       });
     }
 
-    if (loginBtn) {
-      loginBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        // TODO: trigger Privy login flow
-        console.log('Privy login trigger goes here');
-      });
-    }
+
   })();
 
 </script>
