@@ -6,7 +6,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 140px 48px 100px;
+    padding: 112px 48px 100px;
     background: #ffffff;
     overflow: hidden;
   }
@@ -21,7 +21,7 @@
   .hero-inner {
     position: relative;
     z-index: 1;
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
     width: 100%;
     display: flex;
@@ -37,9 +37,9 @@
     line-height: 1.06;
     font-weight: 800;
     letter-spacing: -3px;
-    margin-bottom: 28px;
+    margin-bottom: 26px;
     color: var(--text-primary);
-    max-width: 800px;
+    max-width: 1000px;
   }
 
   .hero-line {
@@ -70,11 +70,11 @@
 
   /* ── Body ── */
   .hero-body {
-    font-size: 21px;
+    font-size: 20px;
     font-weight: 400;
     color: var(--text-secondary);
     line-height: 1.6;
-    margin-bottom: 44px;
+    margin-bottom: 38px;
     max-width: 640px;
     opacity: 0;
     animation: appear 0.6s ease-out 0.35s forwards;
@@ -91,7 +91,7 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin-bottom: 52px;
+    margin-bottom: 48px;
     opacity: 0;
     animation: appear 0.6s ease-out 0.48s forwards;
   }
@@ -101,60 +101,70 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Available via ── */
-  .hero-available {
+  /* ── Available via eyebrow ── */
+  .hero-eyebrow-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
     opacity: 0;
-    animation: appear 0.6s ease-out 0.6s forwards;
+    animation: appear 0.5s ease-out 0.05s forwards;
   }
 
-  .hero-available-label {
+  .hero-eyebrow-label {
     font-family: var(--font-mono);
     font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 0.6px;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 12px;
   }
 
-  .hero-available-pills {
+  .hero-eyebrow-icons {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: 5px;
   }
 
-  .hero-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 13px;
-    border-radius: 100px;
-    border: 1px solid var(--border);
-    background: #fff;
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    font-weight: 500;
-    color: var(--text-primary);
-    transition: all 0.2s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    cursor: default;
-  }
-
-  .hero-pill:hover {
-    border-color: var(--border-highlight);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transform: translateY(-1px);
-  }
-
-  .hero-pill-icon {
-    width: 18px; height: 18px;
-    border-radius: 5px;
+  .hero-eyebrow-icon {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: transform 0.15s;
+    cursor: default;
+  }
+
+  .hero-eyebrow-icon:hover { transform: translateY(-2px); }
+
+  /* Tooltip via ::after using data-label */
+  .hero-eyebrow-icon::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #0d0f14;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 10;
+  }
+
+  .hero-eyebrow-icon:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   /* ── Responsive ── */
@@ -182,6 +192,25 @@
 
   <div class="hero-inner">
 
+    <!-- Available via eyebrow -->
+    <div class="hero-eyebrow-row">
+      <span class="hero-eyebrow-label">Available via</span>
+      <div class="hero-eyebrow-icons">
+        <div class="hero-eyebrow-icon" data-label="Claude" style="background:#d97757;overflow:hidden;">
+          <svg width="14" height="14" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g transform="translate(50,50)"><rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(0)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(30)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(60)"/><rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(90)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(120)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(150)"/><rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(180)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(210)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(240)"/><rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(270)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(300)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(330)"/></g></svg>
+        </div>
+        <div class="hero-eyebrow-icon" data-label="ChatGPT" style="background:#fff;border:1px solid #e5e7eb;">
+          <svg width="12" height="12" viewBox="0 0 41 41" fill="none"><path d="M37.532 16.87a9.963 9.963 0 00-.856-8.184 10.078 10.078 0 00-10.855-4.835 9.964 9.964 0 00-7.505-3.348 10.079 10.079 0 00-9.612 6.977 9.967 9.967 0 00-6.664 4.834 10.08 10.08 0 001.24 11.817 9.965 9.965 0 00.856 8.185 10.079 10.079 0 0010.855 4.835 9.965 9.965 0 007.504 3.347 10.078 10.078 0 009.617-6.981 9.967 9.967 0 006.663-4.834 10.079 10.079 0 00-1.243-11.813zM22.498 37.886a7.474 7.474 0 01-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 00.655-1.134V19.054l3.366 1.944a.12.12 0 01.066.092v9.299a7.505 7.505 0 01-7.49 7.496zM6.392 31.006a7.471 7.471 0 01-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 001.308 0l9.724-5.614v3.888a.12.12 0 01-.048.103l-8.051 4.649a7.504 7.504 0 01-10.24-2.744zM4.297 13.62A7.469 7.469 0 018.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 00.654 1.132l9.723 5.614-3.366 1.944a.12.12 0 01-.114.012L7.044 23.86a7.504 7.504 0 01-2.747-10.24zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 01.114-.012l8.048 4.648a7.498 7.498 0 01-1.158 13.528v-9.476a1.293 1.293 0 00-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 00-1.308 0l-9.723 5.614v-3.888a.12.12 0 01.048-.103l8.05-4.645a7.497 7.497 0 0111.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 01-.065-.092v-9.299a7.497 7.497 0 0112.293-5.756 6.94 6.94 0 00-.236.134l-7.965 4.6a1.294 1.294 0 00-.654 1.132v11.225zm1.829-3.943l4.33-2.501 4.332 2.498v4.997l-4.331 2.5-4.331-2.5V18z" fill="#000"/></svg>
+        </div>
+        <div class="hero-eyebrow-icon" data-label="Terminal" style="background:#1c1c1e;">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        </div>
+        <div class="hero-eyebrow-icon" data-label="OpenClaw" style="background:#fff;overflow:hidden;border:1px solid #e5e7eb;">
+          <svg width="16" height="16" viewBox="0 0 100 100"><circle cx="50" cy="58" r="30" fill="#c53030"/><circle cx="50" cy="30" r="17" fill="#c53030"/><circle cx="43" cy="28" r="5" fill="#00d4d4"/><circle cx="57" cy="28" r="5" fill="#00d4d4"/><line x1="44" y1="14" x2="38" y2="5" stroke="#c53030" stroke-width="3" stroke-linecap="round"/><circle cx="37" cy="4" r="3" fill="#c53030"/><line x1="56" y1="14" x2="62" y2="5" stroke="#c53030" stroke-width="3" stroke-linecap="round"/><circle cx="63" cy="4" r="3" fill="#c53030"/><circle cx="18" cy="56" r="10" fill="#c53030"/><circle cx="82" cy="56" r="10" fill="#c53030"/><rect x="36" y="84" width="8" height="12" rx="4" fill="#c53030"/><rect x="56" y="84" width="8" height="12" rx="4" fill="#c53030"/></svg>
+        </div>
+      </div>
+    </div>
+
     <h1>
       <span class="hero-line"><span class="hero-line-inner"><em>Operating System</em> for Traders,</span></span>
       <span class="hero-line"><span class="hero-line-inner">Agents &amp; AI Hedge Funds.</span></span>
@@ -192,80 +221,8 @@
     </p>
 
     <div class="hero-actions">
-      <button id="heroApiKeyBtn" class="btn-primary" style="font-size:17px;padding:13px 28px;border-radius:10px;font-family:var(--font-body);font-weight:700;border:none;cursor:pointer;">Get Your Key →</button>
-      <a href="https://docs.openfinance.tech" style="font-size:17px;padding:13px 8px;font-family:var(--font-body);font-weight:600;color:var(--text-secondary);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color 0.15s;" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-secondary)'">Read the Docs <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
-    </div>
-
-    <div class="hero-available">
-      <div class="hero-available-label">Available via</div>
-      <div class="hero-available-pills">
-
-        <!-- Claude -->
-        <div class="hero-pill">
-          <div class="hero-pill-icon" style="background:#d97757;overflow:hidden;">
-            <svg width="16" height="16" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <g transform="translate(50,50)">
-                <rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(0)"/>
-                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(30)"/>
-                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(60)"/>
-                <rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(90)"/>
-                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(120)"/>
-                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(150)"/>
-                <rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(180)"/>
-                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(210)"/>
-                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(240)"/>
-                <rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(270)"/>
-                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(300)"/>
-                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(330)"/>
-              </g>
-            </svg>
-          </div>
-          Claude
-        </div>
-
-        <!-- ChatGPT -->
-        <div class="hero-pill">
-          <div class="hero-pill-icon" style="background:#fff;border:1px solid #e5e7eb;">
-            <svg width="13" height="13" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M37.532 16.87a9.963 9.963 0 00-.856-8.184 10.078 10.078 0 00-10.855-4.835 9.964 9.964 0 00-7.505-3.348 10.079 10.079 0 00-9.612 6.977 9.967 9.967 0 00-6.664 4.834 10.08 10.08 0 001.24 11.817 9.965 9.965 0 00.856 8.185 10.079 10.079 0 0010.855 4.835 9.965 9.965 0 007.504 3.347 10.078 10.078 0 009.617-6.981 9.967 9.967 0 006.663-4.834 10.079 10.079 0 00-1.243-11.813zM22.498 37.886a7.474 7.474 0 01-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 00.655-1.134V19.054l3.366 1.944a.12.12 0 01.066.092v9.299a7.505 7.505 0 01-7.49 7.496zM6.392 31.006a7.471 7.471 0 01-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 001.308 0l9.724-5.614v3.888a.12.12 0 01-.048.103l-8.051 4.649a7.504 7.504 0 01-10.24-2.744zM4.297 13.62A7.469 7.469 0 018.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 00.654 1.132l9.723 5.614-3.366 1.944a.12.12 0 01-.114.012L7.044 23.86a7.504 7.504 0 01-2.747-10.24zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 01.114-.012l8.048 4.648a7.498 7.498 0 01-1.158 13.528v-9.476a1.293 1.293 0 00-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 00-1.308 0l-9.723 5.614v-3.888a.12.12 0 01.048-.103l8.05-4.645a7.497 7.497 0 0111.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 01-.065-.092v-9.299a7.497 7.497 0 0112.293-5.756 6.94 6.94 0 00-.236.134l-7.965 4.6a1.294 1.294 0 00-.654 1.132v11.225zm1.829-3.943l4.33-2.501 4.332 2.498v4.997l-4.331 2.5-4.331-2.5V18z" fill="#000"/>
-            </svg>
-          </div>
-          ChatGPT
-        </div>
-
-        <!-- Terminal -->
-        <div class="hero-pill">
-          <div class="hero-pill-icon" style="background:#1c1c1e;">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="4 17 10 11 4 5"/>
-              <line x1="12" y1="19" x2="20" y2="19"/>
-            </svg>
-          </div>
-          Terminal
-        </div>
-
-        <!-- OpenClaw -->
-        <div class="hero-pill">
-          <div class="hero-pill-icon" style="background:#fff;overflow:hidden;border:1px solid #e5e7eb;">
-            <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="58" r="30" fill="#c53030"/>
-              <circle cx="50" cy="30" r="17" fill="#c53030"/>
-              <circle cx="43" cy="28" r="5" fill="#00d4d4"/>
-              <circle cx="57" cy="28" r="5" fill="#00d4d4"/>
-              <line x1="44" y1="14" x2="38" y2="5" stroke="#c53030" stroke-width="3" stroke-linecap="round"/>
-              <circle cx="37" cy="4" r="3" fill="#c53030"/>
-              <line x1="56" y1="14" x2="62" y2="5" stroke="#c53030" stroke-width="3" stroke-linecap="round"/>
-              <circle cx="63" cy="4" r="3" fill="#c53030"/>
-              <circle cx="18" cy="56" r="10" fill="#c53030"/>
-              <circle cx="82" cy="56" r="10" fill="#c53030"/>
-              <rect x="36" y="84" width="8" height="12" rx="4" fill="#c53030"/>
-              <rect x="56" y="84" width="8" height="12" rx="4" fill="#c53030"/>
-            </svg>
-          </div>
-          OpenClaw
-        </div>
-
-      </div>
+      <button id="heroApiKeyBtn" class="btn-primary" style="font-size:16px;padding:12px 23px;border-radius:10px;font-family:var(--font-body);font-weight:700;border:none;cursor:pointer;">Get Your Key →</button>
+      <a href="https://docs.openfinance.tech" style="font-size:16px;padding:12px 8px;font-family:var(--font-body);font-weight:600;color:var(--text-secondary);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color 0.15s;" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-secondary)'">Read the Docs <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
     </div>
 
   </div>

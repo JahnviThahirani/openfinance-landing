@@ -71,6 +71,23 @@
     text-transform: uppercase;
   }
 
+  /* ── Blur-in letter animation for "Operating System" ── */
+    100% { filter: blur(0px);  opacity: 1; transform: translateY(0); }
+  }
+
+
+
+  /* ── Blur-in: "Operating System" animates as one word ── */
+    70%  {
+      text-shadow: 0 0 6px rgba(0,184,122,0.2);
+      letter-spacing: -0.01em;
+    }
+    100% {
+      text-shadow: none;
+      letter-spacing: inherit;
+    }
+  }
+
   .hero h1 {
     font-family: var(--font-display);
     font-size: clamp(34px, 4.4vw, 67px);
@@ -119,7 +136,7 @@
   }
 
   .hero-body {
-    font-size: 21px;
+    font-size: 20px;
     font-weight: 400;
     color: var(--text-secondary);
     line-height: 1.6;
@@ -428,6 +445,41 @@
   }
 
   /* ── Responsive ── */
+
+  /* ── Ghost "Read the Docs" button — matches shadcn ghost variant ── */
+  .hero-ghost-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .hero-ghost-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+  }
+
+  .hero-ghost-arrow {
+    opacity: 0.6;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .hero-ghost-btn:hover .hero-ghost-arrow {
+    transform: translateX(3px);
+    opacity: 1;
+  }
+
   @media (max-width: 1100px) {
     .hero-inner { grid-template-columns: 1fr; gap: 48px; }
     .hero-left { align-items: center; text-align: center; }
@@ -440,13 +492,13 @@
 
   @media (max-width: 768px) {
     .hero { padding: 100px 24px 60px; }
-    .hero h1 { font-size: clamp(34px, 7vw, 56px); letter-spacing: -1.5px; }
+  .hero h1 { font-size: clamp(34px, 7vw, 56px); letter-spacing: -1.5px; }
     .hero-badge { display: none; }
   }
 
   @media (max-width: 640px) {
     .hero { padding: 80px 20px 48px; }
-    .hero h1 { font-size: clamp(28px, 8vw, 44px); letter-spacing: -1px; }
+  .hero h1 { font-size: clamp(28px, 8vw, 44px); letter-spacing: -1px; }
     .hero-actions { flex-direction: column; width: 100%; }
     .hero-actions a { width: 100%; text-align: center; justify-content: center; }
   }
@@ -475,8 +527,11 @@
       </p>
 
       <div class="hero-actions">
-        <button id="heroApiKeyBtn" class="btn-primary" style="font-size:17px;padding:13px 28px;border-radius:10px;font-family:var(--font-body);font-weight:700;border:none;cursor:pointer;">Get Your Key →</button>
-        <a href="https://docs.openfinance.tech" class="btn-secondary" style="font-size:17px;padding:13px 24px;border-radius:10px;font-family:var(--font-body);font-weight:700;">Read the Docs</a>
+        <button id="heroApiKeyBtn" class="btn-primary" style="font-size:16px;padding:12px 27px;border-radius:10px;font-family:var(--font-body);font-weight:700;border:none;cursor:pointer;">Get Your Key →</button>
+        <a href="https://docs.openfinance.tech" class="hero-ghost-btn">
+          Read the Docs
+          <svg class="hero-ghost-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
       </div>
 
       <div class="hero-available">
