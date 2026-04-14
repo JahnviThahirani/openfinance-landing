@@ -1,0 +1,416 @@
+<style>
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 140px 48px 100px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  #heroCanvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* ── Heading ── */
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 6.5vw, 88px);
+    line-height: 1.06;
+    font-weight: 800;
+    letter-spacing: -3px;
+    margin-bottom: 28px;
+    color: var(--text-primary);
+  }
+
+  .hero-line {
+    display: block;
+    overflow: hidden;
+    line-height: 1.12;
+  }
+
+  .hero-line-inner {
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+    animation: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .hero-line:nth-child(1) .hero-line-inner { animation-delay: 0.08s; }
+  .hero-line:nth-child(2) .hero-line-inner { animation-delay: 0.2s; }
+
+  @keyframes slideUp {
+    from { transform: translateY(110%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  /* ── Body ── */
+  .hero-body {
+    font-size: 21px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 44px;
+    max-width: 640px;
+    opacity: 0;
+    animation: appear 0.6s ease-out 0.35s forwards;
+  }
+
+  .hero-body strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ── Actions ── */
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: appear 0.6s ease-out 0.48s forwards;
+  }
+
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Available via ── */
+  .hero-available {
+    opacity: 0;
+    animation: appear 0.6s ease-out 0.6s forwards;
+  }
+
+  .hero-available-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .hero-available-pills {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 13px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: all 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    cursor: default;
+  }
+
+  .hero-pill:hover {
+    border-color: var(--border-highlight);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+  }
+
+  .hero-pill-icon {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 960px) {
+    .hero { padding: 120px 32px 80px; }
+    .hero h1 { font-size: clamp(36px, 7vw, 64px); letter-spacing: -2px; }
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 100px 20px 60px; }
+    .hero h1 { font-size: clamp(32px, 9vw, 48px); letter-spacing: -1.5px; }
+    .hero-body { font-size: 17px; }
+    .hero-actions { flex-direction: column; width: 100%; }
+    .hero-actions button, .hero-actions a { width: 100%; text-align: center; justify-content: center; }
+  }
+
+  @media (max-width: 375px) {
+    .hero { padding: 88px 16px 48px; }
+    .hero h1 { font-size: 28px; }
+  }
+</style>
+
+<section class="hero">
+  <canvas id="heroCanvas"></canvas>
+
+  <div class="hero-inner">
+
+    <h1>
+      <span class="hero-line"><span class="hero-line-inner"><em>Operating System</em> for Traders,</span></span>
+      <span class="hero-line"><span class="hero-line-inner">Agents &amp; AI Hedge Funds.</span></span>
+    </h1>
+
+    <p class="hero-body">
+      Trade <strong>$BTC</strong>. Short Google. Long oil. Run options strategies. Predict elections. Generate <strong>6% yield</strong> on idle capital.
+    </p>
+
+    <div class="hero-actions">
+      <button id="heroApiKeyBtn" class="btn-primary" style="font-size:17px;padding:13px 28px;border-radius:10px;font-family:var(--font-body);font-weight:700;border:none;cursor:pointer;">Get Your Key →</button>
+      <a href="https://docs.openfinance.tech" class="btn-secondary" style="font-size:17px;padding:13px 24px;border-radius:10px;font-family:var(--font-body);font-weight:700;">Read the Docs</a>
+    </div>
+
+    <div class="hero-available">
+      <div class="hero-available-label">Available via</div>
+      <div class="hero-available-pills">
+
+        <!-- Claude -->
+        <div class="hero-pill">
+          <div class="hero-pill-icon" style="background:#d97757;overflow:hidden;">
+            <svg width="16" height="16" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(50,50)">
+                <rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(0)"/>
+                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(30)"/>
+                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(60)"/>
+                <rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(90)"/>
+                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(120)"/>
+                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(150)"/>
+                <rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(180)"/>
+                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(210)"/>
+                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(240)"/>
+                <rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(270)"/>
+                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(300)"/>
+                <rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(330)"/>
+              </g>
+            </svg>
+          </div>
+          Claude
+        </div>
+
+        <!-- ChatGPT -->
+        <div class="hero-pill">
+          <div class="hero-pill-icon" style="background:#fff;border:1px solid #e5e7eb;">
+            <svg width="13" height="13" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M37.532 16.87a9.963 9.963 0 00-.856-8.184 10.078 10.078 0 00-10.855-4.835 9.964 9.964 0 00-7.505-3.348 10.079 10.079 0 00-9.612 6.977 9.967 9.967 0 00-6.664 4.834 10.08 10.08 0 001.24 11.817 9.965 9.965 0 00.856 8.185 10.079 10.079 0 0010.855 4.835 9.965 9.965 0 007.504 3.347 10.078 10.078 0 009.617-6.981 9.967 9.967 0 006.663-4.834 10.079 10.079 0 00-1.243-11.813zM22.498 37.886a7.474 7.474 0 01-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 00.655-1.134V19.054l3.366 1.944a.12.12 0 01.066.092v9.299a7.505 7.505 0 01-7.49 7.496zM6.392 31.006a7.471 7.471 0 01-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 001.308 0l9.724-5.614v3.888a.12.12 0 01-.048.103l-8.051 4.649a7.504 7.504 0 01-10.24-2.744zM4.297 13.62A7.469 7.469 0 018.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 00.654 1.132l9.723 5.614-3.366 1.944a.12.12 0 01-.114.012L7.044 23.86a7.504 7.504 0 01-2.747-10.24zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 01.114-.012l8.048 4.648a7.498 7.498 0 01-1.158 13.528v-9.476a1.293 1.293 0 00-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 00-1.308 0l-9.723 5.614v-3.888a.12.12 0 01.048-.103l8.05-4.645a7.497 7.497 0 0111.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 01-.065-.092v-9.299a7.497 7.497 0 0112.293-5.756 6.94 6.94 0 00-.236.134l-7.965 4.6a1.294 1.294 0 00-.654 1.132v11.225zm1.829-3.943l4.33-2.501 4.332 2.498v4.997l-4.331 2.5-4.331-2.5V18z" fill="#000"/>
+            </svg>
+          </div>
+          ChatGPT
+        </div>
+
+        <!-- Terminal -->
+        <div class="hero-pill">
+          <div class="hero-pill-icon" style="background:#1c1c1e;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 17 10 11 4 5"/>
+              <line x1="12" y1="19" x2="20" y2="19"/>
+            </svg>
+          </div>
+          Terminal
+        </div>
+
+        <!-- OpenClaw -->
+        <div class="hero-pill">
+          <div class="hero-pill-icon" style="background:#fff;overflow:hidden;border:1px solid #e5e7eb;">
+            <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="58" r="30" fill="#c53030"/>
+              <circle cx="50" cy="30" r="17" fill="#c53030"/>
+              <circle cx="43" cy="28" r="5" fill="#00d4d4"/>
+              <circle cx="57" cy="28" r="5" fill="#00d4d4"/>
+              <line x1="44" y1="14" x2="38" y2="5" stroke="#c53030" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="37" cy="4" r="3" fill="#c53030"/>
+              <line x1="56" y1="14" x2="62" y2="5" stroke="#c53030" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="63" cy="4" r="3" fill="#c53030"/>
+              <circle cx="18" cy="56" r="10" fill="#c53030"/>
+              <circle cx="82" cy="56" r="10" fill="#c53030"/>
+              <rect x="36" y="84" width="8" height="12" rx="4" fill="#c53030"/>
+              <rect x="56" y="84" width="8" height="12" rx="4" fill="#c53030"/>
+            </svg>
+          </div>
+          OpenClaw
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── API Key Modal (identical to hero.html) ── -->
+<div id="apiKeyModal" class="akm-backdrop" aria-modal="true" role="dialog" aria-labelledby="akmTitle">
+  <div class="akm-card">
+    <button class="akm-close" id="akmClose" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="akm-accent-bar"></div>
+    <div class="akm-icon-wrap">
+      <div class="akm-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+      </div>
+    </div>
+    <h2 class="akm-title" id="akmTitle">Your API key is one step away.</h2>
+    <p class="akm-sub">Sign in and deposit as little as <strong>$1</strong> to unlock access to every market on earth.</p>
+    <ul class="akm-props">
+      <li><span class="akm-prop-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Instant API key — no waitlist, no calls</li>
+      <li><span class="akm-prop-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Access BTC, stocks, forex, oil &amp; more</li>
+      <li><span class="akm-prop-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Start with $1 — scale when you're ready</li>
+    </ul>
+    <div class="akm-actions">
+      <button class="akm-btn-primary" id="akmSignIn">Sign In to Get Started</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .akm-backdrop { position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(13,15,20,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity 0.25s ease; }
+  .akm-backdrop.open { opacity:1;pointer-events:all; }
+  .akm-card { position:relative;background:#ffffff;border-radius:20px;border:1px solid var(--border);width:100%;max-width:420px;padding:40px 36px 36px;box-shadow:0 0 0 1px rgba(0,0,0,0.04),0 24px 64px rgba(0,0,0,0.14),0 8px 24px rgba(0,0,0,0.08);transform:translateY(16px) scale(0.97);transition:transform 0.3s cubic-bezier(0.22,1,0.36,1);overflow:hidden; }
+  .akm-backdrop.open .akm-card { transform:translateY(0) scale(1); }
+  .akm-accent-bar { position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent) 0%,#00e5a0 100%);border-radius:20px 20px 0 0; }
+  .akm-close { position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s; }
+  .akm-close:hover { background:var(--bg-card);color:var(--text-primary); }
+  .akm-icon-wrap { margin-bottom:20px; }
+  .akm-icon { width:44px;height:44px;border-radius:12px;background:rgba(0,184,122,0.08);border:1px solid rgba(0,184,122,0.18);display:flex;align-items:center;justify-content:center;color:var(--accent); }
+  .akm-title { font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-0.8px;color:var(--text-primary);line-height:1.2;margin-bottom:10px; }
+  .akm-sub { font-family:var(--font-body);font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px; }
+  .akm-sub strong { color:var(--text-primary);font-weight:600; }
+  .akm-props { list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;padding:16px;background:var(--bg-elevated);border-radius:12px;border:1px solid var(--border); }
+  .akm-props li { display:flex;align-items:center;gap:10px;font-family:var(--font-body);font-size:13px;color:var(--text-secondary);line-height:1.4; }
+  .akm-prop-icon { width:22px;height:22px;border-radius:6px;background:rgba(0,184,122,0.1);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0; }
+  .akm-actions { display:flex;flex-direction:column;gap:12px; }
+  .akm-btn-primary { width:100%;padding:13px 24px;background:var(--accent);color:#fff;font-family:var(--font-body);font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s;letter-spacing:-0.1px; }
+  .akm-btn-primary:hover { background:#00c985;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,184,122,0.3); }
+  @media (max-width:480px) { .akm-card{padding:32px 24px 28px;} .akm-title{font-size:19px;} }
+</style>
+
+<script>
+(function () {
+  // Canvas particle system
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const DOT_COLOR='0,230,160', GRID_COLOR='180,185,180';
+  const DOT_COUNT=120, GRID_COLS=28, GRID_ROWS=18;
+  const MOUSE_RADIUS=120, MOUSE_FORCE=60;
+  let W, H, mouse={x:-9999,y:-9999}, particles=[], raf;
+
+  function resize() { const s=canvas.parentElement; W=canvas.width=s.offsetWidth; H=canvas.height=s.offsetHeight; }
+
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x=Math.random()*W; this.y=init?Math.random()*H:H+10;
+      this.ox=this.x; this.oy=this.y;
+      this.vx=(Math.random()-0.5)*0.3; this.vy=-Math.random()*0.48-0.12;
+      this.r=Math.random()*2+1.2; this.alpha=Math.random()*0.5+0.5;
+      this.life=0; this.maxLife=Math.random()*300+200;
+    }
+    update() {
+      const dx=this.x-mouse.x, dy=this.y-mouse.y, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<MOUSE_RADIUS&&dist>0){const f=(MOUSE_RADIUS-dist)/MOUSE_RADIUS;this.x+=(dx/dist)*f*MOUSE_FORCE*0.04;this.y+=(dy/dist)*f*MOUSE_FORCE*0.04;}
+      this.x+=(this.ox-this.x)*0.012; this.y+=(this.oy-this.y)*0.012;
+      this.ox+=this.vx; this.oy+=this.vy; this.life++;
+      if(this.life<40)this.alpha=(this.life/40)*0.95;
+      else if(this.life>this.maxLife-40)this.alpha=((this.maxLife-this.life)/40)*0.95;
+      if(this.life>=this.maxLife||this.oy<-20)this.reset(false);
+    }
+    draw() { ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(${DOT_COLOR},${this.alpha})`;ctx.fill(); }
+  }
+
+  function drawGrid() {
+    const cw=W/GRID_COLS,ch=H/GRID_ROWS;
+    ctx.strokeStyle=`rgba(${GRID_COLOR},0.28)`;ctx.lineWidth=0.5;
+    for(let c=0;c<=GRID_COLS;c++){ctx.beginPath();ctx.moveTo(c*cw,0);ctx.lineTo(c*cw,H);ctx.stroke();}
+    for(let r=0;r<=GRID_ROWS;r++){ctx.beginPath();ctx.moveTo(0,r*ch);ctx.lineTo(W,r*ch);ctx.stroke();}
+    ctx.fillStyle=`rgba(${GRID_COLOR},0.56)`;
+    for(let c=0;c<=GRID_COLS;c++)for(let r=0;r<=GRID_ROWS;r++){ctx.beginPath();ctx.arc(c*cw,r*ch,1.2,0,Math.PI*2);ctx.fill();}
+  }
+
+  function drawConnections() {
+    for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<90){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(${DOT_COLOR},${(1-d/90)*0.18})`;ctx.lineWidth=0.8;ctx.stroke();}
+    }
+  }
+
+  function drawTopFade() {
+    const g=ctx.createLinearGradient(0,72,0,292);
+    g.addColorStop(0,'#ffffff');g.addColorStop(0.35,'#ffffff');g.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,292);
+  }
+
+  function loop() { ctx.clearRect(0,0,W,H);drawGrid();drawConnections();particles.forEach(p=>{p.update();p.draw();});drawTopFade();raf=requestAnimationFrame(loop); }
+  function init() { resize(); particles=Array.from({length:W<768?40:DOT_COUNT},()=>new Particle()); loop(); }
+
+  const section=canvas.parentElement;
+  section.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;});
+  section.addEventListener('mouseleave',()=>{mouse.x=-9999;mouse.y=-9999;});
+  window.addEventListener('resize',()=>{cancelAnimationFrame(raf);resize();particles.forEach(p=>p.reset(true));loop();});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else requestAnimationFrame(init);
+
+})();
+
+  // ── API Key Modal ──────────────────────────────────────────────────────────
+  // SET THIS TO true AFTER PRIVY AUTH SYNC — modal will be skipped for signed-in users
+  const IS_SIGNED_IN = false;
+
+  (function() {
+    const btn      = document.getElementById('heroApiKeyBtn');
+    const modal    = document.getElementById('apiKeyModal');
+    const closeBtn = document.getElementById('akmClose');
+    const signInBtn = document.getElementById('akmSignIn');
+    if (!btn || !modal) return;
+
+    function openModal()  { modal.classList.add('open');    document.body.style.overflow = 'hidden'; }
+    function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+
+    btn.addEventListener('click', () => { if (IS_SIGNED_IN) return; openModal(); });
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    if (signInBtn) {
+      signInBtn.addEventListener('click', () => {
+        // TODO: trigger Privy sign-in flow
+        console.log('Privy sign-in trigger goes here');
+      });
+    }
+  })();
+</script>
