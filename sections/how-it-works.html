@@ -184,6 +184,7 @@
     .how-visual-inner {
       visibility: visible;
       position: fixed;
+      opacity: 0; /* hidden until JS positions it — prevents flash on first load */
       /* left / top / width injected by JS */
     }
   }
@@ -596,8 +597,24 @@ function initHowItWorks() {
 
   window.addEventListener('scroll', pinTerminal, { passive: true });
   window.addEventListener('resize', pinTerminal);
-  // Run after a tick so layout is settled
-  setTimeout(pinTerminal, 50);
+
+  // Run immediately — no delay. Reveal only after position is set.
+  function pinTerminalAndReveal() {
+    pinTerminal();
+    if (inner) {
+      // Add transition only after first paint so there's no animated fade-in on load
+      requestAnimationFrame(() => {
+        inner.style.opacity = '1';
+        inner.style.transition = 'opacity 0s';
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', pinTerminalAndReveal);
+  } else {
+    pinTerminalAndReveal();
+  }
 
   // ── Step activation ───────────────────────────────────────────────────────
   function activate(idx) {
