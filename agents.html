@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenFinance Agents — Give your agent every market on earth.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="global.css">
+  <style>
+    /* ── PAGE RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #ffffff;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .agents-hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 140px 48px 100px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    /* Animated grid background */
+
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 860px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,184,122,0.08);
+      border: 1px solid rgba(0,184,122,0.2);
+      border-radius: 100px; padding: 6px 14px 6px 8px;
+      margin-bottom: 32px;
+      opacity: 0; animation: fadeUp 0.5s ease 0.1s forwards;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+      animation: pulse-green 2s ease infinite;
+    }
+    .hero-badge-text {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.5px; color: var(--accent); text-transform: uppercase;
+    }
+
+    .hero-h1 {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 5.5vw, 76px);
+      font-weight: 800;
+      letter-spacing: -3px;
+      line-height: 1.04;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
+    }
+    .hero-h1 em { font-style: normal; color: var(--accent); }
+
+    .hero-sub {
+      font-size: 20px; font-weight: 400;
+      color: var(--text-secondary); line-height: 1.6;
+      max-width: 560px; margin: 0 auto 48px;
+      opacity: 0; animation: fadeUp 0.6s ease 0.35s forwards;
+    }
+
+    /* ── AGENT + CLIENT SELECTOR ── */
+    .selector-wrap {
+      opacity: 0; animation: fadeUp 0.6s ease 0.45s forwards;
+    }
+
+    .selector-tabs {
+      display: inline-flex; gap: 4px;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 12px; padding: 4px; margin-bottom: 20px;
+    }
+    .selector-tab {
+      font-family: var(--font-body); font-size: 13px; font-weight: 500;
+      color: var(--text-muted); background: transparent; border: none;
+      padding: 8px 20px; border-radius: 8px; cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .selector-tab.active {
+      background: #fff; color: var(--text-primary);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      font-weight: 600;
+    }
+
+    /* Client pills */
+    .client-pills {
+      display: flex; justify-content: center; gap: 8px;
+      flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .client-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 100px;
+      border: 1px solid var(--border); background: #fff;
+      font-family: var(--font-body); font-size: 13px; font-weight: 500;
+      color: var(--text-secondary); cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .client-pill:hover { border-color: var(--border-highlight); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .client-pill.active {
+      border-color: var(--accent); background: rgba(0,184,122,0.06);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 3px rgba(0,184,122,0.12);
+    }
+    .client-icon {
+      width: 18px; height: 18px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    /* Command panel */
+    .command-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 620px;
+      margin: 0 auto;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.07);
+    }
+
+    .cmd-section { display: none; }
+    .cmd-section.active { display: block; }
+
+    .cmd-block {
+      padding: 0;
+    }
+
+    .cmd-label {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.6px; text-transform: uppercase;
+      color: var(--text-muted); padding: 16px 20px 8px;
+      border-bottom: 1px solid var(--bg-elevated);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cmd-label-badge {
+      background: rgba(0,184,122,0.1); color: var(--accent);
+      font-size: 9px; padding: 2px 6px; border-radius: 4px;
+    }
+
+    .cmd-row {
+      display: flex; align-items: center;
+      padding: 14px 20px; gap: 12px;
+      border-bottom: 1px solid var(--bg-elevated);
+    }
+    .cmd-row:last-child { border-bottom: none; }
+
+    .cmd-text {
+      flex: 1; font-family: var(--font-mono); font-size: 13px;
+      color: var(--text-primary); text-align: left;
+      background: var(--bg-elevated); border-radius: 8px;
+      padding: 10px 14px; line-height: 1.5;
+    }
+    .cmd-text .cmd-dim { color: var(--text-muted); }
+    .cmd-text .cmd-green { color: var(--accent); }
+
+    .cmd-copy {
+      width: 32px; height: 32px; flex-shrink: 0;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      color: var(--text-muted); transition: all 0.15s;
+    }
+    .cmd-copy:hover { background: var(--bg-card); color: var(--text-primary); }
+    .cmd-copy.copied { background: rgba(0,184,122,0.1); border-color: rgba(0,184,122,0.3); color: var(--accent); }
+
+    /* ── HOW IT WORKS ── */
+    .hiw-section {
+      padding: var(--section-gap) 48px;
+      max-width: 1280px; margin: 0 auto;
+    }
+
+    .hiw-header {
+      text-align: center; margin-bottom: 72px;
+    }
+
+    .hiw-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+      background: var(--border); border-radius: 16px; overflow: hidden;
+    }
+
+    .hiw-step {
+      background: #fff; padding: 40px 36px;
+      position: relative; overflow: hidden;
+    }
+
+    .hiw-step::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .hiw-step:hover::before { opacity: 1; }
+
+    .hiw-num {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      color: var(--accent); letter-spacing: 1px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hiw-num::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .hiw-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(0,184,122,0.08); border: 1px solid rgba(0,184,122,0.15);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent); margin-bottom: 20px;
+    }
+
+    .hiw-title {
+      font-family: var(--font-display); font-size: 20px; font-weight: 700;
+      letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 10px;
+    }
+
+    .hiw-desc {
+      font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+    }
+
+    .hiw-arrow {
+      position: absolute; right: 20px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--border); font-size: 20px;
+    }
+
+    /* ── TOOLS TABLE ── */
+    .tools-section {
+      padding: var(--section-gap) 48px;
+      background: var(--bg-elevated);
+    }
+    .tools-inner {
+      max-width: 1280px; margin: 0 auto;
+    }
+
+    .tools-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 40px; flex-wrap: wrap; gap: 20px;
+    }
+
+    .tools-count {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--text-muted);
+    }
+    .tools-count span { color: var(--accent); font-weight: 700; }
+
+    .tools-tabs {
+      display: flex; gap: 4px;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 3px;
+    }
+    .tools-tab {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+      color: var(--text-muted); background: transparent; border: none;
+      padding: 6px 16px; border-radius: 7px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tools-tab.active {
+      background: var(--text-primary); color: #fff;
+    }
+
+    .tools-table {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+
+    .tools-group-header {
+      padding: 10px 20px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--text-muted); display: flex; align-items: center; gap: 8px;
+    }
+    .tools-group-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .dot-read { background: var(--accent); }
+    .dot-write { background: #2563eb; }
+    .dot-sim { background: #7c3aed; }
+
+    .tool-row {
+      display: flex; align-items: center;
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      gap: 16px; transition: background 0.15s;
+    }
+    .tool-row:last-child { border-bottom: none; }
+    .tool-row:hover { background: var(--bg-elevated); }
+
+    .tool-cmd {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+      color: var(--text-primary); background: var(--bg-card);
+      padding: 4px 10px; border-radius: 6px; flex-shrink: 0;
+      min-width: 220px;
+    }
+    .tool-desc {
+      font-size: 13px; color: var(--text-secondary);
+    }
+    .tool-tag {
+      margin-left: auto; font-family: var(--font-mono); font-size: 10px;
+      font-weight: 600; padding: 3px 8px; border-radius: 4px; flex-shrink: 0;
+    }
+    .tag-read { background: rgba(0,184,122,0.1); color: var(--accent); }
+    .tag-write { background: rgba(37,99,235,0.1); color: #2563eb; }
+    .tag-sim { background: rgba(124,58,237,0.1); color: #7c3aed; }
+
+    /* ── ABOUT ── */
+    .about-section {
+      padding: var(--section-gap) 48px;
+      max-width: 1280px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center;
+    }
+
+    .about-left .section-label { margin-bottom: 16px; }
+
+    .about-title {
+      font-family: var(--font-display); font-size: clamp(28px, 3vw, 42px);
+      font-weight: 800; letter-spacing: -2px; line-height: 1.1;
+      color: var(--text-primary); margin-bottom: 20px;
+    }
+    .about-title em { font-style: normal; color: var(--accent); }
+
+    .about-desc {
+      font-size: 17px; color: var(--text-secondary);
+      line-height: 1.7; margin-bottom: 32px;
+    }
+
+    .about-links {
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+
+    .about-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 600;
+      text-decoration: none; padding: 10px 20px; border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .about-link.primary {
+      background: var(--accent); color: #fff;
+    }
+    .about-link.primary:hover { background: #00c985; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,184,122,0.3); }
+    .about-link.secondary {
+      background: var(--bg-elevated); color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .about-link.secondary:hover { border-color: var(--border-highlight); color: var(--text-primary); }
+
+    /* Stats grid */
+    .about-right {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+      background: var(--border); border-radius: 16px; overflow: hidden;
+    }
+    .about-stat {
+      background: #fff; padding: 32px 28px;
+    }
+    .about-stat-num {
+      font-family: var(--font-display); font-size: 40px; font-weight: 800;
+      letter-spacing: -2px; color: var(--text-primary); line-height: 1;
+      margin-bottom: 8px;
+    }
+    .about-stat-num span { color: var(--accent); }
+    .about-stat-label {
+      font-size: 13px; color: var(--text-muted);
+    }
+
+    /* ── FOOTER ── */
+    .agents-footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .footer-logo-text {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      color: var(--text-muted);
+    }
+    .footer-links {
+      display: flex; gap: 24px;
+    }
+    .footer-links a {
+      font-size: 13px; color: var(--text-muted);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--text-primary); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,184,122,0.4); }
+      50%       { box-shadow: 0 0 0 5px rgba(0,184,122,0); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
+      50%       { opacity: 0.6; box-shadow: 0 0 4px var(--accent); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: all 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .agents-hero { padding: 120px 24px 80px; }
+      .hiw-section { padding: 60px 24px; }
+      .hiw-steps { grid-template-columns: 1fr; }
+      .tools-section { padding: 60px 24px; }
+      .about-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
+      .agents-footer { padding: 24px; flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+    }
+
+    @media (max-width: 640px) {
+      .hero-h1 { letter-spacing: -2px; }
+      .hiw-steps { gap: 1px; }
+      .tools-header { flex-direction: column; align-items: flex-start; }
+      .tool-cmd { min-width: unset; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+<div data-include="sections/nav.html"></div>
+<script>
+  (function() {
+    const el = document.querySelector('[data-include]');
+    if (!el) return;
+    fetch(el.dataset.include).then(r => r.text()).then(html => {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      el.replaceWith(tmp);
+      tmp.querySelectorAll('script').forEach(old => {
+        const s = document.createElement('script');
+        s.textContent = old.textContent;
+        old.parentNode.replaceChild(s, old);
+      });
+    });
+  })();
+</script>
+
+<!-- ── HERO ── -->
+<section class="agents-hero">
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      <span class="hero-badge-text">Agents · Beta</span>
+    </div>
+
+    <h1 class="hero-h1">
+      Give your agent<br><em>every market on earth.</em>
+    </h1>
+
+    <p class="hero-sub">
+      Pick your agent, run one command, and trade BTC, stocks, forex, options — anything. OpenFinance hands your AI the full market stack in seconds.
+    </p>
+
+    <!-- Agent type tabs -->
+    <div class="selector-wrap">
+      <div class="selector-tabs" id="agentTypeTabs">
+        <button class="selector-tab active" data-type="user">User Agent</button>
+        <button class="selector-tab" data-type="builder">Builder Agent</button>
+      </div>
+
+      <!-- Client pills -->
+      <div class="client-pills" id="clientPills">
+        <button class="client-pill active" data-client="claude">
+          <div class="client-icon" style="background:#d97757;overflow:hidden;">
+            <svg width="12" height="12" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g transform="translate(50,50)"><rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(0)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(30)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(60)"/><rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(90)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(120)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(150)"/><rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(180)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(210)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(240)"/><rect x="-5.5" y="-42" width="11" height="40" rx="5.5" fill="white" transform="rotate(270)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(300)"/><rect x="-5.5" y="-42" width="11" height="37" rx="5.5" fill="white" transform="rotate(330)"/></g></svg>
+          </div>
+          Claude
+        </button>
+        <button class="client-pill" data-client="chatgpt">
+          <div class="client-icon" style="background:#fff;border:1px solid #e5e7eb;">
+            <svg width="11" height="11" viewBox="0 0 41 41" fill="none"><path d="M37.532 16.87a9.963 9.963 0 00-.856-8.184 10.078 10.078 0 00-10.855-4.835 9.964 9.964 0 00-7.505-3.348 10.079 10.079 0 00-9.612 6.977 9.967 9.967 0 00-6.664 4.834 10.08 10.08 0 001.24 11.817 9.965 9.965 0 00.856 8.185 10.079 10.079 0 0010.855 4.835 9.965 9.965 0 007.504 3.347 10.078 10.078 0 009.617-6.981 9.967 9.967 0 006.663-4.834 10.079 10.079 0 00-1.243-11.813z" fill="#000"/></svg>
+          </div>
+          ChatGPT
+        </button>
+        <button class="client-pill" data-client="cursor">
+          <div class="client-icon" style="background:#000;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          Cursor
+        </button>
+        <button class="client-pill" data-client="terminal">
+          <div class="client-icon" style="background:#1c1c1e;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          Terminal
+        </button>
+      </div>
+
+      <!-- Command panel -->
+      <div class="command-panel">
+        <!-- Claude -->
+        <div class="cmd-section active" id="panel-claude">
+          <div class="cmd-label">
+            <span>Skills</span>
+            <span class="cmd-label-badge">recommended</span>
+          </div>
+          <div class="cmd-row">
+            <div class="cmd-text">npx skills add openfinance-org/of-skills <span class="cmd-green">--skill</span> openfinance-cli</div>
+            <button class="cmd-copy" data-cmd="npx skills add openfinance-org/of-skills --skill openfinance-cli" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+          <div class="cmd-label">MCP Server</div>
+          <div class="cmd-row">
+            <div class="cmd-text">claude mcp add openfinance <span class="cmd-dim">--transport http</span> https://mcp.openfinance.tech/</div>
+            <button class="cmd-copy" data-cmd="claude mcp add openfinance --transport http https://mcp.openfinance.tech/" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ChatGPT -->
+        <div class="cmd-section" id="panel-chatgpt">
+          <div class="cmd-label">
+            <span>Skills</span>
+            <span class="cmd-label-badge">recommended</span>
+          </div>
+          <div class="cmd-row">
+            <div class="cmd-text">npx skills add openfinance-org/of-skills <span class="cmd-green">--skill</span> openfinance-cli</div>
+            <button class="cmd-copy" data-cmd="npx skills add openfinance-org/of-skills --skill openfinance-cli">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+          <div class="cmd-label">MCP Server</div>
+          <div class="cmd-row">
+            <div class="cmd-text">codex mcp add openfinance <span class="cmd-dim">--url</span> https://mcp.openfinance.tech/</div>
+            <button class="cmd-copy" data-cmd="codex mcp add openfinance --url https://mcp.openfinance.tech/">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cursor -->
+        <div class="cmd-section" id="panel-cursor">
+          <div class="cmd-label">MCP Server — add to <code style="font-family:var(--font-mono);font-size:10px;background:var(--bg-card);padding:2px 6px;border-radius:4px;">.cursor/mcp.json</code></div>
+          <div class="cmd-row">
+            <div class="cmd-text">{ <span class="cmd-green">"mcpServers"</span>: { <span class="cmd-green">"openfinance"</span>: { <span class="cmd-green">"url"</span>: <span class="cmd-dim">"https://mcp.openfinance.tech/"</span> } } }</div>
+            <button class="cmd-copy" data-cmd='{ "mcpServers": { "openfinance": { "url": "https://mcp.openfinance.tech/" } } }'>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Terminal -->
+        <div class="cmd-section" id="panel-terminal">
+          <div class="cmd-label">MCP Server endpoint</div>
+          <div class="cmd-row">
+            <div class="cmd-text"><span class="cmd-green">https://</span>mcp.openfinance.tech/</div>
+            <button class="cmd-copy" data-cmd="https://mcp.openfinance.tech/">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+          <div style="padding:12px 20px;font-size:12px;color:var(--text-muted);font-family:var(--font-mono);">HTTP Streamable transport. Compatible with any MCP client.</div>
+        </div>
+      </div>
+
+      <!-- Beta notice -->
+      <p style="margin-top:16px;font-size:12px;color:var(--text-muted);font-family:var(--font-mono);">
+        ⚠ Beta — review all transactions before submitting. Use at your own risk.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="hiw-section" id="how-it-works">
+  <div class="hiw-header reveal">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Live in 3 steps.</h2>
+    <p class="section-desc" style="margin:0 auto;">Your agent goes from zero to trading any market on earth in under a minute.</p>
+  </div>
+
+  <div class="hiw-steps reveal">
+    <div class="hiw-step">
+      <div class="hiw-num">01</div>
+      <div class="hiw-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      </div>
+      <div class="hiw-title">Run the command</div>
+      <div class="hiw-desc">One npx or mcp command in Claude, Cursor, ChatGPT, or your own agent. No signup, no dashboard, no waiting.</div>
+    </div>
+    <div class="hiw-step">
+      <div class="hiw-num">02</div>
+      <div class="hiw-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="hiw-title">Agent configures itself</div>
+      <div class="hiw-desc">The skill loads protocol context, MCP tools, and market routing. Your agent knows exactly what it can trade and how.</div>
+    </div>
+    <div class="hiw-step">
+      <div class="hiw-num">03</div>
+      <div class="hiw-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      </div>
+      <div class="hiw-title">Run market operations</div>
+      <div class="hiw-desc">Query, simulate, and execute. BTC, stocks, forex, options, DeFi — every market, one unified API key.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TOOLS / CAPABILITIES ── -->
+<section class="tools-section" id="capabilities">
+  <div class="tools-inner">
+    <div class="tools-header reveal">
+      <div>
+        <div class="section-label">Capabilities</div>
+        <h2 class="section-title" style="margin-bottom:4px;">What your agent can do.</h2>
+        <div class="tools-count"><span>17</span> tools across read, write, and simulate.</div>
+      </div>
+      <div class="tools-tabs" id="toolsTabs">
+        <button class="tools-tab active" data-tab="cli">CLI</button>
+        <button class="tools-tab" data-tab="mcp">MCP</button>
+      </div>
+    </div>
+
+    <div class="tools-table reveal">
+      <!-- READ -->
+      <div class="tools-group-header"><span class="tools-group-dot dot-read"></span> Read</div>
+      <div id="cli-read">
+        <div class="tool-row"><span class="tool-cmd">health-check</span><span class="tool-desc">Check server and API connectivity</span><span class="tool-tag tag-read">read</span></div>
+        <div class="tool-row"><span class="tool-cmd">get-supported-chains</span><span class="tool-desc">List supported blockchain networks</span><span class="tool-tag tag-read">read</span></div>
+        <div class="tool-row"><span class="tool-cmd">query-markets</span><span class="tool-desc">Query markets with filtering and sorting</span><span class="tool-tag tag-read">read</span></div>
+        <div class="tool-row"><span class="tool-cmd">get-market</span><span class="tool-desc">Get details of a specific market</span><span class="tool-tag tag-read">read</span></div>
+        <div class="tool-row"><span class="tool-cmd">get-positions</span><span class="tool-desc">Get all positions for a user</span><span class="tool-tag tag-read">read</span></div>
+        <div class="tool-row"><span class="tool-cmd">get-position</span><span class="tool-desc">Get a specific user position</span><span class="tool-tag tag-read">read</span></div>
+        <div class="tool-row"><span class="tool-cmd">get-token-balance</span><span class="tool-desc">Get token balance and approval state</span><span class="tool-tag tag-read">read</span></div>
+        <div class="tool-row"><span class="tool-cmd">query-assets</span><span class="tool-desc">Query tradeable assets across all markets</span><span class="tool-tag tag-read">read</span></div>
+        <div class="tool-row"><span class="tool-cmd">get-price</span><span class="tool-desc">Get live price for any supported asset</span><span class="tool-tag tag-read">read</span></div>
+      </div>
+      <!-- WRITE -->
+      <div class="tools-group-header"><span class="tools-group-dot dot-write"></span> Write</div>
+      <div id="cli-write">
+        <div class="tool-row"><span class="tool-cmd">prepare-order</span><span class="tool-desc">Prepare a market or limit order</span><span class="tool-tag tag-write">write</span></div>
+        <div class="tool-row"><span class="tool-cmd">prepare-deposit</span><span class="tool-desc">Prepare a deposit with approvals</span><span class="tool-tag tag-write">write</span></div>
+        <div class="tool-row"><span class="tool-cmd">prepare-withdraw</span><span class="tool-desc">Prepare a withdrawal (supports max)</span><span class="tool-tag tag-write">write</span></div>
+        <div class="tool-row"><span class="tool-cmd">prepare-borrow</span><span class="tool-desc">Prepare a borrow with health check</span><span class="tool-tag tag-write">write</span></div>
+        <div class="tool-row"><span class="tool-cmd">prepare-repay</span><span class="tool-desc">Prepare a repay (supports max)</span><span class="tool-tag tag-write">write</span></div>
+        <div class="tool-row"><span class="tool-cmd">prepare-supply-collateral</span><span class="tool-desc">Supply collateral to a market</span><span class="tool-tag tag-write">write</span></div>
+        <div class="tool-row"><span class="tool-cmd">prepare-withdraw-collateral</span><span class="tool-desc">Withdraw collateral with health check</span><span class="tool-tag tag-write">write</span></div>
+      </div>
+      <!-- SIMULATE -->
+      <div class="tools-group-header"><span class="tools-group-dot dot-sim"></span> Simulate</div>
+      <div id="cli-simulate">
+        <div class="tool-row"><span class="tool-cmd">simulate-transactions</span><span class="tool-desc">Simulate transactions with post-state analysis</span><span class="tool-tag tag-sim">simulate</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section class="about-section">
+  <div class="about-left reveal">
+    <div class="section-label">About OpenFinance</div>
+    <h2 class="about-title">The <em>operating system</em> for AI traders.</h2>
+    <p class="about-desc">
+      OpenFinance is the universal trading API. One key unlocks every market on earth — BTC, equities, forex, options, DeFi, commodities. Agents brings that entire surface to your AI through skills and MCP tools.
+    </p>
+    <div class="about-links">
+      <a href="/" class="about-link primary">Back to home →</a>
+      <a href="https://docs.openfinance.tech" class="about-link secondary">Read the docs</a>
+    </div>
+  </div>
+  <div class="about-right reveal">
+    <div class="about-stat">
+      <div class="about-stat-num">17<span>+</span></div>
+      <div class="about-stat-label">Agent tools</div>
+    </div>
+    <div class="about-stat">
+      <div class="about-stat-num"><span>$</span>1</div>
+      <div class="about-stat-label">To get started</div>
+    </div>
+    <div class="about-stat">
+      <div class="about-stat-num">4<span>+</span></div>
+      <div class="about-stat-label">Agent clients</div>
+    </div>
+    <div class="about-stat">
+      <div class="about-stat-num"><span>&lt;</span>60<span>s</span></div>
+      <div class="about-stat-label">Time to live</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="agents-footer">
+  <a href="/" class="footer-logo">
+    <div class="nav-logo-mark" style="width:22px;height:22px;border-radius:6px;"></div>
+    <span class="footer-logo-text">openfinance agents</span>
+  </a>
+  <div class="footer-links">
+    <a href="https://docs.openfinance.tech">Docs</a>
+    <a href="https://github.com/openfinance">GitHub</a>
+    <a href="/">Home</a>
+  </div>
+</footer>
+
+<script>
+(function() {
+
+
+  // ── Client pill switcher ──
+  const pills = document.querySelectorAll('.client-pill');
+  const panels = document.querySelectorAll('.cmd-section');
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const client = pill.dataset.client;
+      panels.forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('panel-' + client);
+      if (target) target.classList.add('active');
+    });
+  });
+
+  // ── Agent type tabs ──
+  document.querySelectorAll('.selector-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.selector-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // ── Tools tabs (CLI / MCP) ──
+  document.querySelectorAll('.tools-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tools-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      // For now both tabs show same data — hook up MCP names here when ready
+    });
+  });
+
+  // ── Copy buttons ──
+  document.querySelectorAll('.cmd-copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cmd = btn.dataset.cmd;
+      navigator.clipboard.writeText(cmd).then(() => {
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
+        }, 1800);
+      });
+    });
+  });
+
+  // ── Scroll reveals ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+})();
+</script>
+
+</body>
+</html>

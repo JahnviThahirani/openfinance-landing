@@ -46,6 +46,12 @@
   );
 
   Promise.all(promises).then(() => {
+    // Scroll to hash if present (handles cross-page nav from agents etc.)
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {

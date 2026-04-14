@@ -116,6 +116,39 @@
     background: #fff;
   }
 
+  .nav-agents {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s ease, background 0.15s ease;
+    background: transparent;
+    border: none;
+  }
+  .nav-agents:hover {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+    transform: none;
+  }
+  .nav-agents-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
   /* ── RIGHT: actions ── */
   .nav-actions {
     display: flex;
@@ -315,15 +348,16 @@
 
   <div class="nav-center">
     <ul class="nav-links">
-      <li><a href="#usecases">Use Cases</a></li>
-      <li><a href="#capabilities">Capabilities</a></li>
-      <li><a href="#how">How it works</a></li>
-      <li><a href="#faq">FAQs</a></li>
+      <li><a href="/#usecases">Use Cases</a></li>
+      <li><a href="/#capabilities">Capabilities</a></li>
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#faq">FAQs</a></li>
       <li><a href="https://docs.openfinance.tech">Docs</a></li>
     </ul>
   </div>
 
   <div class="nav-actions">
+    <a href="/agents" class="nav-agents">Agents <span class="nav-agents-badge">new</span></a>
     <a href="#" class="nav-cta">Sign In</a>
     <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -333,11 +367,12 @@
 
 <!-- Mobile drawer -->
 <div class="nav-drawer" id="navDrawer">
-  <a href="#usecases">Use Cases</a>
-  <a href="#capabilities">Capabilities</a>
-  <a href="#how">How it works</a>
-  <a href="#faq">FAQs</a>
+  <a href="/#usecases">Use Cases</a>
+  <a href="/#capabilities">Capabilities</a>
+  <a href="/#how">How it works</a>
+  <a href="/#faq">FAQs</a>
   <a href="https://docs.openfinance.tech">Docs</a>
+  <a href="/agents" style="color:var(--accent);font-weight:600;">Agents ↗</a>
   <div class="nav-drawer-cta">
     <a href="#" class="drawer-signin">Sign in</a>
     <a href="#" class="drawer-getkey">Sign In</a>
