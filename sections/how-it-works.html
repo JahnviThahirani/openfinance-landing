@@ -613,7 +613,8 @@ function initHowItWorks() {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', pinTerminalAndReveal);
   } else {
-    pinTerminalAndReveal();
+    // Use setTimeout to ensure section is fully painted after fetch injection
+    setTimeout(pinTerminalAndReveal, 50);
   }
 
   // ── Step activation ───────────────────────────────────────────────────────
