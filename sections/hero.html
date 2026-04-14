@@ -73,7 +73,7 @@
 
   .hero h1 {
     font-family: var(--font-display);
-    font-size: clamp(29px, 3.2vw, 45px);
+    font-size: clamp(44px, 5.8vw, 88px);
     line-height: 1.08;
     font-weight: 800;
     letter-spacing: -2.5px;
@@ -119,12 +119,12 @@
   }
 
   .hero-body {
-    font-size: 15px;
+    font-size: 21px;
     font-weight: 400;
     color: var(--text-secondary);
-    line-height: 1.7;
+    line-height: 1.6;
     margin-bottom: 36px;
-    max-width: 480px;
+    max-width: 580px;
     opacity: 0;
     animation: appear 0.6s ease-out 0.55s forwards;
   }
@@ -440,13 +440,13 @@
 
   @media (max-width: 768px) {
     .hero { padding: 100px 24px 60px; }
-    .hero h1 { font-size: clamp(30px, 7vw, 44px); letter-spacing: -1.5px; }
+    .hero h1 { font-size: clamp(34px, 7vw, 56px); letter-spacing: -1.5px; }
     .hero-badge { display: none; }
   }
 
   @media (max-width: 640px) {
     .hero { padding: 80px 20px 48px; }
-    .hero h1 { font-size: clamp(26px, 8vw, 36px); letter-spacing: -1px; }
+    .hero h1 { font-size: clamp(28px, 8vw, 44px); letter-spacing: -1px; }
     .hero-actions { flex-direction: column; width: 100%; }
     .hero-actions a { width: 100%; text-align: center; justify-content: center; }
   }
@@ -465,19 +465,18 @@
     <div class="hero-left">
 
       <h1>
-        <span class="hero-line"><span class="hero-line-inner">Trading OS for traders, agents &amp;</span></span>
-        <span class="hero-line"><span class="hero-line-inner"><em>AI hedge funds.</em></span></span>
+        <span class="hero-line"><span class="hero-line-inner">Operating System for Traders,</span></span>
+        <span class="hero-line"><span class="hero-line-inner">Agents &amp; <em>AI Hedge Funds.</em></span></span>
       </h1>
 
-      <p class="hero-sub-label">One API. Every Market.</p>
 
       <p class="hero-body">
         Trade <strong>$BTC</strong>. Short Google. Long oil. Run options strategies. Predict elections. Generate <strong>6% yield</strong> on idle capital.
       </p>
 
       <div class="hero-actions">
-        <button id="heroApiKeyBtn" class="btn-primary" style="font-size:14px;padding:13px 28px;border-radius:10px;font-family:var(--font-body);font-weight:700;border:none;cursor:pointer;">Get Your API Key →</button>
-        <a href="https://docs.openfinance.tech" class="btn-secondary" style="font-size:14px;padding:13px 24px;border-radius:10px;font-family:var(--font-body);font-weight:700;">Read the Docs</a>
+        <button id="heroApiKeyBtn" class="btn-primary" style="font-size:17px;padding:13px 28px;border-radius:10px;font-family:var(--font-body);font-weight:700;border:none;cursor:pointer;">Get Your Key →</button>
+        <a href="https://docs.openfinance.tech" class="btn-secondary" style="font-size:17px;padding:13px 24px;border-radius:10px;font-family:var(--font-body);font-weight:700;">Read the Docs</a>
       </div>
 
       <div class="hero-available">
