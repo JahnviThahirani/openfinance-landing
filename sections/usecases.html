@@ -83,44 +83,9 @@
     background: #fff;
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 10px;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
-  }
-
-  /* Inner frame — the terminal/laptop screen look */
-  .media-inner-frame {
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    padding: 0;
     overflow: hidden;
-    background: var(--bg-elevated);
-  }
-
-  /* Browser chrome bar */
-  .media-frame-bar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 12px;
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .mfd { width: 10px; height: 10px; border-radius: 50%; }
-  .mfd:nth-child(1) { background: #ff5f57; }
-  .mfd:nth-child(2) { background: #febc2e; }
-  .mfd:nth-child(3) { background: #28c840; }
-
-  .media-frame-url {
-    margin-left: 8px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 3px 10px;
-    flex: 1;
-    max-width: 300px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
   }
 
   /* Media panes */
@@ -129,7 +94,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 44px 40px 28px;
+    padding: 40px;
     min-height: 320px;
     gap: 18px;
     background: var(--bg-elevated);
@@ -139,8 +104,17 @@
   .media-pane video,
   .media-pane img {
     width: 100%;
-    border-radius: 6px;
+    height: 100%;
+    border-radius: 0;
     object-fit: cover;
+    display: block;
+  }
+
+  .media-pane:has(img),
+  .media-pane:has(video) {
+    padding: 0;
+    background: transparent;
+    min-height: 320px;
   }
 
   .ph-icon {
@@ -391,11 +365,9 @@
     .feature-tab { white-space: normal; font-size: 12px; padding: 8px 10px; justify-content: flex-start; width: 100%; }
     .feature-tab.active { grid-column: unset; }
     /* Clip media overflow */
-    .media-inner-frame { overflow: hidden; }
-    .media-pane { overflow: hidden; padding: 28px 20px 20px; min-height: 260px; }
+    .media-pane { overflow: hidden; padding: 40px 20px 20px; min-height: 260px; }
     .mock-chart { max-width: 100%; }
     .ph-endpoint { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .media-frame-url { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     /* SDK panel */
     .sdk-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .sdk-tabs::-webkit-scrollbar { display: none; }
@@ -440,7 +412,7 @@
   <div class="markets-inner">
 
     <div class="section-label reveal">Use Cases</div>
-    <h2 class="section-title reveal">One API. Infinite edge.</h2>
+    <h2 class="section-title reveal">One Key. Infinite Edge.</h2>
     <p class="section-desc reveal">
       Bots. Scanners. Terminals. Hedge funds. All running on OpenFinance.
     </p>
@@ -499,15 +471,7 @@
 
         <!-- Double frame: outer border → inner border → content -->
         <div class="media-outer-frame">
-          <div class="media-inner-frame">
 
-            <!-- Browser chrome -->
-            <div class="media-frame-bar">
-              <div class="mfd"></div>
-              <div class="mfd"></div>
-              <div class="mfd"></div>
-              <div class="media-frame-url" id="mediaUrl">api.openfinance.tech/v1/markets/equities</div>
-            </div>
 
             <!-- Media panes — replace content with real image/video when ready -->
             <div class="media-pane active" data-media="ai-trading">
@@ -520,19 +484,7 @@
             </div>
 
             <div class="media-pane" data-media="custom-ui">
-              <div class="ph-icon">UI</div>
-              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
-                <rect x="10" y="10" width="180" height="70" rx="6" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
-                <rect x="20" y="20" width="60" height="8" rx="2" fill="#e2e4e9"/>
-                <rect x="20" y="34" width="160" height="6" rx="2" fill="#e2e4e9" opacity=".6"/>
-                <rect x="20" y="46" width="120" height="6" rx="2" fill="#e2e4e9" opacity=".4"/>
-                <rect x="20" y="62" width="50" height="10" rx="3" fill="#00b87a" opacity=".8"/>
-                <rect x="210" y="10" width="200" height="33" rx="6" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
-                <polyline points="220,35 240,25 260,28 280,18 300,22 320,14 330,18 350,12 400,16" stroke="#00b87a" stroke-width="1.5" fill="none"/>
-                <rect x="210" y="50" width="95" height="30" rx="6" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
-                <rect x="315" y="50" width="95" height="30" rx="6" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
-              </svg>
-              <div class="ph-endpoint"><span class="method">WS</span>/v1/stream/quotes</div>
+              <img src="assets/images/customUI.png" alt="Custom UI" style="width:100%;height:100%;object-fit:cover;display:block;" />
             </div>
 
             <div class="media-pane" data-media="arb-bot">
@@ -579,18 +531,8 @@
             </div>
 
             <div class="media-pane" data-media="smart-money">
-              <div class="ph-icon">👁</div>
-              <svg class="mock-chart" viewBox="0 0 420 90" fill="none">
-                <polyline points="0,55 40,52 80,45 120,50 160,30 200,35 240,20 280,25 320,12 380,8 420,10" stroke="#00b87a" stroke-width="2" fill="none"/>
-                <polyline points="0,65 40,62 80,58 120,62 160,50 200,54 240,44 280,48 320,38 380,34 420,36" stroke="#e2e4e9" stroke-width="1.5" fill="none"/>
-                <circle cx="160" cy="30" r="4" fill="none" stroke="#00b87a" stroke-width="1.5"/>
-                <circle cx="240" cy="20" r="4" fill="none" stroke="#00b87a" stroke-width="1.5"/>
-                <circle cx="320" cy="12" r="4" fill="none" stroke="#00b87a" stroke-width="1.5"/>
-              </svg>
-              <div class="ph-endpoint"><span class="method">GET</span>/v1/flow/institutional</div>
+              <img src="assets/images/SmartMoney.png" alt="Smart Money" style="width:100%;height:100%;object-fit:cover;display:block;" />
             </div>
-
-          </div><!-- /inner frame -->
 
           <!-- Captions sit between inner and outer frame bottom padding -->
           <div class="feature-caption active" data-caption="ai-trading">
@@ -894,7 +836,6 @@
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   function initMarkets() {
-    const urlBar = document.getElementById('mediaUrl');
     const urlMap = {
       'ai-trading':  'mcp.openfinance.tech/trade',
       'custom-ui':   'api.openfinance.tech/v1/stream/quotes',
@@ -916,7 +857,6 @@
         const cap  = document.querySelector(`.feature-caption[data-caption="${key}"]`);
         if (pane) pane.classList.add('active');
         if (cap)  cap.classList.add('active');
-        if (urlBar && urlMap[key]) urlBar.textContent = urlMap[key];
       });
     });
 
