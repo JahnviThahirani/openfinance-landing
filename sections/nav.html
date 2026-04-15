@@ -119,58 +119,40 @@
   .nav-agents {
     font-family: var(--font-body);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-secondary);
     text-decoration: none;
-    padding: 8px 12px;
+    padding: 8px 18px;
     border-radius: 8px;
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: color 0.15s ease, background 0.15s ease;
-    background: transparent;
-    border: none;
+    background: #fff;
+    border: 1px solid var(--border);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.04),
+      0 2px 8px rgba(0,0,0,0.04),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease, transform 0.15s ease;
   }
   .nav-agents:hover {
     color: var(--text-primary);
-    background: var(--bg-elevated);
-    transform: none;
-  }
-  .nav-agents-badge {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    background: var(--accent);
-    color: #fff;
-    padding: 2px 5px;
-    border-radius: 4px;
+    border-color: var(--border-highlight);
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.06),
+      0 4px 16px rgba(0,0,0,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+    transform: translateY(-1px);
   }
 
   /* ── RIGHT: actions ── */
   .nav-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     justify-content: flex-end;
   }
-
-  .nav-signin {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-decoration: none;
-    padding: 8px 14px;
-    border-radius: 8px;
-    transition: color 0.15s;
-    white-space: nowrap;
-    letter-spacing: -0.1px;
-  }
-
-  .nav-signin:hover { color: var(--text-primary); }
 
   .nav-cta {
     font-family: var(--font-body);
@@ -179,34 +161,35 @@
     color: #fff;
     background: #0d0f14;
     text-decoration: none;
-    padding: 8px 20px;
+    padding: 8px 18px;
     border-radius: 8px;
-    transition: all 0.2s ease;
     white-space: nowrap;
-    letter-spacing: -0.2px;
-    position: relative;
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: -0.1px;
     box-shadow:
-      0 0 0 1px rgba(255,255,255,0.08) inset,
-      0 2px 8px rgba(0,0,0,0.25),
-      0 0 16px rgba(0,0,0,0.15);
+      0 1px 2px rgba(0,0,0,0.2),
+      0 2px 8px rgba(0,0,0,0.15),
+      0 0 0 1px rgba(255,255,255,0.06) inset,
+      0 1px 0 rgba(255,255,255,0.08) inset;
+    transition: background 0.15s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    position: relative;
+    overflow: hidden;
   }
-
-  .nav-cta::after {
+  .nav-cta::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 8px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%);
     pointer-events: none;
   }
-
   .nav-cta:hover {
-    background: #1a1d26;
+    background: #1c1f2a;
     transform: translateY(-1px);
     box-shadow:
-      0 0 0 1px rgba(255,255,255,0.1) inset,
-      0 4px 16px rgba(0,0,0,0.3),
-      0 0 28px rgba(0,0,0,0.2);
+      0 2px 4px rgba(0,0,0,0.25),
+      0 6px 20px rgba(0,0,0,0.2),
+      0 0 0 1px rgba(255,255,255,0.08) inset;
   }
 
   /* ── Mobile ── */
@@ -357,7 +340,7 @@
   </div>
 
   <div class="nav-actions">
-    <a href="/agents" class="nav-agents">Agents <span class="nav-agents-badge">new</span></a>
+    <a href="/agents" class="nav-agents">Agents</a>
     <a href="#" class="nav-cta">Sign In</a>
     <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
       <span></span><span></span><span></span>
