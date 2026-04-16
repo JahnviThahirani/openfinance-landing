@@ -23,11 +23,10 @@
     /* ── HERO ── */
     .agents-hero {
       position: relative;
-      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 140px 48px 100px;
+      padding: 140px 48px 40px;
       overflow: hidden;
       background: #fff;
     }
@@ -39,7 +38,8 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      max-width: 860px;
+      max-width: 1280px;
+      width: 100%;
     }
 
     .hero-badge {
@@ -61,7 +61,7 @@
 
     .hero-h1 {
       font-family: var(--font-display);
-      font-size: clamp(38px, 5.5vw, 76px);
+      font-size: clamp(28.5px, 4.125vw, 57px);
       font-weight: 800;
       letter-spacing: -3px;
       line-height: 1.04;
@@ -74,7 +74,7 @@
     .hero-sub {
       font-size: 20px; font-weight: 400;
       color: var(--text-secondary); line-height: 1.6;
-      max-width: 560px; margin: 0 auto 48px;
+      max-width: 780px; margin: 0 auto 48px;
       opacity: 0; animation: fadeUp 0.6s ease 0.35s forwards;
     }
 
@@ -131,7 +131,7 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       overflow: hidden;
-      max-width: 620px;
+      max-width: 900px;
       margin: 0 auto;
       box-shadow: 0 8px 40px rgba(0,0,0,0.07);
     }
@@ -188,56 +188,124 @@
     }
 
     .hiw-header {
-      text-align: center; margin-bottom: 72px;
+      text-align: center; margin-bottom: 40px;
     }
 
     .hiw-steps {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
-      background: var(--border); border-radius: 16px; overflow: hidden;
+      position: relative;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      padding: 24px 0 8px;
     }
+
+    /* Connective thread running through all three steps */
+    .hiw-thread {
+      position: absolute;
+      top: 68px; left: 11%; right: 11%;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        var(--border) 8%,
+        var(--border) 92%,
+        transparent 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hiw-thread::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--accent), rgba(0,184,122,0.2));
+      transform: scaleX(0); transform-origin: left center;
+      transition: transform 1.6s cubic-bezier(.22,.61,.36,1);
+    }
+    .hiw-thread.draw::after { transform: scaleX(1); }
 
     .hiw-step {
-      background: #fff; padding: 40px 36px;
-      position: relative; overflow: hidden;
+      position: relative;
+      padding: 0 8px;
+      opacity: 0; transform: translateY(24px);
+      z-index: 1;
     }
 
-    .hiw-step::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      opacity: 0; transition: opacity 0.3s;
+    /* Oversized numeral as typographic anchor */
+    .hiw-numeral {
+      font-family: var(--font-display);
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-variant-numeric: tabular-nums;
+      text-transform: uppercase;
     }
-    .hiw-step:hover::before { opacity: 1; }
-
-    .hiw-num {
-      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
-      color: var(--accent); letter-spacing: 1px; margin-bottom: 20px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .hiw-num::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
+    .hiw-numeral span {
+      color: var(--accent); margin-right: 10px;
     }
 
-    .hiw-icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      background: rgba(0,184,122,0.08); border: 1px solid rgba(0,184,122,0.15);
+    /* Circular node that sits on the thread */
+    .hiw-node {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #fff;
+      border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      color: var(--accent); margin-bottom: 20px;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+      position: relative;
+      transition: all 0.4s cubic-bezier(.22,.61,.36,1);
+      box-shadow: 0 0 0 6px #fff;
     }
+    .hiw-node::before {
+      content: ''; position: absolute; inset: -1px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent, var(--accent), transparent);
+      opacity: 0; transition: opacity 0.5s;
+      z-index: -1;
+      padding: 1px;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+              mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+    }
+    .hiw-step:hover .hiw-node {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .hiw-step:hover .hiw-node::before { opacity: 1; animation: spin 3s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .hiw-title {
-      font-family: var(--font-display); font-size: 20px; font-weight: 700;
-      letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 10px;
+      font-family: var(--font-display);
+      font-size: 22px; font-weight: 700;
+      letter-spacing: -0.6px; color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.15;
     }
 
     .hiw-desc {
-      font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+      font-size: 15px; color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 32ch;
     }
 
-    .hiw-arrow {
-      position: absolute; right: 20px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--border); font-size: 20px;
+    /* Kicker tag — small affirming phrase under description */
+    .hiw-kicker {
+      margin-top: 20px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.3px;
+    }
+    .hiw-kicker::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,184,122,0.12);
+    }
+
+    /* Reveal animation applied via JS when in view */
+    .hiw-step.in-view {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.8s cubic-bezier(.22,.61,.36,1), transform 0.8s cubic-bezier(.22,.61,.36,1);
     }
 
     /* ── TOOLS TABLE ── */
@@ -246,12 +314,12 @@
       background: var(--bg-elevated);
     }
     .tools-inner {
-      max-width: 1280px; margin: 0 auto;
+      max-width: 960px; margin: 0 auto;
     }
 
     .tools-header {
       display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 40px; flex-wrap: wrap; gap: 20px;
+      margin-bottom: 28px; flex-wrap: wrap; gap: 20px;
     }
 
     .tools-count {
@@ -275,50 +343,168 @@
       background: var(--text-primary); color: #fff;
     }
 
-    .tools-table {
-      background: #fff; border: 1px solid var(--border);
-      border-radius: 12px; overflow: hidden;
+    /* Filter pills — All / Read / Write / Simulate */
+    .tools-filters {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 24px;
     }
-
-    .tools-group-header {
-      padding: 10px 20px;
-      background: var(--bg-elevated);
-      border-bottom: 1px solid var(--border);
-      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: var(--text-muted); display: flex; align-items: center; gap: 8px;
-    }
-    .tools-group-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-    }
-    .dot-read { background: var(--accent); }
-    .dot-write { background: #2563eb; }
-    .dot-sim { background: #7c3aed; }
-
-    .tool-row {
-      display: flex; align-items: center;
-      padding: 14px 20px; border-bottom: 1px solid var(--border);
-      gap: 16px; transition: background 0.15s;
-    }
-    .tool-row:last-child { border-bottom: none; }
-    .tool-row:hover { background: var(--bg-elevated); }
-
-    .tool-cmd {
+    .tools-filter {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 14px;
       font-family: var(--font-mono); font-size: 12px; font-weight: 600;
-      color: var(--text-primary); background: var(--bg-card);
-      padding: 4px 10px; border-radius: 6px; flex-shrink: 0;
-      min-width: 220px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(.22,.61,.36,1);
+      position: relative;
     }
+    .tools-filter:hover {
+      border-color: var(--text-muted); color: var(--text-primary);
+    }
+    .tools-filter[aria-pressed="true"] {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: #fff;
+    }
+    .tools-filter-count {
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+      opacity: 0.7;
+      margin-left: 2px;
+    }
+
+    /* Refined table — open, no outer chrome */
+    .tools-table {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      overflow: visible;
+    }
+
+    .tools-group {
+      position: relative;
+    }
+    .tools-group + .tools-group {
+      margin-top: 40px;
+    }
+
+    /* Group header — echoes the site's section-label pattern at a smaller scale */
+    .tools-group-head {
+      display: flex; align-items: baseline;
+      gap: 14px;
+      padding: 0 4px 14px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tools-group-numeral {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+    }
+    .tools-group-name {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .tools-group-count {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 400;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    /* Row — open, separated by hairlines */
+    .tool-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) 1fr auto;
+      align-items: center;
+      gap: 24px;
+      padding: 16px 20px 16px 24px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s ease, padding-left 0.4s cubic-bezier(.22,.61,.36,1);
+    }
+    .tools-group .tool-row:last-of-type { border-bottom: none; }
+
+    /* Hover — thin horizontal rule slides in at the left as a typographic mark */
+    .tool-row::before {
+      content: '';
+      position: absolute; left: 4px; top: 50%;
+      width: 12px; height: 1px;
+      background: var(--text-secondary);
+      transform: translateY(-50%) scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.4s cubic-bezier(.22,.61,.36,1);
+    }
+    .tool-row:hover {
+      background: rgba(10,15,28,0.02);
+      padding-left: 42px;
+    }
+    .tool-row:hover::before { transform: translateY(-50%) scaleX(1); }
+
+    .tool-name {
+      font-family: var(--font-mono);
+      font-size: 12.5px; font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: -0.1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      min-width: 0;
+      transition: color 0.25s ease;
+    }
+    .tool-row:hover .tool-name { color: var(--text-primary); }
+
     .tool-desc {
-      font-size: 13px; color: var(--text-secondary);
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      letter-spacing: -0.1px;
+      transition: color 0.25s ease;
     }
-    .tool-tag {
-      margin-left: auto; font-family: var(--font-mono); font-size: 10px;
-      font-weight: 600; padding: 3px 8px; border-radius: 4px; flex-shrink: 0;
+    .tool-row:hover .tool-desc { color: var(--text-secondary); }
+
+    .tool-copy {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent; border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.25s, transform 0.25s, color 0.2s, background 0.2s;
+      white-space: nowrap;
     }
-    .tag-read { background: rgba(0,184,122,0.1); color: var(--accent); }
-    .tag-write { background: rgba(37,99,235,0.1); color: #2563eb; }
-    .tag-sim { background: rgba(124,58,237,0.1); color: #7c3aed; }
+    .tool-row:hover .tool-copy { opacity: 1; transform: translateX(0); }
+    .tool-copy:hover {
+      color: var(--text-primary);
+      background: rgba(10,15,28,0.05);
+    }
+    .tool-copy.copied { color: var(--accent); }
+
+    .tool-row.is-hidden { display: none; }
+    .tools-group.is-hidden { display: none; }
+
+    .tools-empty {
+      text-align: center;
+      padding: 60px 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      display: none;
+    }
+    .tools-empty.show { display: block; }
 
     /* ── ABOUT ── */
     .about-section {
@@ -425,9 +611,11 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 960px) {
-      .agents-hero { padding: 120px 24px 80px; }
+      .agents-hero { padding: 120px 24px 32px; }
       .hiw-section { padding: 60px 24px; }
-      .hiw-steps { grid-template-columns: 1fr; }
+      .hiw-steps { grid-template-columns: 1fr; gap: 48px; padding-top: 16px; }
+      .hiw-thread { display: none; }
+      .hiw-node { box-shadow: none; }
       .tools-section { padding: 60px 24px; }
       .about-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
       .agents-footer { padding: 24px; flex-direction: column; text-align: center; }
@@ -436,9 +624,23 @@
 
     @media (max-width: 640px) {
       .hero-h1 { letter-spacing: -2px; }
-      .hiw-steps { gap: 1px; }
       .tools-header { flex-direction: column; align-items: flex-start; }
-      .tool-cmd { min-width: unset; font-size: 11px; }
+      .tool-row {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+          "name copy"
+          "desc desc";
+        gap: 4px 12px;
+        padding: 14px 18px;
+      }
+      .tool-row .tool-name { grid-area: name; }
+      .tool-row .tool-desc { grid-area: desc; font-size: 13px; }
+      .tool-row .tool-copy {
+        grid-area: copy;
+        opacity: 1; transform: none;
+        padding: 2px 6px;
+      }
+      .tools-group-head { padding: 16px 18px 8px; }
     }
   </style>
 </head>
@@ -466,11 +668,6 @@
 <section class="agents-hero">
 
   <div class="hero-content">
-    <div class="hero-badge">
-      <div class="hero-badge-dot"></div>
-      <span class="hero-badge-text">Agents · Beta</span>
-    </div>
-
     <h1 class="hero-h1">
       Give your agent<br><em>every market on earth.</em>
     </h1>
@@ -582,10 +779,7 @@
         </div>
       </div>
 
-      <!-- Beta notice -->
-      <p style="margin-top:16px;font-size:12px;color:var(--text-muted);font-family:var(--font-mono);">
-        ⚠ Beta — review all transactions before submitting. Use at your own risk.
-      </p>
+
     </div>
   </div>
 </section>
@@ -599,29 +793,36 @@
   </div>
 
   <div class="hiw-steps reveal">
-    <div class="hiw-step">
-      <div class="hiw-num">01</div>
-      <div class="hiw-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+    <div class="hiw-thread" aria-hidden="true"></div>
+
+    <div class="hiw-step" data-step="1">
+      <div class="hiw-numeral"><span>01</span>Step one</div>
+      <div class="hiw-node">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
       </div>
-      <div class="hiw-title">Run the command</div>
-      <div class="hiw-desc">One npx or mcp command in Claude, Cursor, ChatGPT, or your own agent. No signup, no dashboard, no waiting.</div>
+      <div class="hiw-title">Paste one line.</div>
+      <div class="hiw-desc">Drop a single command into Claude, Cursor, or ChatGPT. No sign-ups, no dashboards, no keys to juggle.</div>
+      <div class="hiw-kicker">Under 10 seconds</div>
     </div>
-    <div class="hiw-step">
-      <div class="hiw-num">02</div>
-      <div class="hiw-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+
+    <div class="hiw-step" data-step="2">
+      <div class="hiw-numeral"><span>02</span>Step two</div>
+      <div class="hiw-node">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
       </div>
-      <div class="hiw-title">Agent configures itself</div>
-      <div class="hiw-desc">The skill loads protocol context, MCP tools, and market routing. Your agent knows exactly what it can trade and how.</div>
+      <div class="hiw-title">Your agent wakes up.</div>
+      <div class="hiw-desc">It instantly learns every market it can reach and how to trade each one. You don't configure a thing.</div>
+      <div class="hiw-kicker">Fully automatic</div>
     </div>
-    <div class="hiw-step">
-      <div class="hiw-num">03</div>
-      <div class="hiw-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+
+    <div class="hiw-step" data-step="3">
+      <div class="hiw-numeral"><span>03</span>Step three</div>
+      <div class="hiw-node">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
       </div>
-      <div class="hiw-title">Run market operations</div>
-      <div class="hiw-desc">Query, simulate, and execute. BTC, stocks, forex, options, DeFi — every market, one unified API key.</div>
+      <div class="hiw-title">Trade anything, anywhere.</div>
+      <div class="hiw-desc">Stocks, crypto, forex, options — ask your agent to check a price, test an idea, or place a trade. It just works.</div>
+      <div class="hiw-kicker">Every market, one flow</div>
     </div>
   </div>
 </section>
@@ -641,36 +842,186 @@
       </div>
     </div>
 
-    <div class="tools-table reveal">
+    <div class="tools-filters reveal" role="group" aria-label="Filter tools">
+      <button class="tools-filter" data-cat="all" aria-pressed="true">
+        All <span class="tools-filter-count">17</span>
+      </button>
+      <button class="tools-filter" data-cat="read" aria-pressed="false">
+        Read <span class="tools-filter-count">9</span>
+      </button>
+      <button class="tools-filter" data-cat="write" aria-pressed="false">
+        Write <span class="tools-filter-count">7</span>
+      </button>
+      <button class="tools-filter" data-cat="simulate" aria-pressed="false">
+        Simulate <span class="tools-filter-count">1</span>
+      </button>
+    </div>
+
+    <div class="tools-table reveal" id="toolsTable">
       <!-- READ -->
-      <div class="tools-group-header"><span class="tools-group-dot dot-read"></span> Read</div>
-      <div id="cli-read">
-        <div class="tool-row"><span class="tool-cmd">health-check</span><span class="tool-desc">Check server and API connectivity</span><span class="tool-tag tag-read">read</span></div>
-        <div class="tool-row"><span class="tool-cmd">get-supported-chains</span><span class="tool-desc">List supported blockchain networks</span><span class="tool-tag tag-read">read</span></div>
-        <div class="tool-row"><span class="tool-cmd">query-markets</span><span class="tool-desc">Query markets with filtering and sorting</span><span class="tool-tag tag-read">read</span></div>
-        <div class="tool-row"><span class="tool-cmd">get-market</span><span class="tool-desc">Get details of a specific market</span><span class="tool-tag tag-read">read</span></div>
-        <div class="tool-row"><span class="tool-cmd">get-positions</span><span class="tool-desc">Get all positions for a user</span><span class="tool-tag tag-read">read</span></div>
-        <div class="tool-row"><span class="tool-cmd">get-position</span><span class="tool-desc">Get a specific user position</span><span class="tool-tag tag-read">read</span></div>
-        <div class="tool-row"><span class="tool-cmd">get-token-balance</span><span class="tool-desc">Get token balance and approval state</span><span class="tool-tag tag-read">read</span></div>
-        <div class="tool-row"><span class="tool-cmd">query-assets</span><span class="tool-desc">Query tradeable assets across all markets</span><span class="tool-tag tag-read">read</span></div>
-        <div class="tool-row"><span class="tool-cmd">get-price</span><span class="tool-desc">Get live price for any supported asset</span><span class="tool-tag tag-read">read</span></div>
+      <div class="tools-group" data-cat="read">
+        <div class="tools-group-head">
+          <span class="tools-group-numeral">01</span>
+          <span class="tools-group-name">Read</span>
+          <span class="tools-group-count">9 tools</span>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="health-check" data-mcp="health_check">
+          <span class="tool-name">health-check</span>
+          <span class="tool-desc">Check server and API connectivity.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="get-supported-chains" data-mcp="get_supported_chains">
+          <span class="tool-name">get-supported-chains</span>
+          <span class="tool-desc">List every blockchain network your agent can reach.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="query-markets" data-mcp="query_markets">
+          <span class="tool-name">query-markets</span>
+          <span class="tool-desc">Search markets with filters and sorting across every asset class.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="get-market" data-mcp="get_market">
+          <span class="tool-name">get-market</span>
+          <span class="tool-desc">Fetch details for a specific market.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="get-positions" data-mcp="get_positions">
+          <span class="tool-name">get-positions</span>
+          <span class="tool-desc">Get all open positions for a user.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="get-position" data-mcp="get_position">
+          <span class="tool-name">get-position</span>
+          <span class="tool-desc">Get a single user position by ID.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="get-token-balance" data-mcp="get_token_balance">
+          <span class="tool-name">get-token-balance</span>
+          <span class="tool-desc">Check token balance and approval state.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="query-assets" data-mcp="query_assets">
+          <span class="tool-name">query-assets</span>
+          <span class="tool-desc">Query every tradeable asset across all supported markets.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="read" data-cli="get-price" data-mcp="get_price">
+          <span class="tool-name">get-price</span>
+          <span class="tool-desc">Live price for any supported asset.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
       </div>
+
       <!-- WRITE -->
-      <div class="tools-group-header"><span class="tools-group-dot dot-write"></span> Write</div>
-      <div id="cli-write">
-        <div class="tool-row"><span class="tool-cmd">prepare-order</span><span class="tool-desc">Prepare a market or limit order</span><span class="tool-tag tag-write">write</span></div>
-        <div class="tool-row"><span class="tool-cmd">prepare-deposit</span><span class="tool-desc">Prepare a deposit with approvals</span><span class="tool-tag tag-write">write</span></div>
-        <div class="tool-row"><span class="tool-cmd">prepare-withdraw</span><span class="tool-desc">Prepare a withdrawal (supports max)</span><span class="tool-tag tag-write">write</span></div>
-        <div class="tool-row"><span class="tool-cmd">prepare-borrow</span><span class="tool-desc">Prepare a borrow with health check</span><span class="tool-tag tag-write">write</span></div>
-        <div class="tool-row"><span class="tool-cmd">prepare-repay</span><span class="tool-desc">Prepare a repay (supports max)</span><span class="tool-tag tag-write">write</span></div>
-        <div class="tool-row"><span class="tool-cmd">prepare-supply-collateral</span><span class="tool-desc">Supply collateral to a market</span><span class="tool-tag tag-write">write</span></div>
-        <div class="tool-row"><span class="tool-cmd">prepare-withdraw-collateral</span><span class="tool-desc">Withdraw collateral with health check</span><span class="tool-tag tag-write">write</span></div>
+      <div class="tools-group" data-cat="write">
+        <div class="tools-group-head">
+          <span class="tools-group-numeral">02</span>
+          <span class="tools-group-name">Write</span>
+          <span class="tools-group-count">7 tools</span>
+        </div>
+        <div class="tool-row" data-cat="write" data-cli="prepare-order" data-mcp="prepare_order">
+          <span class="tool-name">prepare-order</span>
+          <span class="tool-desc">Prepare a market or limit order ready to sign.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="write" data-cli="prepare-deposit" data-mcp="prepare_deposit">
+          <span class="tool-name">prepare-deposit</span>
+          <span class="tool-desc">Prepare a deposit with all required approvals.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="write" data-cli="prepare-withdraw" data-mcp="prepare_withdraw">
+          <span class="tool-name">prepare-withdraw</span>
+          <span class="tool-desc">Prepare a withdrawal. Supports max.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="write" data-cli="prepare-borrow" data-mcp="prepare_borrow">
+          <span class="tool-name">prepare-borrow</span>
+          <span class="tool-desc">Prepare a borrow with a built-in health check.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="write" data-cli="prepare-repay" data-mcp="prepare_repay">
+          <span class="tool-name">prepare-repay</span>
+          <span class="tool-desc">Prepare a repay. Supports max.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="write" data-cli="prepare-supply-collateral" data-mcp="prepare_supply_collateral">
+          <span class="tool-name">prepare-supply-collateral</span>
+          <span class="tool-desc">Supply collateral to a lending market.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="tool-row" data-cat="write" data-cli="prepare-withdraw-collateral" data-mcp="prepare_withdraw_collateral">
+          <span class="tool-name">prepare-withdraw-collateral</span>
+          <span class="tool-desc">Withdraw collateral with a built-in health check.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
       </div>
+
       <!-- SIMULATE -->
-      <div class="tools-group-header"><span class="tools-group-dot dot-sim"></span> Simulate</div>
-      <div id="cli-simulate">
-        <div class="tool-row"><span class="tool-cmd">simulate-transactions</span><span class="tool-desc">Simulate transactions with post-state analysis</span><span class="tool-tag tag-sim">simulate</span></div>
+      <div class="tools-group" data-cat="simulate">
+        <div class="tools-group-head">
+          <span class="tools-group-numeral">03</span>
+          <span class="tools-group-name">Simulate</span>
+          <span class="tools-group-count">1 tool</span>
+        </div>
+        <div class="tool-row" data-cat="simulate" data-cli="simulate-transactions" data-mcp="simulate_transactions">
+          <span class="tool-name">simulate-transactions</span>
+          <span class="tool-desc">Dry-run transactions and inspect the resulting state before signing.</span>
+          <button class="tool-copy" aria-label="Copy command">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
       </div>
+
+      <div class="tools-empty" id="toolsEmpty">No tools match this filter.</div>
     </div>
   </div>
 </section>
@@ -752,7 +1103,12 @@
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tools-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      // For now both tabs show same data — hook up MCP names here when ready
+      const mode = tab.dataset.tab; // 'cli' or 'mcp'
+      document.querySelectorAll('.tool-row').forEach(row => {
+        const nameEl = row.querySelector('.tool-name');
+        const newName = row.dataset[mode];
+        if (nameEl && newName) nameEl.textContent = newName;
+      });
     });
   });
 
@@ -771,6 +1127,50 @@
     });
   });
 
+  // ── Tool row copy (copies the currently-displayed command name) ──
+  document.querySelectorAll('.tool-copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.tool-row');
+      const name = row?.querySelector('.tool-name')?.textContent?.trim();
+      if (!name) return;
+      navigator.clipboard.writeText(name).then(() => {
+        const label = btn.querySelector('span');
+        const original = label ? label.textContent : 'Copy';
+        btn.classList.add('copied');
+        if (label) label.textContent = 'Copied';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          if (label) label.textContent = original;
+        }, 1400);
+      });
+    });
+  });
+
+  // ── Tool category filter ──
+  const filterButtons = document.querySelectorAll('.tools-filter');
+  const toolRows = document.querySelectorAll('.tool-row');
+  const toolGroups = document.querySelectorAll('.tools-group');
+  const emptyState = document.getElementById('toolsEmpty');
+  filterButtons.forEach(filterBtn => {
+    filterBtn.addEventListener('click', () => {
+      const cat = filterBtn.dataset.cat;
+      filterButtons.forEach(b => b.setAttribute('aria-pressed', b === filterBtn ? 'true' : 'false'));
+      let visible = 0;
+      toolRows.forEach(row => {
+        const show = (cat === 'all') || (row.dataset.cat === cat);
+        row.classList.toggle('is-hidden', !show);
+        if (show) visible++;
+      });
+      // Hide a group header entirely if none of its rows match
+      toolGroups.forEach(group => {
+        const groupCat = group.dataset.cat;
+        const hideGroup = (cat !== 'all') && (groupCat !== cat);
+        group.classList.toggle('is-hidden', hideGroup);
+      });
+      if (emptyState) emptyState.classList.toggle('show', visible === 0);
+    });
+  });
+
   // ── Scroll reveals ──
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
@@ -783,6 +1183,86 @@
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 })();
+</script>
+
+<script type="module">
+  // Motion One — scroll-triggered reveals for HIW + Tools grid, filter transitions
+  // Fallback: if Motion fails to import, plain CSS classes make everything visible
+  const fallback = setTimeout(() => {
+    document.querySelectorAll('.hiw-step').forEach(s => s.classList.add('in-view'));
+    const t = document.querySelector('.hiw-thread');
+    if (t) t.classList.add('draw');
+    document.querySelectorAll('.tool-row').forEach(r => {
+      r.style.opacity = '1';
+      r.style.transform = 'none';
+    });
+  }, 1500);
+
+  try {
+    const { animate, inView, stagger } = await import('https://esm.sh/motion@11.11.17');
+    clearTimeout(fallback);
+
+    // ── HIW: step stagger + thread draw ──
+    const steps = document.querySelectorAll('.hiw-step');
+    const thread = document.querySelector('.hiw-thread');
+    const nodes  = document.querySelectorAll('.hiw-node');
+
+    if (steps.length) {
+      inView('.hiw-steps', () => {
+        if (thread) setTimeout(() => thread.classList.add('draw'), 200);
+
+        animate(
+          steps,
+          { opacity: [0, 1], transform: ['translateY(28px)', 'translateY(0px)'] },
+          { duration: 0.9, delay: stagger(0.18, { start: 0.15 }), easing: [0.22, 0.61, 0.36, 1] }
+        );
+
+        animate(
+          nodes,
+          { transform: ['scale(0.82)', 'scale(1)'] },
+          { duration: 0.6, delay: stagger(0.18, { start: 0.45 }), easing: [0.34, 1.56, 0.64, 1] }
+        );
+
+        return () => {};
+      }, { amount: 0.25 });
+    }
+
+    // ── Tools table: stagger rows in on scroll ──
+    const toolRows = document.querySelectorAll('.tool-row');
+    if (toolRows.length) {
+      // Pre-hide so they animate up from below
+      toolRows.forEach(r => {
+        r.style.opacity = '0';
+        r.style.transform = 'translateY(10px)';
+      });
+      inView('.tools-table', () => {
+        animate(
+          toolRows,
+          { opacity: [0, 1], transform: ['translateY(10px)', 'translateY(0px)'] },
+          { duration: 0.5, delay: stagger(0.025, { start: 0.05 }), easing: [0.22, 0.61, 0.36, 1] }
+        );
+        return () => {};
+      }, { amount: 0.15 });
+    }
+
+    // ── Filter: animate re-entry of visible rows ──
+    document.querySelectorAll('.tools-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Let the filter JS above run first, then animate what's visible
+        requestAnimationFrame(() => {
+          const visibleRows = document.querySelectorAll('.tool-row:not(.is-hidden)');
+          if (!visibleRows.length) return;
+          animate(
+            visibleRows,
+            { opacity: [0.4, 1], transform: ['translateY(6px)', 'translateY(0)'] },
+            { duration: 0.4, delay: stagger(0.02), easing: [0.22, 0.61, 0.36, 1] }
+          );
+        });
+      });
+    });
+  } catch (e) {
+    // Fallback already queued — nothing else to do
+  }
 </script>
 
 </body>
