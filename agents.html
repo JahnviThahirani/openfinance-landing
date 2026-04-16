@@ -506,89 +506,6 @@
     }
     .tools-empty.show { display: block; }
 
-    /* ── ABOUT ── */
-    .about-section {
-      padding: var(--section-gap) 48px;
-      max-width: 1280px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
-      align-items: center;
-    }
-
-    .about-left .section-label { margin-bottom: 16px; }
-
-    .about-title {
-      font-family: var(--font-display); font-size: clamp(28px, 3vw, 42px);
-      font-weight: 800; letter-spacing: -2px; line-height: 1.1;
-      color: var(--text-primary); margin-bottom: 20px;
-    }
-    .about-title em { font-style: normal; color: var(--accent); }
-
-    .about-desc {
-      font-size: 17px; color: var(--text-secondary);
-      line-height: 1.7; margin-bottom: 32px;
-    }
-
-    .about-links {
-      display: flex; gap: 12px; flex-wrap: wrap;
-    }
-
-    .about-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: var(--font-body); font-size: 14px; font-weight: 600;
-      text-decoration: none; padding: 10px 20px; border-radius: 8px;
-      transition: all 0.2s;
-    }
-    .about-link.primary {
-      background: var(--accent); color: #fff;
-    }
-    .about-link.primary:hover { background: #00c985; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,184,122,0.3); }
-    .about-link.secondary {
-      background: var(--bg-elevated); color: var(--text-secondary);
-      border: 1px solid var(--border);
-    }
-    .about-link.secondary:hover { border-color: var(--border-highlight); color: var(--text-primary); }
-
-    /* Stats grid */
-    .about-right {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-      background: var(--border); border-radius: 16px; overflow: hidden;
-    }
-    .about-stat {
-      background: #fff; padding: 32px 28px;
-    }
-    .about-stat-num {
-      font-family: var(--font-display); font-size: 40px; font-weight: 800;
-      letter-spacing: -2px; color: var(--text-primary); line-height: 1;
-      margin-bottom: 8px;
-    }
-    .about-stat-num span { color: var(--accent); }
-    .about-stat-label {
-      font-size: 13px; color: var(--text-muted);
-    }
-
-    /* ── FOOTER ── */
-    .agents-footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 48px;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 16px;
-    }
-    .footer-logo {
-      display: flex; align-items: center; gap: 8px; text-decoration: none;
-    }
-    .footer-logo-text {
-      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
-      color: var(--text-muted);
-    }
-    .footer-links {
-      display: flex; gap: 24px;
-    }
-    .footer-links a {
-      font-size: 13px; color: var(--text-muted);
-      text-decoration: none; transition: color 0.15s;
-    }
-    .footer-links a:hover { color: var(--text-primary); }
-
     /* ── ANIMATIONS ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
@@ -617,9 +534,6 @@
       .hiw-thread { display: none; }
       .hiw-node { box-shadow: none; }
       .tools-section { padding: 60px 24px; }
-      .about-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
-      .agents-footer { padding: 24px; flex-direction: column; text-align: center; }
-      .footer-links { justify-content: center; }
     }
 
     @media (max-width: 640px) {
@@ -649,18 +563,25 @@
 <div data-include="sections/nav.html"></div>
 <script>
   (function() {
-    const el = document.querySelector('[data-include]');
-    if (!el) return;
-    fetch(el.dataset.include).then(r => r.text()).then(html => {
-      const tmp = document.createElement('div');
-      tmp.innerHTML = html;
-      el.replaceWith(tmp);
-      tmp.querySelectorAll('script').forEach(old => {
-        const s = document.createElement('script');
-        s.textContent = old.textContent;
-        old.parentNode.replaceChild(s, old);
+    function loadIncludes() {
+      document.querySelectorAll('[data-include]').forEach(el => {
+        fetch(el.dataset.include).then(r => r.text()).then(html => {
+          const tmp = document.createElement('div');
+          tmp.innerHTML = html;
+          el.replaceWith(tmp);
+          tmp.querySelectorAll('script').forEach(old => {
+            const s = document.createElement('script');
+            s.textContent = old.textContent;
+            old.parentNode.replaceChild(s, old);
+          });
+        });
       });
-    });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadIncludes);
+    } else {
+      loadIncludes();
+    }
   })();
 </script>
 
@@ -1026,51 +947,8 @@
   </div>
 </section>
 
-<!-- ── ABOUT ── -->
-<section class="about-section">
-  <div class="about-left reveal">
-    <div class="section-label">About OpenFinance</div>
-    <h2 class="about-title">The <em>operating system</em> for AI traders.</h2>
-    <p class="about-desc">
-      OpenFinance is the universal trading API. One key unlocks every market on earth — BTC, equities, forex, options, DeFi, commodities. Agents brings that entire surface to your AI through skills and MCP tools.
-    </p>
-    <div class="about-links">
-      <a href="/" class="about-link primary">Back to home →</a>
-      <a href="https://docs.openfinance.tech" class="about-link secondary">Read the docs</a>
-    </div>
-  </div>
-  <div class="about-right reveal">
-    <div class="about-stat">
-      <div class="about-stat-num">17<span>+</span></div>
-      <div class="about-stat-label">Agent tools</div>
-    </div>
-    <div class="about-stat">
-      <div class="about-stat-num"><span>$</span>1</div>
-      <div class="about-stat-label">To get started</div>
-    </div>
-    <div class="about-stat">
-      <div class="about-stat-num">4<span>+</span></div>
-      <div class="about-stat-label">Agent clients</div>
-    </div>
-    <div class="about-stat">
-      <div class="about-stat-num"><span>&lt;</span>60<span>s</span></div>
-      <div class="about-stat-label">Time to live</div>
-    </div>
-  </div>
-</section>
-
-<!-- ── FOOTER ── -->
-<footer class="agents-footer">
-  <a href="/" class="footer-logo">
-    <div class="nav-logo-mark" style="width:22px;height:22px;border-radius:6px;"></div>
-    <span class="footer-logo-text">openfinance agents</span>
-  </a>
-  <div class="footer-links">
-    <a href="https://docs.openfinance.tech">Docs</a>
-    <a href="https://github.com/openfinance">GitHub</a>
-    <a href="/">Home</a>
-  </div>
-</footer>
+<!-- ── FOOTER (curtain-style) ── -->
+<div data-include="sections/footer.html"></div>
 
 <script>
 (function() {
